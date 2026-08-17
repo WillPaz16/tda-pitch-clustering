@@ -1,0 +1,28 @@
+{
+  "weights_default": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+  ],
+  "weights_optimized": null,
+  "n_rows": 2008693,
+  "features_used": [
+    "release_speed",
+    "release_pos_x",
+    "release_pos_z",
+    "pfx_x",
+    "pfx_z",
+    "spin_axis",
+    "release_spin_rate",
+    "release_extension",
+    "release_speed_sq",
+    "log_release_speed",
+    "pfx_magnitude",
+    "spin_axis_rad",
+    "spin_cos",
+    "spin_sin",
+    "release_side",
+    "release_height",
+    "release_side_times_height"
+  ]
+}

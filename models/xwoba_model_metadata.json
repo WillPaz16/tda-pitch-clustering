@@ -1,0 +1,101 @@
+{
+  "model_type": "CatBoostRegressor",
+  "features": [
+    "release_speed",
+    "release_pos_x",
+    "release_pos_z",
+    "pfx_x",
+    "pfx_z",
+    "spin_axis",
+    "release_spin_rate",
+    "release_extension",
+    "release_speed_sq",
+    "log_release_speed",
+    "pfx_magnitude",
+    "spin_axis_rad",
+    "spin_cos",
+    "spin_sin",
+    "release_side",
+    "release_height",
+    "release_side_times_height"
+  ],
+  "n_features": 17,
+  "n_train_samples": 392684,
+  "n_val_samples": 98171,
+  "metrics": {
+    "mae": 0.29608009921557255,
+    "rmse": 0.3641019099972721,
+    "r2": 0.017221192169283528,
+    "adj_r2": 0.017050975877034413
+  },
+  "feature_importance": [
+    {
+      "feature": "pfx_z",
+      "importance": 15.368325035038902
+    },
+    {
+      "feature": "release_spin_rate",
+      "importance": 9.899162624139525
+    },
+    {
+      "feature": "pfx_x",
+      "importance": 7.961877316994342
+    },
+    {
+      "feature": "spin_cos",
+      "importance": 7.531876803878331
+    },
+    {
+      "feature": "pfx_magnitude",
+      "importance": 7.151984168709306
+    },
+    {
+      "feature": "release_speed",
+      "importance": 6.896087861746768
+    },
+    {
+      "feature": "log_release_speed",
+      "importance": 6.764826065623994
+    },
+    {
+      "feature": "release_extension",
+      "importance": 6.036930264253522
+    },
+    {
+      "feature": "release_speed_sq",
+      "importance": 5.986066924128479
+    },
+    {
+      "feature": "release_side_times_height",
+      "importance": 5.160457411855421
+    },
+    {
+      "feature": "release_height",
+      "importance": 4.544574799332878
+    },
+    {
+      "feature": "release_pos_z",
+      "importance": 4.2307703698319825
+    },
+    {
+      "feature": "release_side",
+      "importance": 2.872219597484052
+    },
+    {
+      "feature": "spin_sin",
+      "importance": 2.843333196801041
+    },
+    {
+      "feature": "release_pos_x",
+      "importance": 2.768165478583549
+    },
+    {
+      "feature": "spin_axis",
+      "importance": 2.1238099434172497
+    },
+    {
+      "feature": "spin_axis_rad",
+      "importance": 1.85953213818066
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "model_type": "CatBoostClassifier",
+  "features": [
+    "release_speed",
+    "release_pos_x",
+    "release_pos_z",
+    "pfx_x",
+    "pfx_z",
+    "spin_axis",
+    "release_spin_rate",
+    "release_extension",
+    "release_speed_sq",
+    "log_release_speed",
+    "pfx_magnitude",
+    "spin_axis_rad",
+    "spin_cos",
+    "spin_sin",
+    "release_side",
+    "release_height",
+    "release_side_times_height",
+    "pitch_type_code"
+  ],
+  "n_features": 18,
+  "n_train_samples": 1606954,
+  "n_val_samples": 401739,
+  "metrics": {
+    "auc": 0.6156166354526915,
+    "precision": 0.25983614159839236,
+    "recall": 0.5405523611057513,
+    "f1": 0.35096715999064576,
+    "specificity": 0.6305462962962963,
+    "brier": 0.2376411081350579
+  },
+  "feature_importance": [
+    {
+      "feature": "pfx_magnitude",
+      "importance": 19.75294705249807
+    },
+    {
+      "feature": "pfx_z",
+      "importance": 13.095784294883993
+    },
+    {
+      "feature": "release_spin_rate",
+      "importance": 8.524265103221081
+    },
+    {
+      "feature": "log_release_speed",
+      "importance": 7.77404216523021
+    },
+    {
+      "feature": "pfx_x",
+      "importance": 7.085892495989241
+    },
+    {
+      "feature": "release_speed",
+      "importance": 6.005670944363138
+    },
+    {
+      "feature": "release_speed_sq",
+      "importance": 5.906768409026335
+    },
+    {
+      "feature": "release_extension",
+      "importance": 5.279764182769322
+    },
+    {
+      "feature": "spin_cos",
+      "importance": 4.745941946557133
+    },
+    {
+      "feature": "release_side_times_height",
+      "importance": 4.393900343301235
+    },
+    {
+      "feature": "release_pos_z",
+      "importance": 3.6379415183762753
+    },
+    {
+      "feature": "release_height",
+      "importance": 3.313492234121003
+    },
+    {
+      "feature": "spin_sin",
+      "importance": 2.5298452964599187
+    },
+    {
+      "feature": "release_pos_x",
+      "importance": 2.4830845243229756
+    },
+    {
+      "feature": "release_side",
+      "importance": 2.30758821468011
+    },
+    {
+      "feature": "spin_axis_rad",
+      "importance": 1.6264785449592218
+    },
+    {
+      "feature": "spin_axis",
+      "importance": 1.5365927292407313
+    }
+  ]
+}
