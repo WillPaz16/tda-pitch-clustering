@@ -116,15 +116,28 @@ Rough target for an hour-long talk (fine to run over/under):
       (TDA mapper graph, Stuff+ model, pitcher consistency/variance
       findings)
 - [ ] Rebalance timing to roughly 15/30/15 minutes per the advisor's split
-- [ ] Do the "discovery" pass on the actual Mapper graph output (loops,
-      branch points, connectivity) to find an interpretable topological
-      finding — see the central objection in
-      [docs/METHODOLOGY_REVIEW.md](docs/METHODOLOGY_REVIEW.md): right now
-      the pipeline uses `cluster_id` like a flat clustering label and the
-      graph structure itself isn't doing much scientific work. This is
-      the next planned work, before any code/methodology changes.
-- [ ] Once a topological finding (or reframing decision) exists, revisit
-      the methodology holes in docs/METHODOLOGY_REVIEW.md (feature-space
-      mismatch between fit and inference, circular spin_axis treated as
-      linear, hard nearest-centroid assignment, Stuff+ leakage, fixed vs.
-      per-pitch strike zone, multiple-comparisons correction)
+- [x] Do the "discovery" pass on the actual Mapper graph output — done,
+      see [docs/DISCOVERY_FINDINGS.md](docs/DISCOVERY_FINDINGS.md) and
+      `src/tda/graph_topology_analysis.py`. Found a real, robust
+      connectivity finding (a giant component + isolated velocity-outlier
+      sub-components, stable across nerve min_intersection thresholds)
+      — but the Stuff+ cross-check surfaced a bigger, more urgent issue:
+      concrete empirical proof that the production nearest-centroid
+      classifier misroutes real pitches for the small/rare outlier
+      clusters (real <70mph pitches mostly land in fast clusters and
+      vice versa). This directly confirms the feature-space
+      fit/inference mismatch flagged in METHODOLOGY_REVIEW.md and now
+      has hard numbers behind it.
+- [ ] **Next priority**: run the controlled follow-up test described at
+      the end of docs/DISCOVERY_FINDINGS.md (push one known slow real
+      pitch through the actual production function and inspect its raw
+      feature vector against the trained centroid) to determine whether
+      the misrouting is statistical (sparse/noisy small-cluster
+      centroids) or a data-source/units bug (training used
+      `pybaseball.statcast()`, inference uses the Baseball Savant CSV
+      export) — this determines whether the fix is statistical or code.
+- [ ] Once that's resolved, revisit the remaining methodology holes in
+      docs/METHODOLOGY_REVIEW.md (circular spin_axis treated as linear,
+      hard nearest-centroid assignment vs. Mapper's multi-membership
+      theory, Stuff+ leakage, fixed vs. per-pitch strike zone,
+      multiple-comparisons correction)
