@@ -117,54 +117,126 @@ result plus the direct visibility of the averaging-vs.-individual
 mismatch in the code is enough evidence to be confident in this as the
 primary driver.)
 
+## Correlation check across all 57 clusters — refines the story
+
+The above was checked against only the 11 outlier clusters found by
+inspection. Extending the ground-truth round-trip test to *every* cluster
+in the graph, and correlating topology (degree, connected-component
+membership) against two reliability measures (ground-truth
+self-consistency, and real-data speed-matching error from
+`data/pitch_stuffplus_clusters.csv`), reproducible via
+`src/tda/graph_reliability_correlation.py`, changes the picture:
+
+| relationship | Spearman r | p | n |
+|---|---|---|---|
+| degree ↔ ground-truth round-trip accuracy | −0.673 | <0.0001 | 57 |
+| train_n ↔ ground-truth round-trip accuracy | −0.641 | <0.0001 | 57 |
+| component_size ↔ ground-truth round-trip accuracy | −0.357 | 0.007 | 57 |
+| degree ↔ live speed-matching error | −0.481 | 0.0002 | 55 |
+| component_size ↔ live speed-matching error | −0.541 | <0.0001 | 55 |
+| train_n ↔ live speed-matching error | −0.333 | 0.013 | 55 |
+
+**This is the opposite of the naive story.** Isolated/small clusters have
+*higher* ground-truth self-consistency, not lower — several of the
+outlier clusters round-trip at 100%. It's the large, high-degree hub
+clusters (`cube60_cluster0`: 1088 training points, 32% self-consistency;
+`cube67_cluster0`: 835 points, 23%; `cube9_cluster0`: 353 points, 23%)
+that are internally the *least* self-consistent. That makes sense once
+you see why they have high degree in the first place: they sit in the
+densest, most crowded part of the continuum, surrounded by many
+near-identical neighboring archetypes. A training point near a big
+cluster's edge is often, by raw centroid distance, actually closer to an
+adjacent cluster than its own — even though DBSCAN (density-based, not
+centroid-based) originally grouped it there. That's a real reliability
+concern, but it belongs to the *popular, crowded* clusters, not the rare
+isolated ones.
+
+So the earlier live-data misrouting (real slow pitches landing in fast
+clusters) is better explained by a different, simpler mechanism than
+"averaging vs. individual variance" alone: **event rarity over a short
+inference window.** `assign_pitch_stuffplus_clusters.py`'s live run only
+covered one week (`2025-03-28` to `2025-04-04`). Eephus-type archetypes
+were built from only 4–8 pitcher-pitch-type pairs across an *entire
+season* of training data — it's entirely plausible zero genuine eephus
+pitches were thrown by anyone, league-wide, in that specific week. The
+~60–69 mph pitches that did occur and got misassigned were mostly
+generically labeled ("FA"), most likely an ordinary pitch thrown a bit
+slower than usual — which legitimately doesn't belong in the eephus
+archetype on the other 7 dimensions, not a classifier failure.
+
+**Revised claim (stronger and more accurate than the original one):** the
+model's ground-truth self-consistency is good, *including* for rare
+archetypes. The two real, distinct reliability concerns are (1) the
+densest region of the continuum, where many similar pitch shapes
+genuinely compete for the same real pitches, and (2) rare archetypes
+being hard to observe reliably over short time windows, independent of
+whether the classifier itself works. Both are legitimate, explainable,
+and — usefully — both are visible directly from the graph's topology
+(degree and component size) without needing to separately audit sample
+sizes or rerun classification for every cluster by hand.
+
 ## Practical implications
 
 - The outlier-disconnection finding is **real in the fitted graph** (the
-  ~3,900 pitcher-pitch-type training archetypes) but **not currently
-  trustworthy as a claim about live/new pitch data** — the inference
-  pipeline can't reliably route new pitches to those sparse archetype
-  clusters. If this finding goes in the talk, it needs to be scoped
-  explicitly to "the training data used to build the graph," not
-  "pitches we classify going forward."
+  ~3,900 pitcher-pitch-type training archetypes), and — refined by the
+  correlation check above — the isolated/rare clusters are actually the
+  *most* internally self-consistent part of the graph. The reliability
+  concerns are elsewhere: the crowded, high-degree hub clusters (least
+  self-consistent on their own training data) and short-window rarity of
+  extreme archetypes (why live data looked bad for the outliers in a
+  single week of inference). Both are explainable and both are visible
+  from graph topology alone (degree, component size) — that's the
+  reframed, stronger claim to use.
 - This also means every downstream script reading
   `pitch_stuffplus_clusters.csv` (`pitcher_consistency.py`,
   `variance_analysis.py`, `predictive_model_comparison.py`) has some
-  fraction of its cluster assignments affected by this same mismatch —
-  worst for the rare/small clusters, presumably negligible for the large
-  well-populated ones, but not yet quantified.
+  fraction of its cluster assignments affected — but per the correlation
+  check, the affected fraction skews toward the *large, popular* clusters
+  (crowded-continuum ambiguity) more than the rare ones, which is the
+  opposite of the original assumption. Not yet corrected for in those
+  downstream scripts; worth keeping in mind when interpreting their
+  results, especially anything that treats `cluster_id` as a clean,
+  unambiguous label.
 
 ## How to change the claim for the talk
 
 Options, roughly ordered from "say it differently" to "actually fix the
 pipeline" — none of these have been implemented, this is a menu to choose
-from:
+from. **Updated after the all-clusters correlation check** — options 2
+and 3 below were written before that check and got the direction backward
+(they assumed rare clusters were the unreliable ones; it's actually the
+crowded, popular ones that are least self-consistent). Corrected here.
 
 1. **Scope the claim to the training data, not live classification
    (cheapest, no code changes).** Present the connectivity finding
    (giant component + isolated velocity outliers) as a property of the
    ~3,900 pitcher-pitch-type archetypes the graph was built from — a
    descriptive result about the fitted model, not an operational claim
-   about how new pitches get classified. This sidesteps the whole issue
-   because the finding genuinely is true and robust at that level; it's
-   only the "and here's how we'd classify a new pitch into this
-   structure" extension that's shaky.
+   about how new pitches get classified.
 
-2. **State the limitation directly, with the numbers already in hand
-   (turns a weakness into a methods-rigor point).** Say explicitly:
-   "the classifier is validated at 78% self-consistency on its own
-   training archetypes, and known to be less reliable for individual
-   live pitches against rare, small-sample archetypes, because it was
-   trained on per-pitcher-pitch-type averages rather than raw pitches."
-   Committees generally respond much better to a stated, quantified
-   limitation than to one they have to catch themselves.
+2. **The topology-as-confidence-map framing (recommended — strongest,
+   most accurate, no code changes needed).** State it as: the graph's
+   own shape predicts where downstream classification can and can't be
+   trusted, for two distinct, explainable reasons — (a) the densest,
+   most crowded part of the continuum has real ambiguity between many
+   similar archetypes (measurable: high-degree clusters have the lowest
+   ground-truth self-consistency, Spearman r=−0.67), and (b) rare
+   archetypes are hard to observe reliably over short time windows,
+   independent of whether the classifier works (ground-truth
+   self-consistency for the isolated clusters is actually high). This is
+   accurate, quantified, and turns the whole investigation into a
+   feature rather than an apology — genuinely useful framing for the
+   player-development/R&D angle too: know how much to trust a specific
+   pitch classification based on how crowded or how rare its region of
+   the graph is.
 
-3. **Restrict any live-classification claims to the well-populated
-   clusters.** The mismatch is worst for the 11 small/rare clusters;
-   the large clusters in the giant component (hundreds to 1000+ training
-   points each) don't have this small-sample problem. If the talk needs
-   a "here's how we classify a new pitch" moment, use one of those as
-   the example and don't lean on the outlier clusters for anything
-   beyond describing the fitted graph.
+3. **Restrict any single-pitch live-classification demo to the
+   well-populated clusters**, and be explicit that the crowded, dense
+   part of the continuum is where nearest-centroid assignment is
+   genuinely ambiguous (not the rare outliers) — if the talk needs a
+   "here's how we classify a new pitch" moment, pick an example from a
+   cluster with both decent size and low degree if one exists, or state
+   the ambiguity outright for whichever example is used.
 
 4. **Actually fix the mismatch (real work, most defensible, not done
    yet).** Two ways to do it: (a) aggregate new pitches the same way the
@@ -174,12 +246,16 @@ from:
    pitches instead of pitcher-pitch-type averages, so there's no
    aggregation mismatch to begin with (this changes the methodology more
    substantially and would need its own validation pass). Either removes
-   the root cause rather than working around it.
+   the root cause rather than working around it. Note this doesn't fully
+   apply anymore to the *rare-archetype* misrouting specifically (that
+   looks more like short-window rarity than an averaging artifact) — it
+   would still help the crowded-continuum ambiguity, though.
 
 Given the timeline (defense a few months out, presentation work
-intentionally paused for now), **option 1 or 2 are the realistic
-near-term choices** — they require no pipeline changes, just precise
-language in the deck, and the underlying numbers (78% round-trip rate,
+intentionally paused for now), **option 2 is the realistic and strongest
+near-term choice** — it requires no pipeline changes, just precise
+language in the deck, and the underlying numbers (the 78% ground-truth
+round-trip rate, the degree/self-consistency correlation,
 the asymmetric direction of the errors) are already documented above if
 you want to cite them directly. Option 4 is the right thing to do
 eventually and is now a clearly scoped, well-understood fix — worth

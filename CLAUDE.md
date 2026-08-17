@@ -141,13 +141,26 @@ Rough target for an hour-long talk (fine to run over/under):
       precisely, no code changes" to "fix the aggregation mismatch") in
       docs/DISCOVERY_FINDINGS.md's "How to change the claim for the
       talk" section.
-- [ ] **Decide which reframing option to use for the MLB section** (see
-      docs/DISCOVERY_FINDINGS.md) — options 1–3 need no pipeline changes,
-      just precise wording; option 4 (fix the aggregation mismatch by
-      classifying pitcher-pitch-type averages instead of raw pitches, or
-      by refitting Mapper directly on raw pitches) is a real methodology
-      change and should happen deliberately, not as a deck-writing
-      afterthought.
+- [x] Ran the correlation check across all 57 clusters (not just the 11
+      outliers) — done, see `src/tda/graph_reliability_correlation.py`
+      and docs/DISCOVERY_FINDINGS.md's "Correlation check across all 57
+      clusters" section. **This flipped and improved the story**: the
+      rare/isolated clusters actually have the *highest* ground-truth
+      self-consistency (several at 100%); it's the big, popular hub
+      clusters that are least self-consistent (Spearman r=−0.67 between
+      degree and self-consistency), because they sit in the densest,
+      most crowded part of the continuum with many near-identical
+      neighbors. The earlier live-data misrouting for rare clusters is
+      better explained by short-window event rarity (the live test only
+      covered one week) than by a classifier flaw. Reframing options in
+      DISCOVERY_FINDINGS.md updated accordingly — recommended option is
+      now "topology as a confidence map" (option 2 in the current list):
+      graph degree/component-size predict *where* to trust downstream
+      classification, for two distinct, explainable, quantified reasons.
+- [ ] **Decide whether to adopt the "topology as confidence map" framing
+      for the MLB section** (see docs/DISCOVERY_FINDINGS.md) — this is
+      now the recommended option, needs no pipeline changes, just deck
+      language once presentation work resumes.
 - [ ] Once that's decided, revisit the remaining methodology holes in
       docs/METHODOLOGY_REVIEW.md (circular spin_axis treated as linear,
       hard nearest-centroid assignment vs. Mapper's multi-membership
