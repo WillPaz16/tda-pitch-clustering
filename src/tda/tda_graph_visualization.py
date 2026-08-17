@@ -13,9 +13,7 @@ import numpy as np
 import pandas as pd
 import networkx as nx
 import json
-from scipy.spatial.distance import pdist, squareform
 import plotly.graph_objects as go
-from sklearn.preprocessing import StandardScaler
 
 _ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
@@ -23,7 +21,7 @@ _DEFAULT_DATA_DIR = _ROOT / 'data'
 _DEFAULT_RESULTS_DIR = _ROOT / 'results'
 
 
-def load_tda_model(model_path='tda_mapper_model.pkl'):
+def load_tda_model(model_path=_DEFAULT_MODEL_PATH):
     """Load the fitted TDA mapper model."""
     with open(model_path, 'rb') as f:
         model_components = pickle.load(f)

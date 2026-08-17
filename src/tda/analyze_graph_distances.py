@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 import networkx as nx
 import numpy as np
-from collections import defaultdict
 
 _DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 

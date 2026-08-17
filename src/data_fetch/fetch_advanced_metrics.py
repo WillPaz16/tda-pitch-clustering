@@ -5,7 +5,6 @@ Fetch advanced Statcast metrics from Baseball Savant.
 
 import requests
 import csv
-import time
 from pathlib import Path
 
 _DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'

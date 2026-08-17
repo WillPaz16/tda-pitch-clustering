@@ -10,7 +10,6 @@ statcast types miss, making clusters more predictive of pitcher success.
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from scipy import stats
 import glob
 from pathlib import Path
@@ -74,10 +73,10 @@ def analyze_variance_by_statcast_type(data):
         })
 
         print(f"\n{ptype} (n={n_samples}):")
-        print(".2f")
-        print(".2f")
-        print(".2f")
-        print(".3f")
+        print(f"  Mean Stuff+: {mean_rating:.2f}")
+        print(f"  Std Dev: {std_dev:.2f}")
+        print(f"  Variance: {variance:.2f}")
+        print(f"  CV: {results[-1]['cv']:.3f}")
 
     results_df = pd.DataFrame(results)
 
@@ -122,10 +121,10 @@ def analyze_variance_by_cluster(data):
         })
 
         print(f"\nCluster {cluster_id} (n={n_samples}):")
-        print(".2f")
-        print(".2f")
-        print(".2f")
-        print(".3f")
+        print(f"  Mean Stuff+: {mean_rating:.2f}")
+        print(f"  Std Dev: {std_dev:.2f}")
+        print(f"  Variance: {variance:.2f}")
+        print(f"  CV: {results[-1]['cv']:.3f}")
 
     results_df = pd.DataFrame(results)
 

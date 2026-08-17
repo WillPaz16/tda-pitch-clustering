@@ -4,11 +4,8 @@ Fetch real Statcast data using MLB Stats API directly for advanced metrics.
 """
 
 import requests
-import json
 import csv
-import time
 from pathlib import Path
-from datetime import datetime, timedelta
 
 _DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 

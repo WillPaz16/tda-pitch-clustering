@@ -5,7 +5,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from pybaseball.statcast import statcast
-from pybaseball import statcast_pitcher_expected_stats
 from pybaseball import bwar_pitch
 from stuff_plus_calculator import StuffPlusCalculator
 

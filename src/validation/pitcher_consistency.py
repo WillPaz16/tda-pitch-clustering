@@ -7,7 +7,6 @@ Measures delivery repeatability and identifies high-variance pitchers.
 import warnings
 warnings.filterwarnings("ignore")
 
-import pandas as pd
 import numpy as np
 from pathlib import Path
 import csv

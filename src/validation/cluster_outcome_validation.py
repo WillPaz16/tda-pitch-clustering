@@ -9,12 +9,9 @@ This script performs the entire experiment:
 """
 
 import requests
-import json
 import csv
-import time
 import math
 from pathlib import Path
-from datetime import datetime, timedelta
 from collections import defaultdict
 import glob
 import warnings

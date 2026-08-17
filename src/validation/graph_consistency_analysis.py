@@ -9,7 +9,6 @@ determine the "center" cluster, then penalize pitches based on graph distance fr
 import csv
 from pathlib import Path
 import numpy as np
-import json
 from collections import defaultdict
 import math
 

@@ -3,9 +3,7 @@
 Calculate advanced metrics from real Statcast data and integrate with pitch clusters.
 """
 
-import pandas as pd
 import csv
-import json
 from pathlib import Path
 from collections import defaultdict
 

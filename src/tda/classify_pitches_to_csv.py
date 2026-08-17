@@ -292,13 +292,3 @@ SAMPLE USAGE:
 
 if __name__ == '__main__':
     main()
-
-
-# ============================================================================
-# QUICK START EXAMPLES - Uncomment any to run directly
-# ============================================================================
-
-# Example 1: Default run (Sept 15, 2025)
-if __name__ == '__main__':
-    model = load_model('tda_mapper_model.pkl')
-    result = process_statcast_data('2025-03-28', '2025-11-04', model)
