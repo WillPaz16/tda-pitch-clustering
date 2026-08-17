@@ -6,6 +6,27 @@ before any "discovery" work (finding an actual interpretable topological
 result) so the open questions are on record first. Nothing in the
 pipeline has been changed as a result of this review yet.
 
+## Why continuous features instead of pitch-type labels — quantified
+
+Motivating point from the user (2026-08-17, not just an anecdote —
+checked against this dataset directly): pitch-type tags conflate
+pitchers whose actual stuff is nothing alike. E.g. a max-effort closer's
+"four-seam fastball" and a soft-tossing starter's "four-seam fastball"
+share a label but not much else physically. In this dataset: archetypes
+labeled `FF` (four-seam) alone span **79.3–101.2 mph**, a 21.9 mph range
+under one label. `SL` (slider) is worse — **34.1–94.2 mph**, a 60.1 mph
+spread. That's the concrete numeric version of the motivating claim for
+using continuous physical features (and topology) instead of validating
+against or relying on pitch-type labels: the labels themselves don't
+reliably separate physically distinct pitches, so a method that ignores
+them and clusters on raw movement/velocity/spin is doing something a
+label-based approach structurally cannot. This is also the flip side of
+the slider/cutter bridge finding in docs/DISCOVERY_FINDINGS.md — labels
+both over-split (Chapman's and Manaea's fastballs share a label but
+aren't the same pitch) and under-split (many real sliders and cutters
+are the same shape wearing different labels) relative to what the
+physical features actually show.
+
 ## The central objection
 
 The deck's first 45 minutes builds up nerves, simplicial complexes,
@@ -56,6 +77,27 @@ the "discovery" work to do next.
    circle topology — a real metric-space violation, not just a nitpick,
    given how much the deck emphasizes getting topological definitions
    precise.
+
+   **Checked directly (2026-08-17), not just asserted** — see
+   `src/tda/spin_axis_circularity_check.py`. Two results: (a) only 20 of
+   3,932 training archetypes (0.5%) sit within 20° of the 0/360
+   wraparound, and none of the 57 fitted clusters have their reported
+   centroid meaningfully distorted by naively averaging across that
+   boundary (largest discrepancy between the naive arithmetic mean and
+   the true circular mean was under 10° for every cluster) — so this
+   isn't corrupting the fitted model's cluster centroids in practice.
+   (b) But it does change real classification decisions at the margin:
+   re-encoding `spin_axis` as `(cos, sin)` and refitting an equivalent
+   scaler flips the nearest-cluster assignment for **3 of the 20
+   near-wraparound points (15%)**, including both points closest to the
+   exact seam (354.0° and 354.5°) — exactly what the theory predicts.
+   Small in absolute count (3 of 3,932), but a real, verified,
+   nonzero effect, not a hypothetical one, and it lands on already-rare
+   pitch types (curveball, knuckleball). Worth fixing for full
+   correctness — the fix is a small, contained change to the feature
+   encoding in the training notebook and any script computing distance
+   to cluster centroids — but not a source of the larger anomalies
+   found during the discovery pass (see docs/DISCOVERY_FINDINGS.md).
 
 3. **Hard nearest-centroid assignment contradicts the theory being
    presented.** True Mapper allows a point to belong to multiple

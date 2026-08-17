@@ -192,8 +192,17 @@ Rough target for an hour-long talk (fine to run over/under):
       language once presentation work resumes. The slider/cutter bridge
       finding and the named-pitcher repertoire-overlap validation are
       strong complementary talking points alongside it.
-- [ ] Once that's decided, revisit the remaining methodology holes in
-      docs/METHODOLOGY_REVIEW.md (circular spin_axis treated as linear,
-      hard nearest-centroid assignment vs. Mapper's multi-membership
-      theory, Stuff+ leakage, fixed vs. per-pitch strike zone,
+- [x] Checked the circular-`spin_axis`-treated-as-linear hole — see
+      `src/tda/spin_axis_circularity_check.py` and
+      docs/METHODOLOGY_REVIEW.md item 2. Verified, not just asserted:
+      only 0.5% of training archetypes sit near the 0/360 wraparound and
+      no fitted cluster's centroid is meaningfully distorted by it, but
+      re-encoding `spin_axis` circularly does flip the nearest-cluster
+      assignment for 3 of 20 near-wraparound points (15%) — small in
+      absolute count, real and nonzero, worth fixing for correctness but
+      not a driver of the bigger anomalies found in the discovery pass.
+- [ ] Once the MLB-section framing is decided, revisit the remaining
+      methodology holes in docs/METHODOLOGY_REVIEW.md (hard
+      nearest-centroid assignment vs. Mapper's multi-membership theory,
+      Stuff+ leakage, fixed vs. per-pitch strike zone,
       multiple-comparisons correction)
