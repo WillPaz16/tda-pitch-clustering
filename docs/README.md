@@ -1,19 +1,32 @@
-# xwOBA baseline training
+# TDA Pitch Clustering
 
-Run a quick CatBoost baseline to predict `xwOBA` from your pitch dataset.
+Graduate thesis project combining the Mapper algorithm (Topological Data
+Analysis) with a CatBoost-based Stuff+ model to study MLB pitch quality
+and outcomes. See [CLAUDE.md](../CLAUDE.md) at the project root for
+current status and next steps, [REORG_NOTES.md](REORG_NOTES.md) for the
+codebase layout, and [METHODOLOGY_REVIEW.md](METHODOLOGY_REVIEW.md) for a
+critical review of the pipeline logic.
 
-Install dependencies:
+## Setup
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-Train:
+## Layout
 
-```bash
-python train_xwoba.py --data path/to/your_data.csv --target xwOBA --out models/xwoba_baseline.cbm
-```
+- `src/tda/` — TDA/Mapper clustering pipeline (core methodology)
+- `src/stuffplus/` — Stuff+ / xwOBA CatBoost modeling
+- `src/validation/` — pitcher consistency, variance, ANOVA, predictive comparisons
+- `src/data_fetch/` — Statcast/Savant data pulling and integration
+- `notebooks/` — model-building notebooks (TDA Mapper fit, Pro Stuff+, College Stuff+)
+- `models/`, `data/`, `results/` — trained model artifacts, CSV/JSON data, and figures/visualizations
+- `docs/` — this file, methodology notes, and the presentation source
 
-Notes:
-- The script will auto-select common pitch features if present. Edit `train_xwoba.py` to customize features.
-- For production, replace the random split with a time-based or grouped split.
+## Pipeline order
+
+1. `notebooks/TDA_Pitch_Clustering.ipynb` — fits the Mapper model on a season of Statcast data, saves `models/tda_mapper_model.pkl`.
+2. `notebooks/ProStuff+.ipynb` / `CollegeStuff+.ipynb` — train the xwOBA/miss/chase CatBoost models and compute pitcher-level Stuff+.
+3. `src/tda/classify_pitches_to_csv.py` or `src/tda/assign_pitch_stuffplus_clusters.py` — assign new pitches to existing clusters (and Stuff+, in the latter) via nearest-centroid distance. See [CLASSIFY_PITCHES_README.md](CLASSIFY_PITCHES_README.md).
+4. `src/tda/tda_graph_visualization.py` — builds the cluster graph visualization.
+5. `src/validation/*.py` — consistency, variance, and predictive validation of the resulting clusters against outcomes.

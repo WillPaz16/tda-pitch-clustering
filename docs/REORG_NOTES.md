@@ -30,20 +30,24 @@ Flat directory reorganized into a standard research-repo layout. Baseline
 - `src/validation/cluster_outcome_validation.py` subsumes `fetch_real_statcast_new.py` + `integrate_real_data.py` + `anova_real_data.py` as an all-in-one script. Kept as a possible end-to-end reproduction entry point — not deleted.
 - `src/tda/classify_pitches_to_csv.py` vs `src/tda/assign_pitch_stuffplus_clusters.py` — different scope (classify-only vs classify+Stuff+ combined), both kept.
 
-## Known pre-existing bug (not touched — flagged, not fixed)
-`src/data_fetch/fetch_advanced_metrics.py` has a syntax error: orphaned code
-after the `if __name__ == "__main__": main()` block (lines ~120+), leftover
-from an editing mistake predating this reorg. It does not currently run.
-Needs a decision on whether that trailing fragment belongs to a missing
-function or should just be deleted.
+## Resolved since this reorg
+- **`fetch_advanced_metrics.py` syntax error** — fixed. The file was two
+  script drafts pasted together; the second one referenced an undefined
+  function (`fetch_statcast_data_directly`) and undefined `base_url`. The
+  dead trailing fragment was removed; the working script is the whole
+  file now.
+- **Notebook paths** — fixed. All 3 notebooks now have a path-setup cell
+  (`ROOT_DIR`/`MODELS_DIR`/`DATA_DIR`/`RESULTS_DIR` resolved via
+  `Path.cwd()`) and every model/data save-load/read/write call points at
+  those instead of bare flat-layout filenames.
+- **Dead imports, a broken debug-print bug, and a dead duplicate
+  `if __name__ == '__main__':` block** in `classify_pitches_to_csv.py`
+  (which silently re-ran a full-season fetch after the real CLI entry
+  point finished) — all cleaned up. See git log for the code-hygiene
+  commit.
 
-## Known follow-up: notebooks still assume old flat-layout paths
-`notebooks/*.ipynb` load/save models and CSVs using bare filenames (e.g.
-`'tda_mapper_model.pkl'`, `'chase_model.cbm'`) that assumed the working
-directory was the old project root. They were NOT edited as part of this
-pass (safer to update inside Jupyter directly). When next opened, either:
-- run them from the repo root and update paths to `models/...`, `data/...`, or
-- add a path-setup cell at the top pointing to the new `models/`/`data/mappings/` locations.
+See [docs/METHODOLOGY_REVIEW.md](METHODOLOGY_REVIEW.md) for a separate,
+later review of the actual pipeline logic/statistics (not code hygiene).
 
 ## Scripts updated to use path-independent defaults
 All moved `.py` scripts now compute a `_ROOT`/`_DEFAULT_DATA_DIR`/etc. via

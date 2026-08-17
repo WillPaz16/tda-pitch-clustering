@@ -4,34 +4,34 @@ This script classifies individual pitches from Statcast data into TDA-discovered
 
 ## Prerequisites
 
-- TDA model file: `tda_mapper_model.pkl` (created from the notebook)
+- TDA model file: `models/tda_mapper_model.pkl` (created by `notebooks/TDA_Pitch_Clustering.ipynb`; found automatically by default)
 - Python packages: pandas, numpy, sklearn, pybaseball
 
 ## Quick Start
 
 ### Default Run (Sept 15, 2025)
 ```bash
-python classify_pitches_to_csv.py
+python src/tda/classify_pitches_to_csv.py
 ```
 
 ### Classify Specific Date
 ```bash
-python classify_pitches_to_csv.py 2025-09-20 2025-09-20
+python src/tda/classify_pitches_to_csv.py 2025-09-20 2025-09-20
 ```
 
 ### Classify Date Range
 ```bash
-python classify_pitches_to_csv.py 2025-09-10 2025-09-20
+python src/tda/classify_pitches_to_csv.py 2025-09-10 2025-09-20
 ```
 
 ### Specify Output File
 ```bash
-python classify_pitches_to_csv.py 2025-09-15 2025-09-15 -o my_pitches.csv
+python src/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15 -o my_pitches.csv
 ```
 
 ### Use Custom Model Path
 ```bash
-python classify_pitches_to_csv.py 2025-09-15 2025-09-15 -m /path/to/tda_mapper_model.pkl
+python src/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15 -m /path/to/tda_mapper_model.pkl
 ```
 
 ## Output CSV Columns
@@ -80,8 +80,8 @@ The output CSV contains the following columns for each pitch:
 
 ### Run for single day:
 ```bash
-$ python classify_pitches_to_csv.py 2025-09-15 2025-09-15
-Loading model from tda_mapper_model.pkl...
+$ python src/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15
+Loading model from /path/to/models/tda_mapper_model.pkl...
 Model loaded successfully
 
 Querying Statcast data from 2025-09-15 to 2025-09-15...
@@ -90,8 +90,8 @@ Preparing 2739 pitches for classification...
 Classifying pitches into clusters...
   Note: Dropped 10 pitches with missing data
 
-Saving 2729 classified pitches to classified_pitches_2025-09-15_2025-09-15.csv...
-Successfully saved to classified_pitches_2025-09-15_2025-09-15.csv
+Saving 2729 classified pitches to /path/to/data/classified_pitches_2025-09-15_2025-09-15.csv...
+Successfully saved to /path/to/data/classified_pitches_2025-09-15_2025-09-15.csv
 
 ============================================================
 CLASSIFICATION SUMMARY

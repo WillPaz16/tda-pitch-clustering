@@ -3,7 +3,11 @@
 TDA Pitch Clustering — Will Paz's graduate thesis. Combines the Mapper
 algorithm (Topological Data Analysis) with a CatBoost-based Stuff+ model to
 study MLB pitch quality and outcomes. See [docs/REORG_NOTES.md](docs/REORG_NOTES.md)
-for the codebase layout and reorganization history.
+for the codebase layout and reorganization history, and
+[docs/METHODOLOGY_REVIEW.md](docs/METHODOLOGY_REVIEW.md) for a critical
+review of the pipeline logic (mismatches, statistical holes, and what's
+genuinely solid) written 2026-08-17, before any methodology changes were
+made.
 
 Thesis defense/talk is a few months out (as of 2026-08-17). Presentation
 source lives in `docs/presentation/` (`main.tex` — paper skeleton with
@@ -112,3 +116,15 @@ Rough target for an hour-long talk (fine to run over/under):
       (TDA mapper graph, Stuff+ model, pitcher consistency/variance
       findings)
 - [ ] Rebalance timing to roughly 15/30/15 minutes per the advisor's split
+- [ ] Do the "discovery" pass on the actual Mapper graph output (loops,
+      branch points, connectivity) to find an interpretable topological
+      finding — see the central objection in
+      [docs/METHODOLOGY_REVIEW.md](docs/METHODOLOGY_REVIEW.md): right now
+      the pipeline uses `cluster_id` like a flat clustering label and the
+      graph structure itself isn't doing much scientific work. This is
+      the next planned work, before any code/methodology changes.
+- [ ] Once a topological finding (or reframing decision) exists, revisit
+      the methodology holes in docs/METHODOLOGY_REVIEW.md (feature-space
+      mismatch between fit and inference, circular spin_axis treated as
+      linear, hard nearest-centroid assignment, Stuff+ leakage, fixed vs.
+      per-pitch strike zone, multiple-comparisons correction)
