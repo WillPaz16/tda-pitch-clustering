@@ -175,6 +175,47 @@ and — usefully — both are visible directly from the graph's topology
 (degree and component size) without needing to separately audit sample
 sizes or rerun classification for every cluster by hand.
 
+## Crowded-continuum ambiguity — checked directly, not assumed
+
+The correlation check above showed the crowded, high-degree hub clusters
+have the lowest ground-truth self-consistency. On its own that's
+ambiguous: it could mean genuine boundary blending in a real continuum
+(benign, expected), or it could mean those training points don't
+actually belong near their assigned centroid at all (more concerning).
+Rather than assume which, checked directly, against the full population
+of ground-truth misroutes across the whole graph (4,315 misroutes, not a
+sample), reproducible via `src/tda/crowded_continuum_analysis.py`:
+
+- **93.8% of misroutes land on a graph-adjacent cluster** — an edge
+  actually exists between the origin and the reassigned cluster in the
+  fitted Mapper graph. Only 6.2% jump to a non-adjacent cluster.
+- **Margins are small.** The gap between "distance to the point's own
+  cluster centroid" and "distance to the reassigned cluster's centroid,"
+  normalized by the typical (median) centroid-to-centroid distance
+  across the whole graph, has a median of 0.072 and a 75th percentile of
+  0.134 — most misroutes are close calls, not wild jumps.
+
+**This is a verified result, checked against the full misroute
+population**, and it supports the benign interpretation: the low
+self-consistency in crowded hub clusters mostly reflects genuine
+boundary blending between adjacent, similar archetypes — exactly what
+`perc_overlap` in the Mapper cover is designed to produce — not points
+that don't belong near their assigned centroid. A hard nearest-centroid
+label forced onto a naturally graded, continuous region will always
+produce some ambiguity at the boundaries; that's a property of the
+region being genuinely continuous, not a modeling failure.
+
+**One unverified observation, flagged as such, not a claim:** the
+worst-margin misroutes cluster heavily around a few specific destination
+nodes (`cube59_cluster1`, `cube62_cluster2`, `cube62_cluster3`), which
+repeatedly "pull" points from several different large neighboring hubs.
+That could mean those nodes sit at a genuine convergence point in the
+continuum — but this was noticed by inspecting the top-15 worst-margin
+table, not tested systematically, so it should not be presented as a
+finding without a further check (e.g. whether those nodes have unusually
+high betweenness centrality, or unusually many distinct large neighbors,
+compared to other nodes of similar degree).
+
 ## Practical implications
 
 - The outlier-disconnection finding is **real in the fitted graph** (the
