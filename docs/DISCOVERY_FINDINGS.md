@@ -246,6 +246,67 @@ ranking, not an eyeballed pattern) and independently sensible in
 baseball terms — the two checks corroborate each other rather than one
 being taken on faith.
 
+## Named-pitcher repertoire overlap — the R&D-actionable version
+
+The betweenness finding says a *region* of stuff-space is ambiguous.
+The player-development-relevant question is: which real pitchers'
+*actual* pitches sit there, and does the topology say anything about
+their specific repertoires? Checked directly against the full training
+data (3,932 pitcher-pitch-type archetypes, all real 2025 pitchers,
+identified by MLBAM `pitcher_id` — name resolution via
+`pybaseball.playerid_reverse_lookup()` wasn't available in this
+environment, a Chadwick-register parsing issue unrelated to this
+analysis; IDs can be cross-referenced manually on Baseball Savant).
+Reproducible via `src/tda/pitcher_repertoire_overlap.py`.
+
+One subtlety had to be handled carefully first: a single archetype can
+legitimately be a member of multiple *overlapping* Mapper cover cells at
+once — that's the cover's `perc_overlap` parameter working as designed,
+not two different pitches. The first pass at this script conflated that
+with genuine repertoire overlap and overcounted; fixed by deduplicating
+to distinct pitch-type labels per pitcher before counting anything as
+"two different pitches converging."
+
+**After that fix: 156 real pitchers have two (or more) differently
+labeled pitch types both landing in the verified slider/cutter bridge
+region** (out of 546 pitchers with any pitch there at all) — most
+commonly a labeled slider (SL) and a labeled cutter (FC) sitting in the
+same or adjacent nodes, occasionally with a curveball (CU), sweeper
+(ST), or four-seamer (FF) in the mix. For those pitchers specifically,
+their own two "different" pitches are, by this model's continuous
+stuff-features, not clearly differentiated in movement/velocity space —
+independent of what Statcast's own auto-labeling calls them.
+
+**Extending this check across the whole graph** (not just the bridge
+region) surfaces something that reads as a genuine validation of the
+whole approach: the most common overlapping pitch-type pairs are
+(FF, SI) 492 times, (CH, FF) 424, (CH, SI) 335, (FC, FF) 179, (FC, SI)
+140, (FF, FS) 122, (CU, ST) 110, (SL, ST) 77, (CH, FC) 73, (CU, SL) 55 —
+and every one of those pairs (four-seam/sinker, changeup/fastball,
+cutter/four-seam, curveball/sweeper, slider/sweeper) is a well-known
+source of real ambiguity in pitch classification within the baseball
+industry itself. Statcast's own automated pitch-type labeler has
+publicly documented difficulty distinguishing sweepers from curveballs
+and sliders, and cutters from four-seamers, for exactly the pitchers
+whose shapes sit at that boundary. **The model recovered those same
+ambiguous boundaries independently, from raw physical measurements
+alone, with no pitch-type label ever given to it.** That's a legitimate,
+checkable form of validation — if the topology only agreed with
+labels where labeling is easy and disagreed randomly everywhere else,
+that would undercut the method; instead it disagrees exactly where the
+industry's own labeling systems disagree.
+
+**The actionable, R&D-flavored framing:** for a specific pitcher on this
+list, this isn't just "their slider and cutter are similar" as an
+abstract fact — it's a concrete pitch-design/scouting question. Is the
+overlap a problem (the two pitches aren't functionally distinct, one may
+be redundant or worth consolidating/differentiating further) or an asset
+(deliberately blurred shapes create deception, the batter can't
+distinguish them out of hand)? The topology can't answer which on its
+own, but it gives a principled, data-driven starting list of exactly
+which pitchers and pitch pairs are worth that conversation — instead of
+a scout or analyst having to notice it by eye on a movement plot.
+
 ## Practical implications
 
 - The outlier-disconnection finding is **real in the fitted graph** (the

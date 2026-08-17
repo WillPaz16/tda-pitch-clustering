@@ -171,11 +171,27 @@ Rough target for an hour-long talk (fine to run over/under):
       "bridge" pitches between fastball and breaking-ball families. This
       is independently corroborated by both the network statistic and
       real domain knowledge — a strong, presentable, verified finding.
+- [x] Checked the R&D-actionable version of the bridge finding — see
+      `src/tda/pitcher_repertoire_overlap.py` and DISCOVERY_FINDINGS.md's
+      "Named-pitcher repertoire overlap" section. 156 real pitchers (of
+      3,932 in the training data, IDs only — name resolution unavailable
+      in this environment) have two differently-labeled pitches (mostly
+      SL/FC) both landing in the verified bridge region. More
+      importantly: extending the check graph-wide, the most commonly
+      overlapping pitch-type-label pairs (FF/SI, CH/FF, FC/FF, CU/ST,
+      SL/ST) are exactly the pairs the baseball industry's own automated
+      pitch classifiers are known to struggle distinguishing — the model
+      recovered that ambiguity independently from raw physical
+      measurements, with no labels given. This is a real validation of
+      the whole approach and gives a concrete, actionable framing:
+      specific pitchers whose "two different" pitches may not be
+      functionally distinct, worth a real pitch-design conversation.
 - [ ] **Decide whether to adopt the "topology as confidence map" framing
       for the MLB section** (see docs/DISCOVERY_FINDINGS.md) — this is
       now the recommended option, needs no pipeline changes, just deck
       language once presentation work resumes. The slider/cutter bridge
-      finding above is a strong complementary talking point alongside it.
+      finding and the named-pitcher repertoire-overlap validation are
+      strong complementary talking points alongside it.
 - [ ] Once that's decided, revisit the remaining methodology holes in
       docs/METHODOLOGY_REVIEW.md (circular spin_axis treated as linear,
       hard nearest-centroid assignment vs. Mapper's multi-membership
