@@ -1,0 +1,72 @@
+
+% ===============================================
+% Graduate Project     2026
+% main.tex
+% Template for homework submission
+% ===============================================
+
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{enumitem} % Required for custom list labels
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{tikz-cd}
+\usepackage{algorithmic}
+
+\newcommand{\R}{\mathbb{R}}  
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\begin{document}
+
+% ------------------------------------------ %
+%                 START HERE                 %
+% ------------------------------------------ %
+
+\title{The Intersection of Topological Data Analysis’s Mapper Algorithm and Gradient-Boosted Decision Tree Pitch-Level MLB Data} % Replace X with the appropriate number
+\author{Will Paz} % Replace "Author's Name" with your name
+
+\maketitle
+
+% -----------------------------------------------------
+% The following two environments (theorem, proof) are
+% where you will enter the statement and proof of your
+% first problem for this assignment.
+%
+% In the theorem environment, you can replace the word
+% "theorem" in the \begin and \end commands with
+% "exercise", "problem", "lemma", etc., depending on
+% what you are submitting. Replace the "x.yz" with the
+% appropriate number for your problem.
+%
+% If your problem does not involve a formal proof, you
+% can change the word "proof" in the \begin and \end
+% commands with "solution".
+% -----------------------------------------------------
+
+\begin{abstract}
+Major League Baseball pitch-level data are high-dimensional and intrinsically nonlinear, motivating methods that capture both geometric structure and predictive relationships. This project combines Topological Data Analysis (TDA), via the Mapper algorithm, with gradient-boosted decision trees to study pitch outcomes and pitch quality. Given a dataset $X$ of pitch-level observations in a high-dimensional feature space (velocity, spin rate, movement, and related variables), Mapper constructs a simplicial approximation of the data by selecting a filter function $f : X \to \mathbb{R}^k$, covering $f(X)$ with overlapping sets ${U_i}$, and clustering the pullbacks $f^{-1}(U_i)$. The resulting nerve-like graph encodes connectivity through nonempty intersections of clustered preimages, yielding a multiscale representation of the data’s topology. In parallel, a gradient-boosted decision tree model (CatBoost) is trained to learn a continuous pitch quality metric (Stuff+) by minimizing a differentiable loss over nonlinear feature interactions. The resulting predictions are mapped onto the Mapper graph to analyze how regions of the learned feature space correspond to variation in pitch effectiveness. This framework links topological structure with supervised learning, enabling simultaneous analysis of the geometry of pitch data and its predictive structure.
+
+\end{abstract}
+
+
+\end{document}
