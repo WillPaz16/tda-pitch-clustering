@@ -1,12 +1,15 @@
 import warnings
 warnings.filterwarnings("ignore")
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from pybaseball.statcast import statcast
 from pybaseball import statcast_pitcher_expected_stats
 from pybaseball import bwar_pitch
 from stuff_plus_calculator import StuffPlusCalculator
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 
 def load_statcast_2025(start_date="2025-03-28", end_date="2025-11-04"):
@@ -261,7 +264,7 @@ def main():
     pitcher_results = pitcher_results.merge(
         war_df, left_on="pitcher_norm", right_on="Name_norm", how="left"
     )
-    pitcher_results.to_csv("stuff_plus_constrained_war_2025_min10.csv", index=False)
+    pitcher_results.to_csv(_DEFAULT_DATA_DIR / "stuff_plus_constrained_war_2025_min10.csv", index=False)
     print("Saved constrained results to stuff_plus_constrained_war_2025_min10.csv")
 
 

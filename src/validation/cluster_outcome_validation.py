@@ -13,11 +13,14 @@ import json
 import csv
 import time
 import math
+from pathlib import Path
 from datetime import datetime, timedelta
 from collections import defaultdict
 import glob
 import warnings
 warnings.filterwarnings('ignore')
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 # =============================================================================
 # PART 1: FETCH REAL STATCAST DATA FROM MLB API
@@ -184,7 +187,7 @@ def calculate_advanced_metrics(statcast_data):
 def load_pitch_clusters():
     """Load the classified pitches with cluster assignments."""
     print("Loading pitch cluster data...")
-    cluster_files = glob.glob('classified_pitches_*.csv')
+    cluster_files = glob.glob(str(_DEFAULT_DATA_DIR / 'classified_pitches_*.csv'))
     if not cluster_files:
         print("No classified pitches file found")
         return None
@@ -405,7 +408,7 @@ def load_pitch_data():
     """Load all classified pitch data using pure Python."""
     import csv
 
-    pitch_files = glob.glob('classified_pitches_*.csv')
+    pitch_files = glob.glob(str(_DEFAULT_DATA_DIR / 'classified_pitches_*.csv'))
     all_data = []
 
     for file in pitch_files:
@@ -788,7 +791,7 @@ def main():
         return
 
     # Save raw data
-    output_file = 'real_statcast_data_april_2025.csv'
+    output_file = str(_DEFAULT_DATA_DIR / 'real_statcast_data_april_2025.csv')
     with open(output_file, 'w', newline='') as f:
         if statcast_data:
             fieldnames = set()
@@ -813,7 +816,7 @@ def main():
     integrated_data = integrate_with_clusters(metrics_data, clusters_data)
 
     # Save integrated data
-    with open('integrated_real_data.csv', 'w', newline='') as f:
+    with open(_DEFAULT_DATA_DIR / 'integrated_real_data.csv', 'w', newline='') as f:
         if integrated_data:
             writer = csv.DictWriter(f, fieldnames=integrated_data[0].keys())
             writer.writeheader()
@@ -824,7 +827,7 @@ def main():
     results = perform_comprehensive_anova(integrated_data)
 
     # Save ANOVA results
-    output_file = 'anova_results_fastball_clusters_only.csv'
+    output_file = str(_DEFAULT_DATA_DIR / 'anova_results_fastball_clusters_only.csv')
     with open(output_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['metric', 'f_statistic', 'p_value', 'significant', 'sample_sizes'])

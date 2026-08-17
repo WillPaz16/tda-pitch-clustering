@@ -7,10 +7,13 @@ determine the "center" cluster, then penalize pitches based on graph distance fr
 """
 
 import csv
+from pathlib import Path
 import numpy as np
 import json
 from collections import defaultdict
 import math
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 def load_csv_safe(csv_file):
     """Load CSV data safely."""
@@ -147,7 +150,7 @@ def calculate_graph_consistency_score(pitches, center_cluster, penalty_function=
 
     return consistency_score
 
-def analyze_pitcher_graph_consistency(csv_file='pitch_stuffplus_clusters.csv'):
+def analyze_pitcher_graph_consistency(csv_file=str(_DEFAULT_DATA_DIR / 'pitch_stuffplus_clusters.csv')):
     """
     Main analysis function implementing graph-based consistency scoring.
     """

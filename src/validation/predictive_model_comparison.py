@@ -19,13 +19,18 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 import glob
+from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
+
+_ROOT = Path(__file__).resolve().parents[2]
+_DATA_DIR = _ROOT / 'data'
+_MODELS_DIR = _ROOT / 'models'
 
 def load_all_data():
     """Load pitch data and pitcher success metrics."""
     # Load pitches
-    pitch_files = glob.glob('classified_pitches_*.csv')
+    pitch_files = glob.glob(str(_DATA_DIR / 'classified_pitches_*.csv'))
     dfs = []
     for file in pitch_files:
         try:
@@ -42,7 +47,7 @@ def load_all_data():
     bref_df = bref_df[bref_df['IP'] >= 50]  # Qualified pitchers
     
     # Load Stuff+ for additional context
-    stuff_df = pd.read_csv('models/stuff_plus_pitcher_level.csv')
+    stuff_df = pd.read_csv(_MODELS_DIR / 'stuff_plus_pitcher_level.csv')
     stuff_df['pitcher_id'] = stuff_df['pitcher'].astype(str)
     
     return pitch_data, bref_df, stuff_df
@@ -91,7 +96,7 @@ def create_cluster_features(pitch_data, bref_df):
     
     # Load Stuff+ for quality metrics
     try:
-        stuff_df = pd.read_csv('models/stuff_plus_pitcher_level.csv')
+        stuff_df = pd.read_csv(_MODELS_DIR / 'stuff_plus_pitcher_level.csv')
         stuff_df['pitcher_id'] = stuff_df['pitcher'].astype(str)
         stuff_dict = dict(zip(stuff_df['pitcher_id'], stuff_df['stuff_plus_overall']))
     except:

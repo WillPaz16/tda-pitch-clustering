@@ -6,14 +6,17 @@ Calculate advanced metrics from real Statcast data and integrate with pitch clus
 import pandas as pd
 import csv
 import json
+from pathlib import Path
 from collections import defaultdict
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 def load_statcast_data():
     """Load the real Statcast data we retrieved."""
     print("Loading real Statcast data...")
     try:
         data = []
-        with open('real_statcast_data_april_2023.csv', 'r') as f:  # Use the full month data
+        with open(_DEFAULT_DATA_DIR / 'real_statcast_data_april_2023.csv', 'r') as f:  # Use the full month data
             reader = csv.DictReader(f)
             for row in reader:
                 data.append(row)
@@ -27,7 +30,7 @@ def load_pitch_clusters():
     """Load the classified pitches with cluster assignments."""
     print("Loading pitch cluster data...")
     import glob
-    cluster_files = glob.glob('classified_pitches_*.csv')
+    cluster_files = glob.glob(str(_DEFAULT_DATA_DIR / 'classified_pitches_*.csv'))
     if not cluster_files:
         print("No classified pitches file found")
         return None
@@ -215,12 +218,12 @@ def perform_real_data_analysis(integrated_data):
         print(f"{result['cluster']:7} | {result['whiff_percent_mean']:6.1f} | {result['chase_percent_mean']:6.1f} | {result['groundball_percent_mean']:4.1f} | {result['flyball_percent_mean']:4.1f} | {result['xwoba_mean']:5.3f} | {result['stuff_plus_mean']:6.1f} | {result['velocity_mean']:8.1f} | {result['sample_size']}")
 
     # Save results
-    with open('real_data_cluster_analysis.csv', 'w', newline='') as f:
+    with open(_DEFAULT_DATA_DIR / 'real_data_cluster_analysis.csv', 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=['cluster', 'whiff_percent_mean', 'chase_percent_mean', 'groundball_percent_mean', 'flyball_percent_mean', 'xwoba_mean', 'stuff_plus_mean', 'velocity_mean', 'sample_size'])
         writer.writeheader()
         writer.writerows(results)
 
-    with open('integrated_real_data.csv', 'w', newline='') as f:
+    with open(_DEFAULT_DATA_DIR / 'integrated_real_data.csv', 'w', newline='') as f:
         if integrated_data:
             writer = csv.DictWriter(f, fieldnames=integrated_data[0].keys())
             writer.writeheader()

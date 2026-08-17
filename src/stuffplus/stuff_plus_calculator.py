@@ -12,8 +12,9 @@ import joblib
 from pathlib import Path
 
 # Default settings
-DEFAULT_MODELS_DIR = 'models'
-DEFAULT_MAPPINGS_DIR = 'mappings'
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_MODELS_DIR = str(_PROJECT_ROOT / 'models')
+DEFAULT_MAPPINGS_DIR = str(_PROJECT_ROOT / 'data' / 'mappings')
 DEFAULT_MIN_PITCHES_PER_TYPE = 30
 DEFAULT_MIN_PITCHES_TOTAL = 50
 

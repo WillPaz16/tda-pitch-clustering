@@ -13,13 +13,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 import glob
+from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
+
+_ROOT = Path(__file__).resolve().parents[2]
+_DATA_DIR = _ROOT / 'data'
+_MODELS_DIR = _ROOT / 'models'
+_RESULTS_DIR = _ROOT / 'results'
 
 def load_data():
     """Load pitch data and Stuff+ ratings."""
     # Load pitches
-    pitch_files = glob.glob('classified_pitches_*.csv')
+    pitch_files = glob.glob(str(_DATA_DIR / 'classified_pitches_*.csv'))
     dfs = []
     for file in pitch_files:
         try:
@@ -30,7 +36,7 @@ def load_data():
     pitch_data = pd.concat(dfs, ignore_index=True)
 
     # Load Stuff+ data
-    stuff_df = pd.read_csv('models/stuff_plus_pitcher_level.csv')
+    stuff_df = pd.read_csv(_MODELS_DIR / 'stuff_plus_pitcher_level.csv')
     stuff_df['pitcher_id'] = stuff_df['pitcher'].astype(str)
 
     # Merge Stuff+ with pitch data
@@ -223,7 +229,7 @@ def create_visualization(statcast_results, cluster_results):
     ax4.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig('variance_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig(_RESULTS_DIR / 'variance_comparison.png', dpi=300, bbox_inches='tight')
     print("\n✓ Visualization saved as 'variance_comparison.png'")
 
 def main():

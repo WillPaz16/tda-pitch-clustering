@@ -8,6 +8,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import pickle
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import networkx as nx
@@ -15,6 +16,11 @@ import json
 from scipy.spatial.distance import pdist, squareform
 import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler
+
+_ROOT = Path(__file__).resolve().parents[2]
+_DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
+_DEFAULT_DATA_DIR = _ROOT / 'data'
+_DEFAULT_RESULTS_DIR = _ROOT / 'results'
 
 
 def load_tda_model(model_path='tda_mapper_model.pkl'):
@@ -139,7 +145,7 @@ def calculate_shortest_paths(G, start_cluster, end_cluster=None):
         }
 
 
-def create_interactive_visualization(G, cluster_summary, output_file='tda_mapper_graph.html'):
+def create_interactive_visualization(G, cluster_summary, output_file=str(_DEFAULT_RESULTS_DIR / 'tda_mapper_graph.html')):
     """
     Create an interactive Plotly visualization of the TDA mapper graph.
     
@@ -253,7 +259,7 @@ def create_interactive_visualization(G, cluster_summary, output_file='tda_mapper
     return fig
 
 
-def create_distance_matrix_csv(G, cluster_summary, output_file='cluster_distances.csv'):
+def create_distance_matrix_csv(G, cluster_summary, output_file=str(_DEFAULT_DATA_DIR / 'cluster_distances.csv')):
     """
     Export a distance matrix between all clusters as CSV.
     
@@ -311,7 +317,7 @@ def query_distances(G, cluster_ids):
 
 def main():
     print("Loading TDA mapper model...")
-    model_components = load_tda_model('tda_mapper_model.pkl')
+    model_components = load_tda_model(_DEFAULT_MODEL_PATH)
     
     print("\nBuilding cluster graph...")
     G, cluster_summary, distances = build_cluster_graph(model_components, min_correlation=0.05)
@@ -354,7 +360,7 @@ def main():
         "usage": "Use cluster IDs like 'cube52_cluster0', 'cube61_cluster1', etc."
     }
     
-    with open('cluster_query_info.json', 'w') as f:
+    with open(_DEFAULT_DATA_DIR / 'cluster_query_info.json', 'w') as f:
         json.dump(query_info, f, indent=2)
     print("Saved query info to cluster_query_info.json")
 

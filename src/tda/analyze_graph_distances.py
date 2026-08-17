@@ -1,10 +1,13 @@
 import json
+from pathlib import Path
 import networkx as nx
 import numpy as np
 from collections import defaultdict
 
+_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
+
 # Load the graph data
-with open('graph_data.json', 'r') as f:
+with open(_DATA_DIR / 'graph_data.json', 'r') as f:
     graph_data = json.load(f)
 
 # Create NetworkX graph
@@ -24,7 +27,7 @@ print(f"Connected components: {nx.number_connected_components(G)}")
 distances = dict(nx.all_pairs_shortest_path_length(G))
 
 # Save distances to file
-with open('graph_distances.json', 'w') as f:
+with open(_DATA_DIR / 'graph_distances.json', 'w') as f:
     # Convert to more readable format with node names
     named_distances = {}
     for source, targets in distances.items():

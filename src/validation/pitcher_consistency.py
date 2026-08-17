@@ -12,6 +12,8 @@ import numpy as np
 from pathlib import Path
 import csv
 
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
+
 
 def load_csv_safe(filename):
     """Load CSV file using basic Python csv module to avoid pandas issues."""
@@ -305,7 +307,7 @@ def main():
     print("PITCHER CONSISTENCY ANALYSIS")
     print("="*80)
     
-    consistency_list = generate_pitcher_consistency_report('pitch_stuffplus_clusters.csv')
+    consistency_list = generate_pitcher_consistency_report(str(_DEFAULT_DATA_DIR / 'pitch_stuffplus_clusters.csv'))
     
     # Sort by pitcher and pitch type
     consistency_list.sort(key=lambda x: (x['pitcher_id'], x['pitch_type']))
@@ -315,9 +317,9 @@ def main():
     pitchtype_summary = generate_pitch_type_summary_report(consistency_list)
     
     # Save to CSV
-    save_list_to_csv(consistency_list, 'pitcher_consistency_detailed.csv')
-    save_list_to_csv(pitcher_summary, 'pitcher_consistency_summary.csv')
-    save_list_to_csv(pitchtype_summary, 'pitch_type_consistency_summary.csv')
+    save_list_to_csv(consistency_list, str(_DEFAULT_DATA_DIR / 'pitcher_consistency_detailed.csv'))
+    save_list_to_csv(pitcher_summary, str(_DEFAULT_DATA_DIR / 'pitcher_consistency_summary.csv'))
+    save_list_to_csv(pitchtype_summary, str(_DEFAULT_DATA_DIR / 'pitch_type_consistency_summary.csv'))
     
     print("\n" + "="*80)
     print("PITCHER-LEVEL STATISTICS (averaged across pitch types)")

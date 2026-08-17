@@ -10,14 +10,22 @@ Combines:
 import warnings
 warnings.filterwarnings("ignore")
 
+import sys
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import pickle
 from pybaseball.statcast import statcast
+
+_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_ROOT / 'src' / 'stuffplus'))
 from stuff_plus_calculator import StuffPlusCalculator
 
+_DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
+_DEFAULT_DATA_DIR = _ROOT / 'data'
 
-def load_tda_model(model_path='tda_mapper_model.pkl'):
+
+def load_tda_model(model_path=_DEFAULT_MODEL_PATH):
     """Load the fitted TDA model components."""
     with open(model_path, 'rb') as f:
         model_components = pickle.load(f)
@@ -184,7 +192,7 @@ def main():
     
     # Load TDA model and prepare features
     print("Loading TDA model and assigning clusters...")
-    model_components = load_tda_model('tda_mapper_model.pkl')
+    model_components = load_tda_model(_DEFAULT_MODEL_PATH)
     
     # Prepare features for clustering
     pitch_features = prepare_pitch_features_for_clustering(df)
@@ -219,7 +227,7 @@ def main():
     output_df = pitch_with_clusters[output_columns].copy()
     
     # Save to CSV
-    output_file = "pitch_stuffplus_clusters.csv"
+    output_file = str(_DEFAULT_DATA_DIR / "pitch_stuffplus_clusters.csv")
     output_df.to_csv(output_file, index=False)
     print(f"Saved {len(output_df)} pitches with Stuff+ and cluster assignments to {output_file}")
     

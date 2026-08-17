@@ -7,11 +7,14 @@ for individual pitchers. Helps understand delivery consistency and pitch cluster
 """
 
 import csv
+from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict
 import warnings
 warnings.filterwarnings('ignore')
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 # Set style
 plt.style.use('default')
@@ -245,7 +248,7 @@ def plot_consistency_comparison(pitcher_data, pitcher_id, save_path=None):
     else:
         plt.show()
 
-def analyze_pitcher(pitcher_id, csv_file='pitch_stuffplus_clusters.csv'):
+def analyze_pitcher(pitcher_id, csv_file=str(_DEFAULT_DATA_DIR / 'pitch_stuffplus_clusters.csv')):
     """
     Main function to analyze and visualize a pitcher's cluster distributions.
     """

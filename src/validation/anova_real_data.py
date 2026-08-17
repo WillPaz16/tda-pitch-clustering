@@ -6,15 +6,18 @@ using advanced metrics (Whiff%, Chase%, GB%, FB%, xwOBA, etc.)
 
 import csv
 import math
+from pathlib import Path
 from collections import defaultdict
 # import scipy.stats as stats  # Remove scipy import
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 def load_integrated_data():
     """Load the integrated real data."""
     print("Loading integrated real data...")
     data = []
     try:
-        with open('integrated_real_data.csv', 'r') as f:
+        with open(_DEFAULT_DATA_DIR / 'integrated_real_data.csv', 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 data.append(row)
@@ -190,7 +193,7 @@ def main():
     results = perform_comprehensive_anova(data)
 
     # Save results
-    output_file = 'anova_results_real_data.csv'
+    output_file = str(_DEFAULT_DATA_DIR / 'anova_results_real_data.csv')
     with open(output_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['metric', 'f_statistic', 'p_value', 'significant', 'sample_sizes'])

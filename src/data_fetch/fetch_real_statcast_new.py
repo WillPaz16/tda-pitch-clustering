@@ -7,7 +7,10 @@ import requests
 import json
 import csv
 import time
+from pathlib import Path
 from datetime import datetime, timedelta
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 def fetch_statcast_data_mlb_api(start_date, end_date):
     """Fetch Statcast data using MLB Stats API."""
@@ -83,7 +86,7 @@ def main():
         return
 
     # Save the raw data
-    output_file = 'real_statcast_data_april_2023.csv'
+    output_file = str(_DEFAULT_DATA_DIR / 'real_statcast_data_april_2023.csv')
     with open(output_file, 'w', newline='') as f:
         if data:
             # Collect all unique fieldnames

@@ -9,10 +9,15 @@ import pandas as pd
 import numpy as np
 import pickle
 import argparse
+from pathlib import Path
 from datetime import datetime
 
+_ROOT = Path(__file__).resolve().parents[2]
+_DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
+_DEFAULT_DATA_DIR = _ROOT / 'data'
 
-def load_model(model_path='tda_mapper_model.pkl'):
+
+def load_model(model_path=_DEFAULT_MODEL_PATH):
     """Load the fitted TDA model components."""
     with open(model_path, 'rb') as f:
         model_components = pickle.load(f)
@@ -186,7 +191,7 @@ def process_statcast_data(start_date, end_date, model_components, output_file=No
     
     # Save to CSV
     if output_file is None:
-        output_file = f"classified_pitches_{start_date}_{end_date}.csv"
+        output_file = str(_DEFAULT_DATA_DIR / f"classified_pitches_{start_date}_{end_date}.csv")
     
     print(f"\nSaving {len(result_df)} classified pitches to {output_file}...")
     result_df.to_csv(output_file, index=False)
@@ -248,8 +253,8 @@ SAMPLE USAGE:
     parser.add_argument('-o', '--output', dest='output_file',
                        help='Output CSV file path (optional)')
     parser.add_argument('-m', '--model', dest='model_path',
-                       default='tda_mapper_model.pkl',
-                       help='Path to TDA model file (default: tda_mapper_model.pkl)')
+                       default=_DEFAULT_MODEL_PATH,
+                       help=f'Path to TDA model file (default: {_DEFAULT_MODEL_PATH})')
     
     args = parser.parse_args()
     

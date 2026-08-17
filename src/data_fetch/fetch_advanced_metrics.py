@@ -6,6 +6,9 @@ Fetch advanced Statcast metrics from Baseball Savant.
 import requests
 import csv
 import time
+from pathlib import Path
+
+_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
 def fetch_advanced_metrics():
     """Fetch advanced metrics from Baseball Savant."""
@@ -90,7 +93,7 @@ def main():
         return
 
     # Save the data
-    output_file = 'advanced_statcast_metrics_2023.csv'
+    output_file = str(_DEFAULT_DATA_DIR / 'advanced_statcast_metrics_2023.csv')
     with open(output_file, 'w', newline='') as f:
         if data:
             fieldnames = sorted(data[0].keys())
