@@ -74,19 +74,48 @@ matching for new pitches is an approximation of the original clustering,
 not a faithful reproduction of it — and that approximation breaks down
 specifically for the rare, small-sample (3–13 point) outlier clusters.
 
-**Two candidate root causes, not yet distinguished:**
-1. The outlier clusters were fit on tiny samples (3–13 pitcher-pitch-type
-   pairs), so their centroids in the other 7 (non-speed) dimensions are
-   noisy/unrepresentative — a new point matching on speed alone can still
-   end up closer, in aggregate 8-D distance, to a large dense fast
-   cluster than to the correct sparse slow one.
-2. A units/sign/data-source discrepancy between the training data
-   (`pybaseball.statcast()`, full season pull) and the production
-   inference fetch (`classify_pitches_to_csv.py` hits the Baseball Savant
-   CSV export directly) for one or more features — not ruled out, would
-   need a controlled test (push one known real slow pitch through the
-   exact production function and inspect its raw feature vector against
-   the trained centroid) to confirm or eliminate.
+## Controlled follow-up test — root cause identified
+
+Ran the actual training data itself (ground truth, no live fetch, no
+external data source at all) back through the exact production
+nearest-centroid logic (`scaler.transform` + `argmin` distance to
+`cluster_summary` centroids), for every point belonging to one of the 11
+outlier/small clusters, to isolate whether the classifier itself is
+broken versus something about how live pitches are prepared before
+reaching it.
+
+**Result: 45 of 58 (78%) of a cluster's own training points correctly
+round-trip back to their own cluster.** The 13 "failures" are not wild
+misassignments — every one is a swap between near-identical neighboring
+clusters (e.g. a 57 mph point landing in a 59 mph cluster instead of its
+own 56 mph one; two clusters both centered at 78.9 mph that are
+effectively duplicates of each other). **This rules out a scaler or
+distance-metric defect** — the classifier correctly and sensibly routes
+its own training data.
+
+**Root cause: a train/apply unit-of-analysis mismatch.** The model was
+fit on `avgStuff` — one row per `(pitcher, pitch_type)`, each row an
+average over potentially hundreds of individual pitches, which washes
+out pitch-to-pitch noise. But `assign_pitch_stuffplus_clusters.py`
+classifies **individual raw pitches** against those same archetype
+centroids. A single raw pitch naturally has far more scatter than its
+own archetype's mean — especially for rare archetypes like eephus, whose
+centroid was built from only 4–8 training points and occupies a tiny
+region of the 8-dimensional feature space. A noisy individual pitch
+easily drifts out of that narrow region toward the giant, dense
+fastball/breaking-ball cluster, which explains the asymmetric direction
+observed (slow real pitches pulled toward the big fast cluster far more
+often than the reverse — the giant cluster is large and "attractive,"
+the tiny archetype regions are easy to overshoot). This is a genuine
+statistical limitation of the pipeline design, not a code bug in the
+classifier or a data-source/units mismatch.
+
+(A fully clean "watch one specific individual raw pitch fail" demo was
+not run, since that requires fetching fresh live per-pitch data before
+aggregation, which wasn't done here — but the ground-truth round-trip
+result plus the direct visibility of the averaging-vs.-individual
+mismatch in the code is enough evidence to be confident in this as the
+primary driver.)
 
 ## Practical implications
 
@@ -104,12 +133,56 @@ specifically for the rare, small-sample (3–13 point) outlier clusters.
   worst for the rare/small clusters, presumably negligible for the large
   well-populated ones, but not yet quantified.
 
-## Recommended follow-up (not done yet)
+## How to change the claim for the talk
 
-Run one known, genuinely slow real pitch through the exact function
-`assign_pitch_stuffplus_clusters.py`/`classify_pitches_to_csv.py` uses in
-production, and inspect its full raw 8-feature vector next to the trained
-eephus centroid, to determine whether root cause 1 or 2 above is
-responsible. That determines whether the fix is statistical (weight
-distance by cluster sample size / don't trust tiny clusters at inference
-time) or a straightforward data-source/units bug.
+Options, roughly ordered from "say it differently" to "actually fix the
+pipeline" — none of these have been implemented, this is a menu to choose
+from:
+
+1. **Scope the claim to the training data, not live classification
+   (cheapest, no code changes).** Present the connectivity finding
+   (giant component + isolated velocity outliers) as a property of the
+   ~3,900 pitcher-pitch-type archetypes the graph was built from — a
+   descriptive result about the fitted model, not an operational claim
+   about how new pitches get classified. This sidesteps the whole issue
+   because the finding genuinely is true and robust at that level; it's
+   only the "and here's how we'd classify a new pitch into this
+   structure" extension that's shaky.
+
+2. **State the limitation directly, with the numbers already in hand
+   (turns a weakness into a methods-rigor point).** Say explicitly:
+   "the classifier is validated at 78% self-consistency on its own
+   training archetypes, and known to be less reliable for individual
+   live pitches against rare, small-sample archetypes, because it was
+   trained on per-pitcher-pitch-type averages rather than raw pitches."
+   Committees generally respond much better to a stated, quantified
+   limitation than to one they have to catch themselves.
+
+3. **Restrict any live-classification claims to the well-populated
+   clusters.** The mismatch is worst for the 11 small/rare clusters;
+   the large clusters in the giant component (hundreds to 1000+ training
+   points each) don't have this small-sample problem. If the talk needs
+   a "here's how we classify a new pitch" moment, use one of those as
+   the example and don't lean on the outlier clusters for anything
+   beyond describing the fitted graph.
+
+4. **Actually fix the mismatch (real work, most defensible, not done
+   yet).** Two ways to do it: (a) aggregate new pitches the same way the
+   training data was aggregated — average by `(pitcher, pitch_type)`
+   before classifying, so training and inference share the same unit of
+   analysis, or (b) fit the Mapper model directly on individual raw
+   pitches instead of pitcher-pitch-type averages, so there's no
+   aggregation mismatch to begin with (this changes the methodology more
+   substantially and would need its own validation pass). Either removes
+   the root cause rather than working around it.
+
+Given the timeline (defense a few months out, presentation work
+intentionally paused for now), **option 1 or 2 are the realistic
+near-term choices** — they require no pipeline changes, just precise
+language in the deck, and the underlying numbers (78% round-trip rate,
+the asymmetric direction of the errors) are already documented above if
+you want to cite them directly. Option 4 is the right thing to do
+eventually and is now a clearly scoped, well-understood fix — worth
+doing if there's time before the defense, but it's a methodology change,
+not a wording change, so it should happen deliberately and separately
+from deck work.

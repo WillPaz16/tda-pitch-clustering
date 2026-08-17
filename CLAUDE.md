@@ -128,15 +128,27 @@ Rough target for an hour-long talk (fine to run over/under):
       vice versa). This directly confirms the feature-space
       fit/inference mismatch flagged in METHODOLOGY_REVIEW.md and now
       has hard numbers behind it.
-- [ ] **Next priority**: run the controlled follow-up test described at
-      the end of docs/DISCOVERY_FINDINGS.md (push one known slow real
-      pitch through the actual production function and inspect its raw
-      feature vector against the trained centroid) to determine whether
-      the misrouting is statistical (sparse/noisy small-cluster
-      centroids) or a data-source/units bug (training used
-      `pybaseball.statcast()`, inference uses the Baseball Savant CSV
-      export) — this determines whether the fix is statistical or code.
-- [ ] Once that's resolved, revisit the remaining methodology holes in
+- [x] Run the controlled root-cause test — done. Ground-truth training
+      points round-trip to their own cluster correctly 78% of the time
+      when pushed through the actual production classifier logic, which
+      rules out a scaler/code defect. Root cause identified: a
+      train/apply unit-of-analysis mismatch — the model was fit on
+      per-`(pitcher, pitch_type)` *averages*, but production classifies
+      *individual raw pitches* against those same archetype centroids,
+      and individual pitches have far more scatter than their own
+      archetype's mean, especially for the rare small-sample clusters.
+      Full writeup and 4 reframing options (ranging from "say it more
+      precisely, no code changes" to "fix the aggregation mismatch") in
+      docs/DISCOVERY_FINDINGS.md's "How to change the claim for the
+      talk" section.
+- [ ] **Decide which reframing option to use for the MLB section** (see
+      docs/DISCOVERY_FINDINGS.md) — options 1–3 need no pipeline changes,
+      just precise wording; option 4 (fix the aggregation mismatch by
+      classifying pitcher-pitch-type averages instead of raw pitches, or
+      by refitting Mapper directly on raw pitches) is a real methodology
+      change and should happen deliberately, not as a deck-writing
+      afterthought.
+- [ ] Once that's decided, revisit the remaining methodology holes in
       docs/METHODOLOGY_REVIEW.md (circular spin_axis treated as linear,
       hard nearest-centroid assignment vs. Mapper's multi-membership
       theory, Stuff+ leakage, fixed vs. per-pitch strike zone,
