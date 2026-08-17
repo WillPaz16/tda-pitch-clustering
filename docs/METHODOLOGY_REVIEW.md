@@ -126,6 +126,45 @@ the "discovery" work to do next.
    that cluster-based Stuff+ predicts real outcomes — that comparison is
    partially validating a model against its own training signal.
 
+   **Checked directly (2026-08-17)** — see
+   `src/validation/stuff_plus_leakage_check.py`. Used a natural
+   experiment already available in the repo:
+   `data/pitch_stuffplus_clusters.csv` was built from **2025** Statcast
+   data, which the 2022–2024-trained xwOBA/miss/chase models never saw.
+   If leakage were masking a model that hadn't actually learned anything
+   generalizable, per-pitcher predictions on that genuinely unseen data
+   shouldn't correlate with the official in-sample-era predictions.
+
+   **A first pass at this got the wrong answer, worth recording.**
+   Comparing the two pipelines' *combined Stuff+ scores* directly gave a
+   striking negative correlation (Spearman r=−0.46, p<0.0001) — alarming
+   on its face. That conclusion didn't survive inspection: the two
+   pipelines use different Stuff+ formulas entirely (the official
+   pipeline weights xwOBA/miss/chase equally, 1/3 each; the pipeline that
+   produced the 2025 data uses the separately-optimized 0.72/0.11/0.17
+   weights from `fitting_stuff_weights.py`), on top of different z-score
+   normalization reference populations. Comparing a combined score
+   computed two different ways isn't a valid leakage test regardless of
+   how the correlation comes out.
+
+   **Redone comparing the raw model predictions directly** (before any
+   weighting/combination), which isolates whether the CatBoost models
+   themselves generalize: xwOBA Spearman r=0.647, miss r=0.586, chase
+   r=0.586 (n=122 pitchers, all p<0.0001) between the official
+   2022–2024-era predictions and genuinely-unseen 2025 predictions for
+   the same pitchers. That's strong, consistent, significant
+   out-of-sample correlation across all three components. **This
+   substantially de-risks the leakage concern**: whatever theoretical
+   optimism the missing held-out split introduces into the exact final
+   numbers, the underlying models demonstrably retain real predictive
+   signal a full year removed from training — leakage did not mask a
+   model that failed to learn anything. It doesn't rule out a modest
+   optimistic bias in the precise Stuff+ values (that would need an
+   actual held-out evaluation, not an out-of-sample correlation check),
+   but the practical, presentation-relevant risk (that the whole
+   downstream Stuff+-vs-outcomes story rests on a model with no real
+   signal) is not supported.
+
 6. **Multiple comparisons, unflagged.** ANOVA-style tests run across
    ~40–90 clusters × 5+ outcome metrics with no visible Bonferroni/FDR
    correction — at that many simultaneous tests, some "significant"

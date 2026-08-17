@@ -201,8 +201,22 @@ Rough target for an hour-long talk (fine to run over/under):
       assignment for 3 of 20 near-wraparound points (15%) — small in
       absolute count, real and nonzero, worth fixing for correctness but
       not a driver of the bigger anomalies found in the discovery pass.
+- [x] Checked the Stuff+ leakage hole — see
+      `src/validation/stuff_plus_leakage_check.py` and
+      docs/METHODOLOGY_REVIEW.md item 5. **First attempt got the wrong
+      answer and is kept on record**: comparing combined Stuff+ scores
+      between the official pipeline and genuinely out-of-sample 2025 data
+      gave an alarming negative correlation, but that used two different
+      Stuff+ weighting formulas (1/3-1/3-1/3 vs the optimized
+      0.72/0.11/0.17), an invalid comparison regardless of the result.
+      Redone comparing the raw model predictions directly (no weighting
+      confound): xwOBA r=0.647, miss r=0.586, chase r=0.586, all
+      significant, on pitchers the models never saw during training.
+      Substantially de-risks the leakage concern — the models
+      demonstrably generalize; the missing held-out split may still
+      introduce a modest optimistic bias in the exact final numbers, but
+      not the "no real signal" scenario the original hole raised.
 - [ ] Once the MLB-section framing is decided, revisit the remaining
       methodology holes in docs/METHODOLOGY_REVIEW.md (hard
       nearest-centroid assignment vs. Mapper's multi-membership theory,
-      Stuff+ leakage, fixed vs. per-pitch strike zone,
-      multiple-comparisons correction)
+      fixed vs. per-pitch strike zone, multiple-comparisons correction)
