@@ -157,10 +157,25 @@ Rough target for an hour-long talk (fine to run over/under):
       now "topology as a confidence map" (option 2 in the current list):
       graph degree/component-size predict *where* to trust downstream
       classification, for two distinct, explainable, quantified reasons.
+- [x] Verified the "attractor node" observation from the crowded-continuum
+      check — see `src/tda/attractor_node_analysis.py` and
+      DISCOVERY_FINDINGS.md. **It did not hold up**: betweenness
+      centrality is zero for all 3 candidate nodes, same as most other
+      degree-3 nodes; the original pattern was an artifact of a small,
+      unrepresentative sample. Good outcome of flagging it as unverified
+      first. The systematic check found a real result instead: the
+      graph's actual highest-betweenness nodes are a tight, coherent
+      slider/cutter band (85-90mph) sitting exactly between the
+      curveball/sweeper region and the four-seam fastball region —
+      matching the well-known baseball fact that sliders/cutters are
+      "bridge" pitches between fastball and breaking-ball families. This
+      is independently corroborated by both the network statistic and
+      real domain knowledge — a strong, presentable, verified finding.
 - [ ] **Decide whether to adopt the "topology as confidence map" framing
       for the MLB section** (see docs/DISCOVERY_FINDINGS.md) — this is
       now the recommended option, needs no pipeline changes, just deck
-      language once presentation work resumes.
+      language once presentation work resumes. The slider/cutter bridge
+      finding above is a strong complementary talking point alongside it.
 - [ ] Once that's decided, revisit the remaining methodology holes in
       docs/METHODOLOGY_REVIEW.md (circular spin_axis treated as linear,
       hard nearest-centroid assignment vs. Mapper's multi-membership

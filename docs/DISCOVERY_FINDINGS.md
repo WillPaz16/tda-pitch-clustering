@@ -205,16 +205,46 @@ label forced onto a naturally graded, continuous region will always
 produce some ambiguity at the boundaries; that's a property of the
 region being genuinely continuous, not a modeling failure.
 
-**One unverified observation, flagged as such, not a claim:** the
-worst-margin misroutes cluster heavily around a few specific destination
-nodes (`cube59_cluster1`, `cube62_cluster2`, `cube62_cluster3`), which
-repeatedly "pull" points from several different large neighboring hubs.
-That could mean those nodes sit at a genuine convergence point in the
-continuum — but this was noticed by inspecting the top-15 worst-margin
-table, not tested systematically, so it should not be presented as a
-finding without a further check (e.g. whether those nodes have unusually
-high betweenness centrality, or unusually many distinct large neighbors,
-compared to other nodes of similar degree).
+**Follow-up: the "attractor node" observation above was checked
+systematically and does not hold up as originally described.**
+Reproducible via `src/tda/attractor_node_analysis.py`. Betweenness
+centrality (the standard network measure of how often a node lies on
+shortest paths between other node pairs — the actual definition of a
+graph "crossroads") is **exactly zero** for all three candidate nodes
+(`cube59_cluster1`, `cube62_cluster2`, `cube62_cluster3`) — same as most
+other degree-3 nodes in the graph. Degree and betweenness are almost
+perfectly correlated overall (Spearman r=0.89), and these three nodes
+aren't unusual even controlling for degree: `cube62_cluster2` actually
+has *fewer* large neighbors than the average node of its degree. The
+original pattern was noticed in a small, unrepresentative slice (the
+top-15 worst-margin table) and didn't survive a systematic check. Good
+that it was flagged as unverified before being presented as a finding.
+
+**What the systematic check found instead is a real, verified,
+baseball-grounded result.** The nodes that actually top the betweenness
+ranking (excluding the giant hub endpoints already discussed elsewhere)
+form a tight, coherent group: `cube24_cluster0` (SL, 85.1 mph),
+`cube32_cluster0` (SL, 86.8 mph), `cube43_cluster0` / `cube42_cluster0` /
+`cube51_cluster0` (FC, 88–90 mph) — all clustered around 85–90 mph with
+mild glove-side horizontal break (HB ≈ −3 to −5.5) and moderate rise
+(IVB ≈ 1–10). That band sits exactly between the curveball/sweeper
+region (`cube9_cluster0`, 81 mph, HB=−10.7, IVB=−7.2 — strong
+glove-side drop) and the four-seam fastball region (`cube60_cluster0` /
+`cube61_cluster0`, 92–93 mph, HB≈+10.7, IVB≈+11.5 — arm-side ride).
+
+**This matches real baseball domain knowledge directly, without being
+told pitch-type labels:** sliders and cutters are widely understood in
+scouting and pitching-analytics circles as *bridge* pitches — designed
+and thrown with velocity and movement intermediate between a fastball
+and a true breaking ball. The graph's actual network-theoretic
+crossroads is the slider/cutter velocity-and-movement band connecting
+the fastball and curveball regions of the continuum — which is exactly
+where a pitching coach or scout would expect the bridge to be. This is a
+stronger and more defensible finding than the disproven one it replaced,
+precisely because it's both statistically verified (a real centrality
+ranking, not an eyeballed pattern) and independently sensible in
+baseball terms — the two checks corroborate each other rather than one
+being taken on faith.
 
 ## Practical implications
 
