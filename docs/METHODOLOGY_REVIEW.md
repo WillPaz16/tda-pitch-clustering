@@ -206,6 +206,25 @@ the "discovery" work to do next.
    downstream Stuff+-vs-outcomes story rests on a model with no real
    signal) is not supported.
 
+   **FIXED (2026-08-18).** Retrained xwOBA/miss/chase on a fresh
+   2022–2024 pull (2,008,693 pitches) using 5-fold cross-validated
+   out-of-fold (OOF) predictions: every pitch's `pred_xw`/`pred_miss`/
+   `pred_chase` now comes from a model that never saw it during
+   training, with no data thrown away (unlike a single train/held-out
+   split, which would only leave ~20% of the data for the final
+   ratings). The deployed models saved to `models/*.cbm` are refit on
+   all data afterward (standard practice — best model for future use
+   trained on everything; only the historical/backtest Stuff+ ratings in
+   `models/stuff_plus_pitcher_level.csv` use the leak-free OOF
+   predictions). 490,855 pitches ended up with valid OOF predictions —
+   matches the original notebook's row count exactly, confirming the
+   feature engineering was faithfully reproduced. OOF metrics close to
+   the original's single-split metrics (xwOBA R²=0.0168 vs 0.0172, miss
+   AUC=0.626 vs 0.626 — essentially identical). Verified end-to-end:
+   `StuffPlusCalculator.calculate()` and
+   `assign_pitch_stuffplus_clusters.py` both run cleanly against the new
+   models and produce sane, properly bounded predictions.
+
    **Reconciled (2026-08-18)** — the two-different-weights split
    described above was itself a real inconsistency, not just a
    comparison-methodology mistake: `models/stuff_plus_per_pitch_type_metadata.json`
@@ -288,6 +307,14 @@ the "discovery" work to do next.
    bias, real individual-pitch label noise; an easy, mechanical fix
    (swap the two constants for the `sz_top`/`sz_bot` columns, which are
    already being fetched) worth doing.
+
+   **FIXED (2026-08-18)**, alongside the Stuff+ leakage retrain above
+   (item 5) — the chase model was retrained from scratch anyway, so both
+   went into the same pass. `chase` is now computed from each pitch's
+   real `sz_top`/`sz_bot` instead of the fixed constants. OOF chase AUC
+   came in at 0.600 vs. the original's 0.616 — a modest drop, expected
+   since it's now predicting a genuinely different (more accurate)
+   target, not a regression in model quality.
 
    **Side finding, unrelated to the strike zone question but worth
    recording — FIXED (2026-08-18):** `pybaseball.statcast()` failed in

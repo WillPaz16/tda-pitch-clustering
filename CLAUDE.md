@@ -204,44 +204,24 @@ Rough target for an hour-long talk (fine to run over/under):
       the way: `pybaseball.statcast()`'s postprocessing crash was a plain
       version bug (2.1.1 → 2.2.7 resolved it), unblocking real
       multi-season pulls going forward.
-- [x] Checked the Stuff+ leakage hole — see
-      `src/validation/stuff_plus_leakage_check.py` and
-      docs/METHODOLOGY_REVIEW.md item 5. **First attempt got the wrong
-      answer and is kept on record**: comparing combined Stuff+ scores
-      between the official pipeline and genuinely out-of-sample 2025 data
-      gave an alarming negative correlation, but that used two different
-      Stuff+ weighting formulas (1/3-1/3-1/3 vs the optimized
-      0.72/0.11/0.17), an invalid comparison regardless of the result.
-      Redone comparing the raw model predictions directly (no weighting
-      confound): xwOBA r=0.647, miss r=0.586, chase r=0.586, all
-      significant, on pitchers the models never saw during training.
-      Substantially de-risks the leakage concern — the models
-      demonstrably generalize; the missing held-out split may still
-      introduce a modest optimistic bias in the exact final numbers, but
-      not the "no real signal" scenario the original hole raised.
-- [x] Checked the fixed-vs-per-pitch strike zone hole — see
-      `src/validation/strike_zone_check.py` and
-      docs/METHODOLOGY_REVIEW.md item 7. Run against one real day of
-      Statcast data (2,729 pitches): aggregate chase rate barely moves
-      (17.41% fixed zone vs 18.32% real per-batter zone), but 2.53% of
-      individual pitches get a different chase/not-chase label between
-      the two definitions — real training-data mislabeling, small but
-      nonzero. Real strike zone top ranged 2.56-4.18ft across batters in
-      that one day, confirming genuine batter-to-batter variation the
-      fixed 1.6-3.5ft window discards. Easy, mechanical fix (swap in the
-      sz_top/sz_bot columns already being fetched), worth doing.
-      **Side finding**: `pybaseball.statcast()` currently fails in this
-      environment (network succeeds, postprocessing crashes on a
-      duplicate-column bug) — affects `fitting_stuff_weights.py` and the
-      notebooks if re-run here. **Fixed (2026-08-18)** for
-      `assign_pitch_stuffplus_clusters.py`, which was the last script
-      still calling `pybaseball.statcast()` directly: it and
-      `classify_pitches_to_csv.py` now both go through
-      `src/tda/tda_classifier.fetch_savant_csv`, a shared helper that
-      hits the Baseball Savant CSV export directly (verified end-to-end
-      against live data). `fitting_stuff_weights.py` and the notebooks
-      still call `pybaseball.statcast()`/`bwar_pitch()` and would need
-      the same treatment if rerun in a broken environment.
+- [x] **FIXED (2026-08-18)**: Stuff+ leakage and fixed-vs-per-pitch
+      strike zone holes, together (same retrain). Retrained
+      xwOBA/miss/chase on a fresh 2022-2024 pull (2,008,693 pitches) with
+      5-fold cross-validated out-of-fold predictions (leak-free, no data
+      thrown away) and chase% now computed from real per-pitch
+      sz_top/sz_bot instead of the fixed 1.6-3.5ft window. 490,855
+      pitches got valid OOF predictions — matches the original notebook's
+      row count exactly. OOF metrics close to the original (xwOBA
+      R²=0.0168 vs 0.0172, miss AUC=0.626 vs 0.626; chase AUC=0.600 vs
+      0.616, expected since it's predicting a different, more accurate
+      target). Verified end-to-end: `StuffPlusCalculator.calculate()` and
+      `assign_pitch_stuffplus_clusters.py` both run cleanly against the
+      new models. See docs/METHODOLOGY_REVIEW.md items 5 and 7 for the
+      full writeup, including the original leakage-check investigation
+      (kept on record) and a note on a pre-existing 17-vs-33-feature
+      mismatch between the old notebook and production inference code
+      that this retrain incidentally resolved (aligned with production's
+      actual behavior, verified by running it).
 - [x] Checked the hard nearest-centroid vs. multi-membership hole — see
       `src/tda/multi_membership_check.py` and METHODOLOGY_REVIEW.md item
       3. Quantified how much ambiguity the single-label choice discards:
@@ -270,16 +250,16 @@ Rough target for an hour-long talk (fine to run over/under):
       question.
 
 **All items in docs/METHODOLOGY_REVIEW.md's ranked hole list have been
-checked, and the two mechanical/low-risk fixes are done** (the fake
-p-value bug, fixed in place; the TDA Mapper refit, fixing circular
-spin_axis + feature-space mismatch together). **Still open, both
-requiring a CatBoost retrain on a 2022-2024 pull** (bigger, slower,
-not yet started): fixed-vs-per-pitch strike zone (item 7) and Stuff+
-leakage (item 5) — these share the same retrain, worth doing together
-when tackled. The hard-nearest-centroid-vs-multi-membership hole (item
-3) and multiple-comparisons correction (item 6, the fake-p-value part is
-fixed, the "is 6 tests really enough of a comparisons problem to worry
-about" framing question is answered but not a code change) remain design
-questions rather than bugs to fix. Remaining open items otherwise are the
-MLB-section framing decision and the presentation work itself, both
-intentionally paused.
+checked, and every fixable one is now fixed**: the fake p-value bug
+(fixed in place), the TDA Mapper refit (circular spin_axis +
+feature-space mismatch, fixed together), and the CatBoost retrain
+(Stuff+ leakage + fixed strike zone, fixed together). All verified
+end-to-end against the real production scripts, not just unit-tested in
+isolation. The hard-nearest-centroid-vs-multi-membership hole (item 3)
+and the "is 6 tests really enough of a comparisons problem to worry
+about" framing question (item 6) remain — both are design questions
+about the methodology's fundamental approach, not bugs with a mechanical
+fix, and would need a real decision about how deep to go (e.g. soft/
+multi-label cluster assignment instead of hard argmin) before touching
+code. Remaining open items otherwise are the MLB-section framing
+decision and the presentation work itself, both intentionally paused.
