@@ -165,6 +165,21 @@ the "discovery" work to do next.
    downstream Stuff+-vs-outcomes story rests on a model with no real
    signal) is not supported.
 
+   **Reconciled (2026-08-18)** — the two-different-weights split
+   described above was itself a real inconsistency, not just a
+   comparison-methodology mistake: `models/stuff_plus_per_pitch_type_metadata.json`
+   (the weights `StuffPlusCalculator` reads at inference time) was still
+   pinned at equal 1/3 weights, while `assign_pitch_stuffplus_clusters.py`
+   separately hardcoded the optimized 0.72/0.11/0.17 weights. Since the
+   underlying z-scores don't depend on the weights, `weights_used` (and
+   `models/stuff_plus_per_pitch_type.csv` / `stuff_plus_pitcher_level.csv`,
+   which only need the weighted-combination and rescaling steps redone)
+   were updated in place to 0.72/0.11/0.17, and the `ProStuff+.ipynb`
+   cell that originally generated this metadata now imports the same
+   `OPTIMIZED_STUFFPLUS_WEIGHTS` constant from `stuff_plus_calculator.py`
+   instead of hardcoding equal weights, so a future full rerun won't
+   regress it.
+
 6. **Multiple comparisons, unflagged.** ANOVA-style tests run across
    ~40–90 clusters × 5+ outcome metrics with no visible Bonferroni/FDR
    correction — at that many simultaneous tests, some "significant"

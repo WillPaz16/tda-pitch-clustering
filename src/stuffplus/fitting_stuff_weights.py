@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from pybaseball.statcast import statcast
 from pybaseball import bwar_pitch
-from stuff_plus_calculator import StuffPlusCalculator
+from stuff_plus_calculator import StuffPlusCalculator, EQUAL_STUFFPLUS_WEIGHTS
 
 _DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
@@ -137,7 +137,7 @@ def search_best_weights(per_pt, pitcher_name_map, target_df, step=0.02):
         print(f"    per_pt columns: {per_pt.columns.tolist()}")
         print(f"    pitcher_name_map shape: {pitcher_name_map.shape}")
         print(f"    target_df shape: {target_df.shape}")
-        best = {"weights": [1/3, 1/3, 1/3], "corr": np.nan}
+        best = {"weights": list(EQUAL_STUFFPLUS_WEIGHTS), "corr": np.nan}
 
     return best
 

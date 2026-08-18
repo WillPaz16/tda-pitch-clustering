@@ -18,6 +18,15 @@ DEFAULT_MAPPINGS_DIR = str(_PROJECT_ROOT / 'data' / 'mappings')
 DEFAULT_MIN_PITCHES_PER_TYPE = 30
 DEFAULT_MIN_PITCHES_TOTAL = 50
 
+# Equal-weight fallback used when no fitted weights are cached in metadata.
+EQUAL_STUFFPLUS_WEIGHTS = (1 / 3, 1 / 3, 1 / 3)
+
+# Weights found by fitting_stuff_weights.py's WAR-correlation search; not yet
+# written back into stuff_plus_per_pitch_type_metadata.json, so callers that
+# want this specific fit (rather than the cached weights_used) import this
+# directly. See docs/METHODOLOGY_REVIEW.md item 5.
+OPTIMIZED_STUFFPLUS_WEIGHTS = {"xwoba": 0.72, "miss": 0.11, "chase": 0.17}
+
 
 class StuffPlusCalculator:
     """
@@ -307,7 +316,7 @@ class StuffPlusCalculator:
         agg_pt = pd.concat([agg_pt, z_df], axis=1)
         
         # Get weights (default to equal if not cached)
-        weights = np.array(self.stuff_plus_metadata.get('weights_used', [1/3, 1/3, 1/3]), dtype=float)
+        weights = np.array(self.stuff_plus_metadata.get('weights_used', EQUAL_STUFFPLUS_WEIGHTS), dtype=float)
         
         # Combine into stuff_z
         agg_pt['stuff_z_pt'] = weights[0]*agg_pt['z_xw_pt'] + weights[1]*agg_pt['z_miss_pt'] + weights[2]*agg_pt['z_chase_pt']

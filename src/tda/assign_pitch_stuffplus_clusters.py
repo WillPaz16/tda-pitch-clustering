@@ -14,22 +14,22 @@ import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
-import pickle
 from pybaseball.statcast import statcast
 
 _ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_ROOT / 'src' / 'stuffplus'))
-from stuff_plus_calculator import StuffPlusCalculator
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from stuff_plus_calculator import StuffPlusCalculator, OPTIMIZED_STUFFPLUS_WEIGHTS
+from tda_classifier import load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster
 
 _DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
 _DEFAULT_DATA_DIR = _ROOT / 'data'
 
-
-def load_tda_model(model_path=_DEFAULT_MODEL_PATH):
-    """Load the fitted TDA model components."""
-    with open(model_path, 'rb') as f:
-        model_components = pickle.load(f)
-    return model_components
+_CLUSTERING_STUFF_COLS = [
+    'release_speed', 'release_pos_x', 'release_pos_z',
+    'pfx_x', 'pfx_z', 'spin_axis',
+    'release_spin_rate', 'release_extension'
+]
 
 
 def prepare_pitch_features_for_clustering(df):
@@ -37,30 +37,7 @@ def prepare_pitch_features_for_clustering(df):
     Prepare raw Statcast data for TDA cluster assignment.
     Mirrors movement and position for LHP and calculates spin axis clock.
     """
-    # Define standard stuff columns
-    stuff_cols = [
-        'release_speed', 'release_pos_x', 'release_pos_z',
-        'pfx_x', 'pfx_z', 'spin_axis',
-        'release_spin_rate', 'release_extension'
-    ]
-    
-    stuff_df = df[stuff_cols + ['p_throws']].copy()
-    
-    # Mirror movement and position for LHP
-    stuff_df.loc[stuff_df['p_throws'] == 'L', ['pfx_x', 'release_pos_x']] *= -1
-    
-    # Mirror spin axis to match RHP frame
-    stuff_df.loc[stuff_df['p_throws'] == 'L', 'spin_axis'] = (
-        360 - stuff_df.loc[stuff_df['p_throws'] == 'L', 'spin_axis']
-    ) % 360
-    
-    # Calculate spin axis clock
-    def degrees_to_clock(degrees):
-        return (((degrees + 15) % 360) // 30 + 1).astype('Int64')
-    
-    stuff_df['spin_axis_clock'] = degrees_to_clock(stuff_df['spin_axis'])
-    
-    return stuff_df
+    return prepare_pitch_features(df, _CLUSTERING_STUFF_COLS + ['p_throws'])
 
 
 def assign_tda_clusters(pitch_features_df, model_components, input_columns):
@@ -76,20 +53,19 @@ def assign_tda_clusters(pitch_features_df, model_components, input_columns):
         DataFrame with cluster assignments
     """
     scaler = model_components['scaler']
-    cluster_summary = model_components['cluster_summary']
-    
+
     # Get input data and drop NaN
     X_new = pitch_features_df[input_columns].copy()
     initial_count = len(X_new)
     X_new_clean = X_new.dropna()
     valid_idx = X_new_clean.index
-    
+
     if len(X_new_clean) == 0:
         print(f"  Warning: No valid pitches with all features present")
         return pd.DataFrame()
-    
+
     print(f"  Using {len(X_new_clean)} of {initial_count} pitches with complete features")
-    
+
     # Scale features - ensure all values are numeric
     try:
         X_new_values = X_new_clean.values.astype(np.float64)
@@ -97,33 +73,31 @@ def assign_tda_clusters(pitch_features_df, model_components, input_columns):
     except Exception as e:
         print(f"  Error scaling features: {e}")
         return pd.DataFrame()
-    
+
     # Get cluster centroids in original and scaled space
-    cluster_summary_original = cluster_summary.copy()
-    cluster_summary_original['pfx_x'] = cluster_summary_original['HB'] / -12
-    cluster_summary_original['pfx_z'] = cluster_summary_original['IVB'] / 12
-    X_clusters = cluster_summary_original[input_columns].values.astype(np.float64)
-    X_clusters_scaled = scaler.transform(X_clusters)
-    
+    X_clusters_scaled, cluster_summary = scaled_cluster_centroids(model_components, input_columns)
+
     # Assign each pitch to nearest cluster
     classifications = []
     for i, pitch_scaled in enumerate(X_new_scaled):
-        distances = np.linalg.norm(X_clusters_scaled - pitch_scaled, axis=1)
-        closest_cluster_idx = np.argmin(distances)
+        closest_cluster_idx, distance = nearest_cluster(pitch_scaled, X_clusters_scaled)
         closest_cluster = cluster_summary.iloc[closest_cluster_idx]
-        
+
         classifications.append({
             'original_index': valid_idx[i],
             'cluster_id': str(closest_cluster['cluster']),
             'cluster_size': int(closest_cluster['size']),
-            'distance_to_cluster': float(distances[closest_cluster_idx]),
+            'distance_to_cluster': distance,
             'dominant_pitch_type': closest_cluster['most_common_pitch_type'],
         })
-    
+
     return pd.DataFrame(classifications)
 
 
-def calculate_weighted_stuffplus(df_result, xwoba_weight=0.72, miss_weight=0.11, chase_weight=0.17):
+def calculate_weighted_stuffplus(df_result,
+                                  xwoba_weight=OPTIMIZED_STUFFPLUS_WEIGHTS['xwoba'],
+                                  miss_weight=OPTIMIZED_STUFFPLUS_WEIGHTS['miss'],
+                                  chase_weight=OPTIMIZED_STUFFPLUS_WEIGHTS['chase']):
     """
     Calculate per-pitch weighted Stuff+ using optimized weights.
     
@@ -177,13 +151,8 @@ def main():
     print(f"Got predictions for {len(df_result)} pitches\n")
     
     # Calculate per-pitch Stuff+ using optimized weights
-    print("Calculating per-pitch Stuff+ with optimized weights (0.72, 0.11, 0.17)...")
-    stuff_plus_values, z_xw, z_miss, z_chase = calculate_weighted_stuffplus(
-        df_result,
-        xwoba_weight=0.72,
-        miss_weight=0.11,
-        chase_weight=0.17
-    )
+    print(f"Calculating per-pitch Stuff+ with optimized weights {tuple(OPTIMIZED_STUFFPLUS_WEIGHTS.values())}...")
+    stuff_plus_values, z_xw, z_miss, z_chase = calculate_weighted_stuffplus(df_result)
     df_result['stuff_plus'] = stuff_plus_values
     df_result['z_xw'] = z_xw
     df_result['z_miss'] = z_miss
