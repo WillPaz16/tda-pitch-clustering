@@ -192,15 +192,18 @@ Rough target for an hour-long talk (fine to run over/under):
       language once presentation work resumes. The slider/cutter bridge
       finding and the named-pitcher repertoire-overlap validation are
       strong complementary talking points alongside it.
-- [x] Checked the circular-`spin_axis`-treated-as-linear hole — see
-      `src/tda/spin_axis_circularity_check.py` and
-      docs/METHODOLOGY_REVIEW.md item 2. Verified, not just asserted:
-      only 0.5% of training archetypes sit near the 0/360 wraparound and
-      no fitted cluster's centroid is meaningfully distorted by it, but
-      re-encoding `spin_axis` circularly does flip the nearest-cluster
-      assignment for 3 of 20 near-wraparound points (15%) — small in
-      absolute count, real and nonzero, worth fixing for correctness but
-      not a driver of the bigger anomalies found in the discovery pass.
+- [x] **FIXED (2026-08-18)**: circular-`spin_axis`-treated-as-linear and
+      feature-space-mismatch-between-fit-and-inference holes, together
+      (both touch the same fit). `spin_axis` is now encoded as
+      `(spin_cos, spin_sin)` throughout, and there's exactly one
+      `StandardScaler`/feature space used for both the Mapper fit and
+      saved for inference — no more separate refit-on-a-subset step.
+      `models/tda_mapper_model.pkl` regenerated on the full 2025 season
+      (721,799 pitches, 3,943 archetypes). See docs/METHODOLOGY_REVIEW.md
+      items 1-2 for the full writeup and verification. Also fixed along
+      the way: `pybaseball.statcast()`'s postprocessing crash was a plain
+      version bug (2.1.1 → 2.2.7 resolved it), unblocking real
+      multi-season pulls going forward.
 - [x] Checked the Stuff+ leakage hole — see
       `src/validation/stuff_plus_leakage_check.py` and
       docs/METHODOLOGY_REVIEW.md item 5. **First attempt got the wrong
@@ -266,7 +269,17 @@ Rough target for an hour-long talk (fine to run over/under):
       `scipy.stats.f.sf`) independent of the multiple-comparisons
       question.
 
-**All items in docs/METHODOLOGY_REVIEW.md's ranked hole list have now
-been checked** (not necessarily fixed — see each item for the specific
-recommendation). Remaining open items are the MLB-section framing
-decision and the presentation work itself, both intentionally paused.
+**All items in docs/METHODOLOGY_REVIEW.md's ranked hole list have been
+checked, and the two mechanical/low-risk fixes are done** (the fake
+p-value bug, fixed in place; the TDA Mapper refit, fixing circular
+spin_axis + feature-space mismatch together). **Still open, both
+requiring a CatBoost retrain on a 2022-2024 pull** (bigger, slower,
+not yet started): fixed-vs-per-pitch strike zone (item 7) and Stuff+
+leakage (item 5) — these share the same retrain, worth doing together
+when tackled. The hard-nearest-centroid-vs-multi-membership hole (item
+3) and multiple-comparisons correction (item 6, the fake-p-value part is
+fixed, the "is 6 tests really enough of a comparisons problem to worry
+about" framing question is answered but not a code change) remain design
+questions rather than bugs to fix. Remaining open items otherwise are the
+MLB-section framing decision and the presentation work itself, both
+intentionally paused.

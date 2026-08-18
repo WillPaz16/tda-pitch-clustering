@@ -53,7 +53,7 @@ the "discovery" work to do next.
 
 ## Concrete methodological holes, ranked
 
-1. **Feature-space mismatch between fit and inference.** The clusters
+1. **Feature-space mismatch between fit and inference.** ~~The clusters
    were fit on `avgStuff` with 9 features (8 raw stuff columns +
    `spin_axis_clock`, a derived feature) — both the grid search that
    picked `n_cubes=10, eps=1, min_samples=4` and the final `mapper.map()`
@@ -67,37 +67,59 @@ the "discovery" work to do next.
    `src/tda/assign_pitch_stuffplus_clusters.py`) operates in a different
    scaled feature space than the one that actually produced the
    clustering. It's an approximation of the original Mapper output, not a
-   faithful reproduction.
+   faithful reproduction.~~
 
-2. **`spin_axis` is circular but treated as linear.** It (and its
+   **FIXED (2026-08-18).** The model was refit (see item 2 below — both
+   fixed together in the same refit since they touch the same fit code).
+   There is now exactly one `StandardScaler`, fit once on one 9-feature
+   matrix, used for the actual `mapper.map()` call and saved for
+   inference — no second refit on a different column subset.
+   `spin_axis_clock` is gone entirely (superseded by `spin_cos`/`spin_sin`
+   from the circularity fix), which is what eliminated the two-feature-
+   spaces problem: there's nothing left to accidentally slice
+   inconsistently.
+
+2. **`spin_axis` is circular but treated as linear.** ~~It (and its
    derived `spin_axis_clock`) goes into `StandardScaler` and Euclidean
    distance exactly like `release_speed`. 359° and 1° are functionally
    identical directions but ~358 standardized units apart under this
    metric. Should be encoded as $(\cos\theta, \sin\theta)$ to respect the
    circle topology — a real metric-space violation, not just a nitpick,
    given how much the deck emphasizes getting topological definitions
-   precise.
+   precise.~~
 
-   **Checked directly (2026-08-17), not just asserted** — see
-   `src/tda/spin_axis_circularity_check.py`. Two results: (a) only 20 of
-   3,932 training archetypes (0.5%) sit within 20° of the 0/360
-   wraparound, and none of the 57 fitted clusters have their reported
-   centroid meaningfully distorted by naively averaging across that
-   boundary (largest discrepancy between the naive arithmetic mean and
-   the true circular mean was under 10° for every cluster) — so this
-   isn't corrupting the fitted model's cluster centroids in practice.
-   (b) But it does change real classification decisions at the margin:
-   re-encoding `spin_axis` as `(cos, sin)` and refitting an equivalent
-   scaler flips the nearest-cluster assignment for **3 of the 20
-   near-wraparound points (15%)**, including both points closest to the
-   exact seam (354.0° and 354.5°) — exactly what the theory predicts.
-   Small in absolute count (3 of 3,932), but a real, verified,
-   nonzero effect, not a hypothetical one, and it lands on already-rare
-   pitch types (curveball, knuckleball). Worth fixing for full
-   correctness — the fix is a small, contained change to the feature
-   encoding in the training notebook and any script computing distance
-   to cluster centroids — but not a source of the larger anomalies
-   found during the discovery pass (see docs/DISCOVERY_FINDINGS.md).
+   Checked directly (2026-08-17) before fixing — see
+   `src/tda/spin_axis_circularity_check.py` (kept as a record of the
+   pre-fix state, run against the old model). Found: only 20 of 3,932
+   training archetypes (0.5%) sat within 20° of the 0/360 wraparound, and
+   no cluster centroid was meaningfully distorted by it in the old
+   model — but re-encoding `spin_axis` as `(cos, sin)` flipped the
+   nearest-cluster assignment for 3 of those 20 near-wraparound points
+   (15%), a small but real, verified effect, not hypothetical.
+
+   **FIXED (2026-08-18).** `spin_axis` is now encoded as `(spin_cos,
+   spin_sin)` throughout — in the Mapper fit itself
+   (`notebooks/TDA_Pitch_Clustering.ipynb`) and in the shared production
+   feature-prep helper (`src/tda/tda_classifier.py`'s
+   `prepare_pitch_features()`). Averaging `spin_cos`/`spin_sin` per
+   `(pitcher, pitch_type)` archetype is also the mathematically correct
+   way to average a circular quantity, fixing the related (smaller)
+   naive-arithmetic-mean-of-degrees issue in the same motion.
+   `models/tda_mapper_model.pkl` was regenerated on the full 2025 season
+   (721,799 pitches, 3,943 archetypes, up from 3,932) using the
+   previously-tuned hyperparameters
+   (`n_cubes=10, perc_overlap=0.3, eps=1, min_samples=4`) rather than
+   re-running the full grid search — ponytail: the fix is about feature
+   correctness, not hyperparameter optimality; upgrade path is to rerun
+   the grid search cell against the corrected feature space if the new
+   graph's node count/shape ever looks off. Verified post-refit:
+   `classify_pitches_to_csv.py` runs cleanly against the new model, and
+   `multi_membership_check.py`/`graph_topology_analysis.py` reproduce the
+   same qualitative structure as before (crowded-continuum ambiguity
+   unchanged at ~68%, since that's a separate, unaddressed design
+   question — item 3 below; giant component + isolated slow-pitch
+   outlier sub-components still present) — confirms the discovery-pass
+   findings weren't artifacts of the bugs just fixed.
 
 3. **Hard nearest-centroid assignment contradicts the theory being
    presented.** True Mapper allows a point to belong to multiple
@@ -268,21 +290,18 @@ the "discovery" work to do next.
    already being fetched) worth doing.
 
    **Side finding, unrelated to the strike zone question but worth
-   recording:** `pybaseball.statcast()` currently fails in this
-   environment — the network call succeeds, but pybaseball's own
-   postprocessing step crashes on a duplicate-column bug
-   (`KeyError: "['pitcher.1', 'fielder_2.1'] not in index"`), a
-   version-compatibility issue with the installed pybaseball/pandas
-   combination, not a project code bug. This affects every script here
-   that calls `pybaseball.statcast()` directly
-   (`assign_pitch_stuffplus_clusters.py`, `fitting_stuff_weights.py`,
-   and the notebooks) if re-run in this exact environment. The check
-   above worked around it by hitting the Baseball Savant CSV export
-   directly, the same approach `classify_pitches_to_csv.py` already
-   uses — which is unaffected. Not investigated further since it's an
-   environment/dependency-version issue rather than a methodology
-   question, but worth knowing about before assuming any of those
-   scripts will run as-is.
+   recording — FIXED (2026-08-18):** `pybaseball.statcast()` failed in
+   this environment when first found — the network call succeeded, but
+   pybaseball's own postprocessing step crashed on a duplicate-column bug
+   (`KeyError: "['pitcher.1', 'fielder_2.1'] not in index"`). Traced to a
+   plain version bug: `pip install --upgrade pybaseball` (2.1.1 → 2.2.7)
+   resolved it cleanly, verified with a real `statcast()` call. This
+   unblocks real multi-season pulls going forward without needing the
+   Baseball Savant CSV export workaround
+   (`src/tda/tda_classifier.fetch_savant_csv`, still kept and used
+   elsewhere for its own reasons — the CSV export bypasses pybaseball
+   entirely and was what made the 2025-season Mapper refit and the
+   strike-zone check above possible before this fix was found).
 
 ## Genuine strengths worth stating with confidence
 
