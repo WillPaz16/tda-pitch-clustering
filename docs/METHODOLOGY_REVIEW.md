@@ -108,6 +108,25 @@ the "discovery" work to do next.
    forever after," not "Mapper, generatively." Worth stating explicitly
    rather than letting the audience assume otherwise.
 
+   **Checked directly (2026-08-18)** — see
+   `src/tda/multi_membership_check.py`. Quantified how much genuine
+   ambiguity the single-label choice discards: for every training
+   archetype, computed the margin between its distance to the nearest
+   and second-nearest cluster centroid, normalized by the typical
+   (median) inter-centroid distance across all 57 clusters. Result:
+   **64.6% of archetypes have a top-2 margin under 5%** of that typical
+   spacing, 89.4% under 10%, 97.6% under 20% — the large majority of
+   points sit almost equidistant between two (or more) clusters. The
+   minimum inter-centroid distance across all cluster pairs is exactly
+   0.0 — at least two clusters (`cube25_cluster1`/`cube26_cluster0`,
+   already flagged in docs/DISCOVERY_FINDINGS.md as near-duplicates) have
+   an effectively identical centroid. This makes the theoretical
+   objection a practically significant one, not just a precision
+   nitpick: the current single-label output is discarding real,
+   common multi-membership almost everywhere, not in a rare edge case —
+   consistent with the crowded, densely-overlapping continuum found
+   during the discovery pass.
+
 4. **xwOBA model has very low explanatory power (R² ≈ 0.017), even after
    feature engineering** (`notebooks/ProStuff+.ipynb`). Defensible —
    "stuff" alone genuinely doesn't predict contact quality well, that's

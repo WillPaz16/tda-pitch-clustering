@@ -239,7 +239,15 @@ Rough target for an hour-long talk (fine to run over/under):
       against live data). `fitting_stuff_weights.py` and the notebooks
       still call `pybaseball.statcast()`/`bwar_pitch()` and would need
       the same treatment if rerun in a broken environment.
+- [x] Checked the hard nearest-centroid vs. multi-membership hole — see
+      `src/tda/multi_membership_check.py` and METHODOLOGY_REVIEW.md item
+      3. Quantified how much ambiguity the single-label choice discards:
+      64.6% of training archetypes have a top-2 nearest-cluster margin
+      under 5% of the typical inter-centroid spacing, 89.4% under 10%.
+      Minimum inter-centroid distance across all pairs is exactly 0.0
+      (cube25_cluster1/cube26_cluster0 are literal duplicates). This
+      makes it a practically significant issue, not just a theoretical
+      one — most points are genuinely ambiguous between 2+ clusters.
 - [ ] Once the MLB-section framing is decided, revisit the remaining
-      methodology holes in docs/METHODOLOGY_REVIEW.md (hard
-      nearest-centroid assignment vs. Mapper's multi-membership theory,
-      multiple-comparisons correction)
+      methodology hole in docs/METHODOLOGY_REVIEW.md (multiple-comparisons
+      correction)
