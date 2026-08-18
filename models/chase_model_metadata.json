@@ -18,87 +18,33 @@
     "release_side",
     "release_height",
     "release_side_times_height",
-    "pitch_type_code"
+    "release_speed_missing",
+    "release_pos_x_missing",
+    "release_pos_z_missing",
+    "pfx_x_missing",
+    "pfx_z_missing",
+    "spin_axis_missing",
+    "release_spin_rate_missing",
+    "release_extension_missing",
+    "release_speed_sq_missing",
+    "log_release_speed_missing",
+    "spin_axis_rad_missing",
+    "spin_cos_missing",
+    "spin_sin_missing",
+    "release_side_missing",
+    "release_height_missing",
+    "release_side_times_height_missing"
   ],
-  "n_features": 18,
-  "n_train_samples": 1606954,
-  "n_val_samples": 401739,
+  "n_features": 33,
+  "n_train_samples": 2008693,
+  "n_val_samples": null,
+  "validation_method": "5-fold cross-validated out-of-fold (no held-out split thrown away, no leakage)",
   "metrics": {
-    "auc": 0.6156166354526915,
-    "precision": 0.25983614159839236,
-    "recall": 0.5405523611057513,
-    "f1": 0.35096715999064576,
-    "specificity": 0.6305462962962963,
-    "brier": 0.2376411081350579
-  },
-  "feature_importance": [
-    {
-      "feature": "pfx_magnitude",
-      "importance": 19.75294705249807
-    },
-    {
-      "feature": "pfx_z",
-      "importance": 13.095784294883993
-    },
-    {
-      "feature": "release_spin_rate",
-      "importance": 8.524265103221081
-    },
-    {
-      "feature": "log_release_speed",
-      "importance": 7.77404216523021
-    },
-    {
-      "feature": "pfx_x",
-      "importance": 7.085892495989241
-    },
-    {
-      "feature": "release_speed",
-      "importance": 6.005670944363138
-    },
-    {
-      "feature": "release_speed_sq",
-      "importance": 5.906768409026335
-    },
-    {
-      "feature": "release_extension",
-      "importance": 5.279764182769322
-    },
-    {
-      "feature": "spin_cos",
-      "importance": 4.745941946557133
-    },
-    {
-      "feature": "release_side_times_height",
-      "importance": 4.393900343301235
-    },
-    {
-      "feature": "release_pos_z",
-      "importance": 3.6379415183762753
-    },
-    {
-      "feature": "release_height",
-      "importance": 3.313492234121003
-    },
-    {
-      "feature": "spin_sin",
-      "importance": 2.5298452964599187
-    },
-    {
-      "feature": "release_pos_x",
-      "importance": 2.4830845243229756
-    },
-    {
-      "feature": "release_side",
-      "importance": 2.30758821468011
-    },
-    {
-      "feature": "spin_axis_rad",
-      "importance": 1.6264785449592218
-    },
-    {
-      "feature": "spin_axis",
-      "importance": 1.5365927292407313
-    }
-  ]
+    "auc": 0.5998477605904445,
+    "precision": 0.2639909938887102,
+    "recall": 0.5017349097088922,
+    "f1": 0.3459553787077276,
+    "specificity": 0.6424020683386905,
+    "brier": 0.2401441508406007
+  }
 }
