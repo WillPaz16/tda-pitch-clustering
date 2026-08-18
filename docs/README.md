@@ -7,6 +7,8 @@ current status and next steps, [REORG_NOTES.md](REORG_NOTES.md) for the
 codebase layout, and [METHODOLOGY_REVIEW.md](METHODOLOGY_REVIEW.md) for a
 critical review of the pipeline logic.
 
+**[Live demo: interactive Mapper graph](https://willpaz16.github.io/TDAPitchClustering/results/tda_mapper_graph.html)**
+
 ## Setup
 
 ```bash
