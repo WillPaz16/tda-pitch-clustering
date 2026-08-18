@@ -210,6 +210,41 @@ the "discovery" work to do next.
    vs. unpooled variance). Worth a sanity check against scipy on a known
    case before presenting those p-values.
 
+   **Checked directly (2026-08-18)** — see
+   `src/validation/anova_multiple_comparisons_check.py`. First,
+   `data/anova_results_real_data.csv` turns out to be a single omnibus
+   F-test per outcome metric (6 metrics: whiff%, chase%, groundball%,
+   flyball%, xwOBA, velocity — each comparing all 48 clusters at once),
+   not pairwise cluster-vs-cluster tests — a much smaller
+   multiple-comparisons surface than "~40–90 clusters" implied.
+
+   **A bigger problem surfaced while checking this, independent of the
+   multiple-comparisons question**: the reported p-values are not real
+   p-values. `anova_real_data.py`'s `manual_anova()` computes the
+   F-statistic correctly (standard formula, verified), but converts it
+   to a p-value with a hardcoded threshold —
+   `p_value = 1.0 if f_stat < 3.0 else 0.001` — not the actual
+   F-distribution CDF. The comment even says "Approximate p-value
+   (rough)." The identical bug is duplicated in
+   `cluster_outcome_validation.py`.
+
+   Recomputed the real p-values from the correct F-statistics and known
+   degrees of freedom (`scipy.stats.f.sf`): every metric's true p-value
+   is astronomically smaller than the fake `0.001` placeholder (e.g.
+   whiff% real p ≈ 6×10⁻¹²⁶ vs. reported `0.001`), and **every result
+   survives Bonferroni correction across all 6 metrics comfortably**
+   (corrected α ≈ 0.0083, real p-values are dozens of orders of
+   magnitude below that). So: the specific "significant" conclusions
+   already in this file are not wrong, and the multiple-comparisons risk
+   for this particular set of 6 tests turns out to be low. But the fake
+   p-value logic is a real, separate correctness bug that happened not
+   to bite here only because the true effect sizes are enormous — it
+   would silently produce a wrong significant/not-significant call on
+   any more marginal comparison run through the same function elsewhere
+   in the pipeline. Worth fixing (swap in `scipy.stats.f.sf` or
+   `scipy.stats.f_oneway`, in both files) independent of anything about
+   multiple comparisons.
+
 7. **Chase% uses a fixed rectangular strike zone**
    (`zone_z_min, zone_z_max = 1.6, 3.5` in `ProStuff+.ipynb`) instead of
    the actual per-pitch, batter-specific `sz_top`/`sz_bot` columns

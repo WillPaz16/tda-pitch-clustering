@@ -248,6 +248,25 @@ Rough target for an hour-long talk (fine to run over/under):
       (cube25_cluster1/cube26_cluster0 are literal duplicates). This
       makes it a practically significant issue, not just a theoretical
       one — most points are genuinely ambiguous between 2+ clusters.
-- [ ] Once the MLB-section framing is decided, revisit the remaining
-      methodology hole in docs/METHODOLOGY_REVIEW.md (multiple-comparisons
-      correction)
+- [x] Checked the multiple-comparisons hole — see
+      `src/validation/anova_multiple_comparisons_check.py` and
+      METHODOLOGY_REVIEW.md item 6. `anova_results_real_data.csv` is 6
+      omnibus F-tests (one per outcome metric across all 48 clusters),
+      not pairwise cluster comparisons — a smaller surface than assumed.
+      **Bigger, separate bug found along the way**: the reported
+      p-values aren't real. `anova_real_data.py` (and duplicated in
+      `cluster_outcome_validation.py`) converts a correctly-computed
+      F-statistic to a p-value with a hardcoded threshold
+      (`p=1.0 if F<3.0 else 0.001`), not the real F-distribution CDF.
+      Recomputed real p-values are astronomically smaller than the fake
+      placeholder in every case, and all 6 results survive Bonferroni
+      correction comfortably — so the conclusions already reported
+      aren't wrong, but the fake p-value logic is a latent bug that
+      would misfire on a more marginal comparison. Worth fixing (swap in
+      `scipy.stats.f.sf`) independent of the multiple-comparisons
+      question.
+
+**All items in docs/METHODOLOGY_REVIEW.md's ranked hole list have now
+been checked** (not necessarily fixed — see each item for the specific
+recommendation). Remaining open items are the MLB-section framing
+decision and the presentation work itself, both intentionally paused.
