@@ -14,13 +14,12 @@ import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from pybaseball.statcast import statcast
 
 _ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_ROOT / 'src' / 'stuffplus'))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from stuff_plus_calculator import StuffPlusCalculator, OPTIMIZED_STUFFPLUS_WEIGHTS
-from tda_classifier import load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster
+from tda_classifier import load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster, fetch_savant_csv
 
 _DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
 _DEFAULT_DATA_DIR = _ROOT / 'data'
@@ -134,9 +133,9 @@ def main():
     start_date = "2025-03-28"
     end_date = "2025-04-04"
     print(f"Loading Statcast data: {start_date} → {end_date}")
-    df = statcast(start_date, end_date)
+    df = fetch_savant_csv(start_date, end_date)
     print(f"Loaded {len(df)} pitches\n")
-    
+
     # Rename columns if necessary to match StuffPlusCalculator expectations
     if 'pitcher' in df.columns and 'pitcher_id' not in df.columns:
         df = df.rename(columns={'pitcher': 'pitcher_id'})

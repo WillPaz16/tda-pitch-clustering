@@ -3,14 +3,12 @@ TDA Pitch Classification to CSV
 Classifies pitches from Statcast data into TDA-discovered clusters and exports to CSV.
 """
 
-import io
-import requests
 import pandas as pd
 import argparse
 from pathlib import Path
 from datetime import datetime
 
-from tda_classifier import load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster
+from tda_classifier import load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster, fetch_savant_csv
 
 _ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
@@ -97,19 +95,7 @@ def process_statcast_data(start_date, end_date, model_components, output_file=No
     """
     
     print(f"Querying Statcast data from {start_date} to {end_date}...")
-    csv_url = (
-        "https://baseballsavant.mlb.com/statcast_search/csv?"
-        "all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&"
-        "hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&"
-        "pitcher_throws=&batter_stands=&hfSA=&game_date_gt={}&game_date_lt={}&"
-        "team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&"
-        "min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&"
-        "sort_order=desc&min_abs=0&type=details&"
-    ).format(start_date, end_date)
-
-    response = requests.get(csv_url, timeout=60)
-    response.raise_for_status()
-    df = pd.read_csv(io.StringIO(response.text))
+    df = fetch_savant_csv(start_date, end_date)
     print(f"Retrieved {len(df)} pitch records")
     
     # Define columns to extract

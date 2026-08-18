@@ -6,14 +6,37 @@ which both classify individual pitches against the fitted Mapper cluster
 centroids and previously duplicated this logic independently.
 """
 
+import io
 import pickle
 import numpy as np
+import pandas as pd
+import requests
 
 
 def load_tda_model(model_path):
     """Load the fitted TDA model components."""
     with open(model_path, 'rb') as f:
         return pickle.load(f)
+
+
+def fetch_savant_csv(start_date, end_date):
+    """
+    Fetch raw Statcast data via the Baseball Savant CSV export directly.
+    Avoids the pybaseball.statcast() postprocessing bug (duplicate-column
+    crash) present in this environment -- see docs/METHODOLOGY_REVIEW.md.
+    """
+    url = (
+        "https://baseballsavant.mlb.com/statcast_search/csv?"
+        "all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&"
+        "hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&"
+        "pitcher_throws=&batter_stands=&hfSA=&game_date_gt={}&game_date_lt={}&"
+        "team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&"
+        "min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&"
+        "sort_order=desc&min_abs=0&type=details&"
+    ).format(start_date, end_date)
+    response = requests.get(url, timeout=60)
+    response.raise_for_status()
+    return pd.read_csv(io.StringIO(response.text))
 
 
 def degrees_to_clock(degrees):
