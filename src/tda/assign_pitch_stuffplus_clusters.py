@@ -34,7 +34,7 @@ _CLUSTERING_STUFF_COLS = [
 def prepare_pitch_features_for_clustering(df):
     """
     Prepare raw Statcast data for TDA cluster assignment.
-    Mirrors movement and position for LHP and calculates spin axis clock.
+    Mirrors movement and position for LHP and encodes spin_axis circularly.
     """
     return prepare_pitch_features(df, _CLUSTERING_STUFF_COLS + ['p_throws'])
 

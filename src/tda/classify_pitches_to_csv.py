@@ -23,7 +23,7 @@ def load_model(model_path=_DEFAULT_MODEL_PATH):
 def prepare_pitch_data(df, stuff_cols):
     """
     Prepare raw Statcast data for classification.
-    Mirrors LHP data to RHP frame and calculates spin axis clock.
+    Mirrors LHP data to RHP frame and encodes spin_axis circularly.
     """
     return prepare_pitch_features(df, stuff_cols)
 

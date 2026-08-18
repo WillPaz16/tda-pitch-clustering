@@ -39,15 +39,15 @@ def fetch_savant_csv(start_date, end_date):
     return pd.read_csv(io.StringIO(response.text))
 
 
-def degrees_to_clock(degrees):
-    return (((degrees + 15) % 360) // 30 + 1).astype('Int64')
-
-
 def prepare_pitch_features(df, feature_cols):
     """
     Prepare raw Statcast data for TDA classification.
-    Mirrors LHP movement/position/spin_axis to the RHP frame and adds
-    spin_axis_clock. feature_cols must include 'p_throws' and 'spin_axis'.
+    Mirrors LHP movement/position/spin_axis to the RHP frame and encodes
+    spin_axis as (spin_cos, spin_sin) -- spin_axis is a circular quantity
+    (359deg and 1deg are nearly identical directions), so it must be
+    encoded this way rather than fed to Euclidean distance as a raw
+    degree value. See docs/METHODOLOGY_REVIEW.md item 2.
+    feature_cols must include 'p_throws' and 'spin_axis'.
     """
     stuff_df = df[feature_cols].copy()
 
@@ -57,7 +57,9 @@ def prepare_pitch_features(df, feature_cols):
         360 - stuff_df.loc[stuff_df['p_throws'] == 'L', 'spin_axis']
     ) % 360
 
-    stuff_df['spin_axis_clock'] = degrees_to_clock(stuff_df['spin_axis'])
+    spin_rad = np.deg2rad(stuff_df['spin_axis'])
+    stuff_df['spin_cos'] = np.cos(spin_rad)
+    stuff_df['spin_sin'] = np.sin(spin_rad)
 
     return stuff_df
 
