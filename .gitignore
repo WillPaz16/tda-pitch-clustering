@@ -5,3 +5,4 @@ __pycache__/
 catboost_info/
 .vscode/
 .ipynb_checkpoints/
+graphify-out/
