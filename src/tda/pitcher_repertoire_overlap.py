@@ -26,7 +26,7 @@ this script). IDs can be cross-referenced manually on Baseball Savant.
 import warnings
 warnings.filterwarnings("ignore")
 
-import pickle
+import sys
 from pathlib import Path
 from collections import defaultdict
 
@@ -41,10 +41,12 @@ _DEFAULT_MODEL_PATH = _ROOT / 'models' / 'tda_mapper_model.pkl'
 BRIDGE_NODES = ['cube24_cluster0', 'cube32_cluster0', 'cube43_cluster0',
                  'cube42_cluster0', 'cube51_cluster0']
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from tda_classifier import load_tda_model
+
 
 def load_model(model_path=_DEFAULT_MODEL_PATH):
-    with open(model_path, 'rb') as f:
-        return pickle.load(f)
+    return load_tda_model(model_path)
 
 
 def build_networkx_graph(mapper_graph):

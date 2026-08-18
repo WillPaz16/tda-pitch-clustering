@@ -7,7 +7,7 @@ Allows querying distances between clusters.
 import warnings
 warnings.filterwarnings("ignore")
 
-import pickle
+import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -20,12 +20,13 @@ _DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
 _DEFAULT_DATA_DIR = _ROOT / 'data'
 _DEFAULT_RESULTS_DIR = _ROOT / 'results'
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from tda_classifier import load_tda_model as _load_tda_model
+
 
 def load_tda_model(model_path=_DEFAULT_MODEL_PATH):
     """Load the fitted TDA mapper model."""
-    with open(model_path, 'rb') as f:
-        model_components = pickle.load(f)
-    return model_components
+    return _load_tda_model(model_path)
 
 
 def build_cluster_graph(model_components, min_correlation=0.1):

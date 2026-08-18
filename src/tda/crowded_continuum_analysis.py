@@ -29,7 +29,7 @@ Analysis/reporting script. See docs/DISCOVERY_FINDINGS.md for write-up.
 import warnings
 warnings.filterwarnings("ignore")
 
-import pickle
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -39,10 +39,12 @@ import networkx as nx
 _ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_MODEL_PATH = _ROOT / 'models' / 'tda_mapper_model.pkl'
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from tda_classifier import load_tda_model
+
 
 def load_model(model_path=_DEFAULT_MODEL_PATH):
-    with open(model_path, 'rb') as f:
-        return pickle.load(f)
+    return load_tda_model(model_path)
 
 
 def build_networkx_graph(mapper_graph):
