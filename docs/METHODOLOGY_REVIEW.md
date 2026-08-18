@@ -183,6 +183,38 @@ the "discovery" work to do next.
    batter don't share a strike zone, so some chases are currently
    mislabeled.
 
+   **Checked directly (2026-08-17)** — see
+   `src/validation/strike_zone_check.py`, run against one real day of
+   Statcast data (2025-09-15, 2,729 pitches). At the aggregate level the
+   effect is small: 17.41% chase rate under the fixed zone vs. 18.32%
+   under the real per-batter zone, under a 1 percentage point gap. But
+   at the individual-pitch level, **2.53% of pitches get a different
+   chase/not-chase label** between the two definitions — real
+   mislabeling in the training data, not hypothetical. The real strike
+   zone top in this one day of data ranged from 2.56 to 4.18 feet across
+   batters (bottom: 1.08 to 2.00 feet) — genuine batter-to-batter
+   variation the fixed 1.6–3.5 window discards entirely. Small aggregate
+   bias, real individual-pitch label noise; an easy, mechanical fix
+   (swap the two constants for the `sz_top`/`sz_bot` columns, which are
+   already being fetched) worth doing.
+
+   **Side finding, unrelated to the strike zone question but worth
+   recording:** `pybaseball.statcast()` currently fails in this
+   environment — the network call succeeds, but pybaseball's own
+   postprocessing step crashes on a duplicate-column bug
+   (`KeyError: "['pitcher.1', 'fielder_2.1'] not in index"`), a
+   version-compatibility issue with the installed pybaseball/pandas
+   combination, not a project code bug. This affects every script here
+   that calls `pybaseball.statcast()` directly
+   (`assign_pitch_stuffplus_clusters.py`, `fitting_stuff_weights.py`,
+   and the notebooks) if re-run in this exact environment. The check
+   above worked around it by hitting the Baseball Savant CSV export
+   directly, the same approach `classify_pitches_to_csv.py` already
+   uses — which is unaffected. Not investigated further since it's an
+   environment/dependency-version issue rather than a methodology
+   question, but worth knowing about before assuming any of those
+   scripts will run as-is.
+
 ## Genuine strengths worth stating with confidence
 
 - Fitting the Mapper `clusterer` on the full standardized 9D space while

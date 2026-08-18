@@ -216,7 +216,24 @@ Rough target for an hour-long talk (fine to run over/under):
       demonstrably generalize; the missing held-out split may still
       introduce a modest optimistic bias in the exact final numbers, but
       not the "no real signal" scenario the original hole raised.
+- [x] Checked the fixed-vs-per-pitch strike zone hole — see
+      `src/validation/strike_zone_check.py` and
+      docs/METHODOLOGY_REVIEW.md item 7. Run against one real day of
+      Statcast data (2,729 pitches): aggregate chase rate barely moves
+      (17.41% fixed zone vs 18.32% real per-batter zone), but 2.53% of
+      individual pitches get a different chase/not-chase label between
+      the two definitions — real training-data mislabeling, small but
+      nonzero. Real strike zone top ranged 2.56-4.18ft across batters in
+      that one day, confirming genuine batter-to-batter variation the
+      fixed 1.6-3.5ft window discards. Easy, mechanical fix (swap in the
+      sz_top/sz_bot columns already being fetched), worth doing.
+      **Side finding**: `pybaseball.statcast()` currently fails in this
+      environment (network succeeds, postprocessing crashes on a
+      duplicate-column bug) — affects `assign_pitch_stuffplus_clusters.py`,
+      `fitting_stuff_weights.py`, and the notebooks if re-run here.
+      Worked around by hitting the Baseball Savant CSV export directly
+      (same approach `classify_pitches_to_csv.py` already uses).
 - [ ] Once the MLB-section framing is decided, revisit the remaining
       methodology holes in docs/METHODOLOGY_REVIEW.md (hard
       nearest-centroid assignment vs. Mapper's multi-membership theory,
-      fixed vs. per-pitch strike zone, multiple-comparisons correction)
+      multiple-comparisons correction)
