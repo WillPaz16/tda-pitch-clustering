@@ -6,3 +6,8 @@ catboost_info/
 .vscode/
 .ipynb_checkpoints/
 graphify-out/
+
+# Large raw Statcast pulls -- reproducible via src/data_fetch/fetch_real_statcast_new.py
+# and src/validation/cluster_outcome_validation.py, not worth tracking in git
+data/real_statcast_data_april_2023.csv
+data/real_statcast_data_april_2025.csv

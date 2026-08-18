@@ -1,19 +1,23 @@
 import warnings
 warnings.filterwarnings("ignore")
 
+import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from pybaseball.statcast import statcast
 from pybaseball import bwar_pitch
 from stuff_plus_calculator import StuffPlusCalculator, EQUAL_STUFFPLUS_WEIGHTS
 
-_DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
+_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_ROOT / 'src' / 'tda'))
+from tda_classifier import fetch_savant_csv
+
+_DEFAULT_DATA_DIR = _ROOT / 'data'
 
 
 def load_statcast_2025(start_date="2025-03-28", end_date="2025-11-04"):
     print(f"Loading Statcast data for 2025 season: {start_date} → {end_date}")
-    return statcast(start_date, end_date)
+    return fetch_savant_csv(start_date, end_date)
 
 
 def load_pitcher_war(season=2025):
