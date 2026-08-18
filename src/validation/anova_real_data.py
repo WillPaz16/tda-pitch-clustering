@@ -8,7 +8,7 @@ import csv
 import math
 from pathlib import Path
 from collections import defaultdict
-# import scipy.stats as stats  # Remove scipy import
+from scipy import stats
 
 _DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / 'data'
 
@@ -65,8 +65,7 @@ def manual_anova(groups_data, all_data):
     # F-statistic
     if ss_within > 0 and df_within > 0:
         f_stat = (ss_between / df_between) / (ss_within / df_within)
-        # Approximate p-value (rough)
-        p_value = 1.0 if f_stat < 3.0 else 0.001
+        p_value = stats.f.sf(f_stat, df_between, df_within)
     else:
         f_stat = 0
         p_value = 1.0
