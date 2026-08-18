@@ -229,10 +229,16 @@ Rough target for an hour-long talk (fine to run over/under):
       sz_top/sz_bot columns already being fetched), worth doing.
       **Side finding**: `pybaseball.statcast()` currently fails in this
       environment (network succeeds, postprocessing crashes on a
-      duplicate-column bug) — affects `assign_pitch_stuffplus_clusters.py`,
-      `fitting_stuff_weights.py`, and the notebooks if re-run here.
-      Worked around by hitting the Baseball Savant CSV export directly
-      (same approach `classify_pitches_to_csv.py` already uses).
+      duplicate-column bug) — affects `fitting_stuff_weights.py` and the
+      notebooks if re-run here. **Fixed (2026-08-18)** for
+      `assign_pitch_stuffplus_clusters.py`, which was the last script
+      still calling `pybaseball.statcast()` directly: it and
+      `classify_pitches_to_csv.py` now both go through
+      `src/tda/tda_classifier.fetch_savant_csv`, a shared helper that
+      hits the Baseball Savant CSV export directly (verified end-to-end
+      against live data). `fitting_stuff_weights.py` and the notebooks
+      still call `pybaseball.statcast()`/`bwar_pitch()` and would need
+      the same treatment if rerun in a broken environment.
 - [ ] Once the MLB-section framing is decided, revisit the remaining
       methodology holes in docs/METHODOLOGY_REVIEW.md (hard
       nearest-centroid assignment vs. Mapper's multi-membership theory,
