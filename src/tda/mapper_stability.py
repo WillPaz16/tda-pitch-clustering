@@ -47,6 +47,22 @@ N_BOOT, N_NULL, SEED = 30, 10, 42
 SLOW_MPH, BRIDGE_TYPES, TOP_K, MIN_ANCHOR_SIZE = 70, {'SL', 'FC'}, 5, 10
 
 
+def gaussian_null(X_raw, rng):
+    """Same mean/covariance as the archetypes, no other structure."""
+    return rng.multivariate_normal(X_raw.mean(0), np.cov(X_raw, rowvar=False), size=len(X_raw))
+
+
+def shuffle_within_type_null(X_raw, ptype, rng):
+    """Each feature permuted independently within pitch type: keeps per-type
+    marginals, destroys the joint structure inside each type."""
+    Xsh = X_raw.copy()
+    for t in np.unique(ptype):
+        ix = np.flatnonzero(ptype == t)
+        for j in range(Xsh.shape[1]):
+            Xsh[ix, j] = rng.permutation(Xsh[ix, j])
+    return Xsh
+
+
 def fit_graph(X_raw, n_cubes, perc_overlap, eps):
     X = StandardScaler().fit_transform(X_raw)
     mapper = km.KeplerMapper(verbose=0)
@@ -122,15 +138,11 @@ def main():
 
     Xs_real = StandardScaler().fit(X_raw)
     for _ in range(N_NULL):
-        Xg = rng.multivariate_normal(X_raw.mean(0), np.cov(X_raw, rowvar=False), size=len(X_raw))
+        Xg = gaussian_null(X_raw, rng)
         nn = np.argmin(cdist(Xs_real.transform(Xg), Xs_real.transform(X_raw)), axis=1)
         record('null_gauss', Xg, Xg[:, 0], ptype[nn], **BASE)
 
-        Xsh = X_raw.copy()
-        for t in np.unique(ptype):
-            ix = np.flatnonzero(ptype == t)
-            for j in range(Xsh.shape[1]):
-                Xsh[ix, j] = rng.permutation(Xsh[ix, j])
+        Xsh = shuffle_within_type_null(X_raw, ptype, rng)
         record('null_shuffle', Xsh, Xsh[:, 0], ptype, **BASE)
 
     res = pd.DataFrame(rows)
