@@ -35,6 +35,32 @@ abstract only; `presi.tex` — Beamer slide deck, the real content).
   baseball-audience talks later.
 - The slider/cutter "bridge" is dropped as a finding (it depends on the
   lens and the nulls reproduce it).
+- **Title:** "Gradient-Boosted Decision Trees" removed from both
+  `presi.tex` and `main.tex` titles (Stuff+ is future work).
+- **Deck plan agreed:**
+  - Add 2 homology slides after simplicial complexes: Betti numbers
+    (b₁ = E − V + C for graphs), then persistent homology in one picture.
+    Pay for them by cutting the spectral theorem and trimming homotopy to
+    what the nerve theorem needs.
+  - Keep the 2-D PCA lens and add one Reeb *space* slide. The full-nerve
+    b₁ result is the payoff.
+  - Frame "Mapper alone isn't distinctive vs. nulls" as the
+    methodological contribution: Mapper gives the picture; homology,
+    nulls, and dimension estimates certify it.
+  - Outcome/tags-vs-clusters result: one motivating sentence or a backup
+    slide.
+  - Results section (~15 min): primer → data/archetypes → graph (PC1 =
+    fastball↔breaking-ball axis) → is it real? → cycles (graph vs. nerve
+    vs. PH, with the Dey–Mémoli–Wang theorem) → intrinsic dimension →
+    labels cut a continuum → conclusion/future work. Backups: node-size
+    reliability, multi-membership, min-pitch-count sensitivity.
+- **Citations/bibliography: to do later.** Only Dey–Mémoli–Wang 2017 has
+  been verified against the source so far (see DISCOVERY_FINDINGS.md).
+  Still to collect and verify: Singh–Mémoli–Carlsson 2007 (Mapper),
+  Carrière–Oudot 2018 and Carrière–Michel–Oudot 2018 (Mapper
+  convergence/stability), Munch–Wang 2016 (Reeb space convergence),
+  Ester et al. 1996 (DBSCAN), Facco et al. 2017 (TwoNN), Levina–Bickel
+  2005 (MLE dimension), KeplerMapper and ripser software citations.
 
 ## Presentation status
 

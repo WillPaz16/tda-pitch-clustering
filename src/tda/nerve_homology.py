@@ -7,7 +7,10 @@ share points, so the nerve has 2-simplices that fill many of the graph's
 cycles. This computes, for each fit:
   graph_b1 = E - V + C                    (1-skeleton)
   nerve_b1 = E - V + C - rank(d2)         (2-skeleton; d2 = triangle boundary map)
-Higher simplices do not change b1. Rank is over the rationals.
+Higher simplices do not change b1. Homology is over Z2, matching
+Dey, Memoli & Wang (SoCG 2017), Thm 8 / Thm 18: for the Mapper's
+path-connected pullback cover, H1(X) -> H1(N(f*U)) is a surjection, so
+b1(Mapper nerve) <= b1(X).
 
 Runs on the parameter grid and on null models from mapper_stability.py.
 """
@@ -31,6 +34,24 @@ import mapper_stability as ms
 N_NULL, SEED = 5, 42
 
 
+def rank_gf2(M):
+    """Rank of a 0/1 matrix over Z2 by Gaussian elimination."""
+    M = M.astype(bool).copy()
+    rank = 0
+    for col in range(M.shape[1]):
+        pivot = np.flatnonzero(M[rank:, col])
+        if not len(pivot):
+            continue
+        p = rank + pivot[0]
+        M[[rank, p]] = M[[p, rank]]
+        rows = np.flatnonzero(M[:, col])
+        M[rows[rows != rank]] ^= M[rank]
+        rank += 1
+        if rank == M.shape[0]:
+            break
+    return rank
+
+
 def betti1(nodes):
     """(graph_b1, nerve_b1) for Mapper nodes {node_id: member indices}."""
     nodes = {k: set(v) for k, v in nodes.items()}
@@ -42,12 +63,10 @@ def betti1(nodes):
     G.add_edges_from(E)
     graph_b1 = len(E) - len(V) + nx.number_connected_components(G)
     ei = {e: i for i, e in enumerate(E)}
-    d2 = np.zeros((len(E), len(T)))
-    for j, (a, b, c) in enumerate(T):     # d[a,b,c] = [b,c] - [a,c] + [a,b]
-        d2[ei[(b, c)], j] += 1
-        d2[ei[(a, c)], j] -= 1
-        d2[ei[(a, b)], j] += 1
-    return graph_b1, graph_b1 - (np.linalg.matrix_rank(d2) if T else 0)
+    d2 = np.zeros((len(E), len(T)), dtype=bool)
+    for j, (a, b, c) in enumerate(T):     # over Z2: d[a,b,c] = [b,c] + [a,c] + [a,b]
+        d2[[ei[(b, c)], ei[(a, c)], ei[(a, b)]], j] = True
+    return graph_b1, graph_b1 - rank_gf2(d2)
 
 
 def sanity():
@@ -56,6 +75,7 @@ def sanity():
     square = {'a': {0, 1}, 'b': {1, 2}, 'c': {2, 3}, 'd': {3, 0}}
     assert betti1(square) == (1, 1)
     assert betti1({k: v | {9} for k, v in square.items()}) == (3, 0)
+    assert rank_gf2(np.array([[1, 1], [1, 1]])) == 1     # rank 2 over Q, 1 over Z2
 
 
 def main():
