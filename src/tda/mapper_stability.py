@@ -52,14 +52,19 @@ def gaussian_null(X_raw, rng):
     return rng.multivariate_normal(X_raw.mean(0), np.cov(X_raw, rowvar=False), size=len(X_raw))
 
 
-def shuffle_within_type_null(X_raw, ptype, rng):
+def shuffle_within_type_null(X_raw, ptype, rng, keep_together=()):
     """Each feature permuted independently within pitch type: keeps per-type
-    marginals, destroys the joint structure inside each type."""
+    marginals, destroys the joint structure inside each type.
+    keep_together: column groups permuted as a unit (e.g. the spin_cos /
+    spin_sin pair, which encodes one angle and must stay on the circle)."""
     Xsh = X_raw.copy()
+    groups = [list(g) for g in keep_together]
+    grouped = {j for g in groups for j in g}
+    groups += [[j] for j in range(X_raw.shape[1]) if j not in grouped]
     for t in np.unique(ptype):
         ix = np.flatnonzero(ptype == t)
-        for j in range(Xsh.shape[1]):
-            Xsh[ix, j] = rng.permutation(Xsh[ix, j])
+        for g in groups:
+            Xsh[ix[:, None], g] = X_raw[rng.permutation(ix)[:, None], g]
     return Xsh
 
 
