@@ -155,3 +155,22 @@ def member_clusters(X_scaled, cover_index):
         for idx in candidates[near]:
             memberships[idx].append(node_id)
     return [sorted(m) for m in memberships]
+
+
+def mapper_primary_labels(X_scaled, memberships, model_components):
+    """
+    Mapper-consistent single label per pitch, for stats that need one group
+    per observation: the nearest centroid *among the pitch's own member
+    clusters*, so it never overrides Mapper. None for DBSCAN noise (no
+    membership) -- those pitches are excluded from group tests.
+    """
+    X_clusters_scaled, cs = scaled_cluster_centroids(model_components, model_components['stuff_columns'])
+    pos = {cid: i for i, cid in enumerate(cs['cluster'])}
+    labels = []
+    for x, members in zip(X_scaled, memberships):
+        if not members:
+            labels.append(None)
+            continue
+        d = np.linalg.norm(X_clusters_scaled[[pos[m] for m in members]] - x, axis=1)
+        labels.append(members[int(np.argmin(d))])
+    return labels
