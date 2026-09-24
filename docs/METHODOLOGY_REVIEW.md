@@ -149,6 +149,31 @@ the "discovery" work to do next.
    consistent with the crowded, densely-overlapping continuum found
    during the discovery pass.
 
+   **Multi-membership wired in (2026-09-24).** `tda_classifier.py` now has
+   `build_cover_index()` / `member_clusters()`, which place a pitch in the
+   fitted Mapper structure the way Mapper itself does: project through
+   the saved scaler + PCA + the MinMaxScaler kmapper applies internally,
+   find every overlapping cover cube (`Cover` geometry, with kmapper's
+   empty-cube index compaction reproduced), then keep every DBSCAN cluster
+   in those cubes with a member within eps. Both classifier scripts output
+   `member_clusters` / `n_memberships` alongside the unchanged
+   `cluster_id` primary label (stats scripts still use the primary label).
+
+   Validation against the fitted graph: reproduces the true membership of
+   97.2% of training archetypes exactly, and is a superset of the truth
+   for all 3,943 (never drops a real membership). The ~3% extra comes
+   from border points — the saved model doesn't keep DBSCAN noise points,
+   so exact core/border status can't be recovered.
+
+   **Finding from wiring it in:** the nearest-centroid primary label and
+   the real Mapper membership agree for only 57% of training archetypes
+   (2,239/3,943) and 54% of a week of live 2025 pitches (13,420/24,906).
+   15% of training archetypes (587) and 11% of live pitches are DBSCAN
+   noise — in no Mapper node at all — yet the centroid rule still gives
+   them a label. So `cluster_id` is not "the Mapper cluster" for ~45% of
+   pitches; it is a centroid approximation of it. Not yet decided whether
+   the stats scripts should keep using it as the primary label.
+
 4. **xwOBA model has very low explanatory power (R² ≈ 0.017), even after
    feature engineering** (`notebooks/ProStuff+.ipynb`). Defensible —
    "stuff" alone genuinely doesn't predict contact quality well, that's

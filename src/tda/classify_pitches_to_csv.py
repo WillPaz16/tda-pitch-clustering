@@ -8,7 +8,8 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 
-from tda_classifier import load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster, fetch_savant_csv
+from tda_classifier import (load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster,
+                            fetch_savant_csv, build_cover_index, member_clusters)
 
 _ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
@@ -55,6 +56,10 @@ def classify_pitches(pitch_data, model_components):
     # Get cluster centroids
     X_clusters_scaled, cluster_summary = scaled_cluster_centroids(model_components, input_columns)
 
+    # Full Mapper multi-membership (cover + DBSCAN eps-ball); cluster_id below
+    # stays the single nearest-centroid primary label for the stats scripts.
+    memberships = member_clusters(X_new_scaled, build_cover_index(model_components))
+
     classifications = []
 
     for i, pitch_scaled in enumerate(X_new_scaled):
@@ -68,7 +73,9 @@ def classify_pitches(pitch_data, model_components):
             'dominant_pitch_type_in_cluster': closest_cluster['most_common_pitch_type'],
             'cluster_release_speed': float(closest_cluster['release_speed']),
             'cluster_HB': float(closest_cluster['HB']),
-            'cluster_IVB': float(closest_cluster['IVB'])
+            'cluster_IVB': float(closest_cluster['IVB']),
+            'member_clusters': ';'.join(memberships[i]),
+            'n_memberships': len(memberships[i]),
         })
     
     return pd.DataFrame(classifications), X_new.index
@@ -145,7 +152,7 @@ def process_statcast_data(start_date, end_date, model_components, output_file=No
         'release_pos_x', 'release_pos_z',
         'cluster_id', 'cluster_size', 'distance_to_cluster',
         'dominant_pitch_type_in_cluster', 'cluster_release_speed',
-        'cluster_HB', 'cluster_IVB'
+        'cluster_HB', 'cluster_IVB', 'member_clusters', 'n_memberships'
     ]
     
     # Keep only columns that exist

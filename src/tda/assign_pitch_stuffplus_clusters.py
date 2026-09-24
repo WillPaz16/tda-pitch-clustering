@@ -19,7 +19,8 @@ _ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_ROOT / 'src' / 'stuffplus'))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from stuff_plus_calculator import StuffPlusCalculator, OPTIMIZED_STUFFPLUS_WEIGHTS
-from tda_classifier import load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster, fetch_savant_csv
+from tda_classifier import (load_tda_model, prepare_pitch_features, scaled_cluster_centroids, nearest_cluster,
+                            fetch_savant_csv, build_cover_index, member_clusters)
 
 _DEFAULT_MODEL_PATH = str(_ROOT / 'models' / 'tda_mapper_model.pkl')
 _DEFAULT_DATA_DIR = _ROOT / 'data'
@@ -76,6 +77,10 @@ def assign_tda_clusters(pitch_features_df, model_components, input_columns):
     # Get cluster centroids in original and scaled space
     X_clusters_scaled, cluster_summary = scaled_cluster_centroids(model_components, input_columns)
 
+    # Full Mapper multi-membership (cover + DBSCAN eps-ball); cluster_id below
+    # stays the single nearest-centroid primary label for the stats scripts.
+    memberships = member_clusters(X_new_scaled, build_cover_index(model_components))
+
     # Assign each pitch to nearest cluster
     classifications = []
     for i, pitch_scaled in enumerate(X_new_scaled):
@@ -88,6 +93,8 @@ def assign_tda_clusters(pitch_features_df, model_components, input_columns):
             'cluster_size': int(closest_cluster['size']),
             'distance_to_cluster': distance,
             'dominant_pitch_type': closest_cluster['most_common_pitch_type'],
+            'member_clusters': ';'.join(memberships[i]),
+            'n_memberships': len(memberships[i]),
         })
 
     return pd.DataFrame(classifications)
@@ -179,7 +186,9 @@ def main():
     pitch_with_clusters['cluster_id'] = cluster_assignments['cluster_id'].values
     pitch_with_clusters['distance_to_cluster'] = cluster_assignments['distance_to_cluster'].values
     pitch_with_clusters['dominant_pitch_type'] = cluster_assignments['dominant_pitch_type'].values
-    
+    pitch_with_clusters['member_clusters'] = cluster_assignments['member_clusters'].values
+    pitch_with_clusters['n_memberships'] = cluster_assignments['n_memberships'].values
+
     # Select key columns for output
     output_columns = [
         'pitcher_id', 'pitcher', 'batter_id', 'batter', 'pitch_type',
@@ -187,7 +196,8 @@ def main():
         'pred_xw', 'pred_miss', 'pred_chase',
         'z_xw', 'z_miss', 'z_chase',
         'stuff_plus',
-        'cluster_id', 'dominant_pitch_type', 'distance_to_cluster'
+        'cluster_id', 'dominant_pitch_type', 'distance_to_cluster',
+        'member_clusters', 'n_memberships'
     ]
     
     # Filter to available columns
