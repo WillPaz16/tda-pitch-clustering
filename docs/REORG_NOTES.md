@@ -30,6 +30,7 @@ Flat directory reorganized into a standard research-repo layout. Baseline
 - `fetch_real_statcast_new.py`, `integrate_real_data.py`, `anova_real_data.py`, `cluster_outcome_validation.py` and their CSVs — old ANOVA pipeline (pseudo-replicated, fake p-values); replaced by `src/validation/pitch_level_outcome_anova.py`
 - `analyze_graph_distances.py` — read `graph_data.json`, which nothing produced; its output was never read
 - `tda_graph_visualization.py` — its HTML was already removed as the wrong visualization; its CSV/JSON outputs had no readers
+- `anova_multiple_comparisons_check.py` — audited the old pipeline's `anova_results_real_data.csv` (the fake-p-value finding in METHODOLOGY_REVIEW.md item 6); its input is gone
 - `variance_analysis.py` — no same-k baseline; superseded by the pitch-type baseline in the outcome ANOVA
 
 ## Kept despite overlap
