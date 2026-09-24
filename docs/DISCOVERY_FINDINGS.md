@@ -394,3 +394,72 @@ eventually and is now a clearly scoped, well-understood fix — worth
 doing if there's time before the defense, but it's a methodology change,
 not a wording change, so it should happen deliberately and separately
 from deck work.
+
+## Merit of Mapper — what the evidence supports (2026-09-24)
+
+This section supersedes the reframing options above. It records a
+step-back assessment after the pitch-type baseline showed that Statcast's
+own tags explain more pitch-outcome variance than the clusters
+(docs/METHODOLOGY_REVIEW.md item 6). **Decision: the thesis claim moves
+from outcome prediction to shape.** Every test below runs on the saved
+archetypes (one average profile per pitcher per pitch type, n = 3,943),
+the same unit the graph is fit on, and each is compared against null
+models: a same-covariance Gaussian, and each feature shuffled within pitch
+type.
+
+**1. Stability** (`src/tda/mapper_stability.py`, `data/mapper_stability.csv`).
+Verified at scale.
+- Features were tracked by content, not node ID: slow-pitch isolation,
+  the slider/cutter bridge, and the CU→FF velocity ordering.
+- They hold in 93–100% of a 27-point grid over n_cubes, overlap, and eps.
+  The chosen-parameter point reproduces the saved model exactly.
+- **But both null models reproduce all three features.** They are stable
+  but not distinctive: they describe where pitch types sit in feature
+  space, not topology beyond that. Don't present them as topological
+  discoveries.
+- Known issue: the bootstrap samples with replacement, which duplicates
+  points and inflates DBSCAN density. It should subsample instead.
+
+**2. Persistent homology** (`src/tda/persistence_check.py`). Passes a
+noisy-circle sanity check.
+- **No persistent H₁**, in real data or either null (5 subsamples of
+  1,000). The Mapper graph's 76–86 cycles are cover artifacts, not loops.
+- No more long-lived H₀ gaps than a Gaussian (17 vs about 19).
+- Real archetypes are more concentrated (median merge scale 1.00 vs
+  1.52–1.54 Gaussian, 1.24–1.25 shuffle).
+- Caveat: that shuffle null breaks the spin_cos/spin_sin circle; see 3.
+
+**3. Intrinsic dimension** (`src/tda/intrinsic_dimension.py`). The TwoNN
+and Levina–Bickel MLE estimators both pass sanity checks (2-D plane → 2.0,
+9-D Gaussian → 8.6–8.9).
+- The spin_cos/spin_sin pair encodes one angle, so a fair null must
+  permute it as a unit.
+- Against that null, real archetypes are lower-dimensional overall (MLE
+  6.26 vs 7.07, TwoNN 6.76 vs 7.52) and within every major pitch type, by
+  roughly 0.4–0.8 of a dimension.
+- **Supported:** real within-type coupling of the physical features.
+  **Not supported:** a "low-dimensional continuum." The space is about 6
+  of 9 dimensions, only moderately constrained.
+
+**What the thesis can defensibly claim**
+- Pitch-shape space is **connected, with no loops, no hidden branches,
+  and no extra gaps beyond a Gaussian**, plus a tail of slow-pitch
+  outliers.
+- It is **moderately constrained** by within-type physical coupling
+  (~0.5–0.8 of a dimension below a fair null).
+- Pitch-type tags draw hard boundaries across it. The label-overlap
+  result and the ~45% multi-membership rate support this.
+- Mapper's merit here is not discovering exotic structure. It produces an
+  interpretable summary of a simple, continuous space, and, **paired with
+  null models, persistent homology, and dimension estimates**, it
+  certifies what that topology is and isn't. The null-model comparisons
+  are arguably the novel methodological contribution: applied Mapper work
+  rarely checks graph features against structureless baselines, and here
+  that check shows that apparent features (bridges, loops) can be
+  reproduced without any real structure.
+
+**Not built:** outcome smoothness on the graph (#4). It was deprioritized
+because, if the graph mostly encodes feature-space geometry, "outcomes
+are smooth on the graph" largely restates what the Stuff+ models already
+capture. The within-tag, usage-controlled test is deferred to future
+work.
