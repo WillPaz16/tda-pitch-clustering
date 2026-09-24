@@ -37,12 +37,9 @@ import networkx as nx
 _ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_MODEL_PATH = _ROOT / 'models' / 'tda_mapper_model.pkl'
 
-# the verified slider/cutter bridge nodes from the betweenness-centrality check
-BRIDGE_NODES = ['cube24_cluster0', 'cube32_cluster0', 'cube43_cluster0',
-                 'cube42_cluster0', 'cube51_cluster0']
-
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from tda_classifier import load_tda_model
+from mapper_stability import top_betweenness, BRIDGE_TYPES
 
 
 def load_model(model_path=_DEFAULT_MODEL_PATH):
@@ -79,8 +76,14 @@ def main():
     # per pitcher, not by raw (pitcher, node) membership rows, or it massively
     # overcounts "different pitches converging" when it's really the same
     # single archetype straddling adjacent cover cells.
+    # bridge nodes derived from the current graph (node IDs change on refit):
+    # top-betweenness giant-component nodes whose majority type is SL/FC
+    ptype = orig.index.get_level_values('pitch_type').values.astype(str)
+    top = top_betweenness(build_networkx_graph(graph), graph['nodes'], ptype)
+    print("Top-betweenness nodes:", ", ".join(f"{n} ({t})" for n, t in top))
+    bridge_nodes = [n for n, t in top if t in BRIDGE_TYPES]
     bridge_members = defaultdict(dict)  # pitcher_id -> {pitch_type: set(clusters)}
-    for cid in BRIDGE_NODES:
+    for cid in bridge_nodes:
         for m in graph['nodes'].get(cid, []):
             pitcher_id, pitch_type = orig.index[m]
             bridge_members[pitcher_id].setdefault(pitch_type, set()).add(cid)
