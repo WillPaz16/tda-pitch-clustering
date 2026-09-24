@@ -1,0 +1,67 @@
+claim_id,claim,used_in,bib_key,locator,keywords,source_file,status,check1,check2,check3,notes
+T01,Definition of a topological space (open-set axioms),presi Topological Foundations,,,,,PENDING,,,,Standard; cite textbook (Hatcher or Munkres)
+T02,Subspace topology definition,presi Subspace Topology and Pairs,,,,,PENDING,,,,Standard textbook
+T03,Pairs of spaces and maps of pairs,presi Subspace Topology and Pairs,,,,,PENDING,,,,Standard textbook (likely Hatcher)
+T04,Homotopy relative to a subspace,presi Introduction to Homotopy,,,,,PENDING,,,,Standard textbook
+T05,Homotopy rel A is an equivalence relation,presi Introduction to Homotopy,,,,,PENDING,,,,Standard textbook
+T06,Homotopy equivalence of spaces,presi Homotopic Equivalence,,,,,PENDING,,,,Standard textbook
+T07,Contractible = homotopy equivalent to a point,presi Homotopic Equivalence,,,,,PENDING,,,,Standard textbook
+T08,Definition of an n-simplex,presi n-Simplices,,,,,PENDING,,,,Deck wording informal (advisor flagged); need a precise textbook definition (convex hull of n+1 affinely independent points)
+T09,Face of a simplex,presi Simplicial Complexes,,,,,PENDING,,,,Advisor flagged <x0..xn> notation undefined
+T10,Definition of a simplicial complex (closed under faces; intersections are faces),presi Simplicial Complexes,,,,,PENDING,,,,Standard textbook
+T11,Nerve of a cover,presi Nerve,,,,,PENDING,,,,Advisor flagged vague wording; cite precise source
+T12,Nerve theorem statement and hypotheses,presi The Nerve Theorem,,,,,PENDING,,,,HIGH RISK: deck mixes 'closed and convex covering' with 'open sets'; pin exact version (Borsuk 1948 / Hatcher Cor 4G.3 / convex-set version) and its hypotheses
+T13,"Deck note: nerve theorem ensures the Mapper graph preserves components and loops",presi The Nerve Theorem (Note),,,,,UNSUPPORTED,,,,"CONTRADICTED by our nerve_homology result and Dey-Memoli-Wang 2017 (Mapper can only lose H1; graph = 1-skeleton). Reword on deck rewrite"
+T14,Definition of the Reeb graph,presi Reeb Graphs,,,,,PENDING,,,,Advisor flagged: no explicit definition; primary source Reeb 1946 plus a modern definition
+T15,Mapper is a discrete approximation of the Reeb graph,presi Reeb Graphs (Note),,,,,PENDING,,,,Cite convergence result (Carriere-Oudot 2018 for 1-D lens; Munch-Wang 2016 for Reeb space)
+T16,Torus Reeb graph example (figure),presi Torus Example,,,,Pictures/reeb_graph.png,PENDING,,,,Image source/attribution unknown; must find origin and license
+T17,Pullback cover and topological graph / Mapper as nerve of pullback cover,presi Topological Graphs,,,,,PENDING,,,,"Deck omits splitting preimages into path components; check against Singh-Memoli-Carlsson 2007 and Dey-Memoli-Wang Def 14"
+T18,Betti numbers (b0 components; b1 loops; b1 = E - V + C for a graph),planned homology slide,,,,,PENDING,,,,Standard textbook (Hatcher ch. 2 or a computational topology text)
+T19,Persistent homology and persistence diagrams,planned PH slide,,,,,PENDING,,,,Primary: Edelsbrunner-Letscher-Zomorodian 2002; Zomorodian-Carlsson 2005
+T20,Definition of the Reeb space for a map to R^k,planned Reeb space slide,,,,,PENDING,,,,Primary candidate: Edelsbrunner-Harer-Patel 2008
+T21,"Nerve map induces a surjection on H1 for path-connected covers (Thm 8); Mapper version b1(Mapper) <= b1(X) (Thm 18)",results cycles slide; DISCOVERY_FINDINGS,deymemoliwang2017,"arXiv:1703.07387 full version; Thm 8 (Sec 3.2), Thm 18 (Sec 3.4), Z2 coefficients, X compact, well-behaved f","path connected;surjection;H1;pullback",DeyMemoliWang2017_arXiv1703.07387.pdf,PENDING,done 2026-09-24 (text extracted and read),,,Pin arXiv version number and page numbers; SoCG LIPIcs version numbering may differ
+T22,Quotient onto the Reeb space is surjective on H1,results cycles slide (optional),deymemoliwang2017,Claim 4.2 in proof of Thm 27 (Sec 4),"surjection;Reeb",same as T21,PENDING,partial,,,Confirm hypotheses of Sec 4 before use
+M01,Lens/filter function definition,presi Step 1,,,,,PENDING,,,,Singh-Memoli-Carlsson 2007
+M02,"PCA is the most popular lens choice in the TDA literature",presi Step 1 (Note),,,,,PENDING,,,,HIGH RISK literature claim; needs a survey that reports it (e.g. Madukpe et al. review) or reword
+M03,PCA as variance-maximizing orthogonal projection,presi PCA,,,,,PENDING,,,,Jolliffe-Cadima 2016 candidate
+M04,Why mean-center before PCA,presi PCA Setup,,,,,PENDING,,,,Advisor asked for justification; Jolliffe-Cadima 2016 candidate
+M05,Sample covariance matrix; symmetric positive semidefinite,presi Covariance Matrix,,,,,PENDING,,,,Standard; may not need citation
+M06,Spectral theorem for real symmetric matrices,presi Spectral Theorem,,,,,PENDING,,,,Slide to be cut per advisor; cite only if kept (e.g. Axler LADR open access)
+M07,"PCA is never computed by eigendecomposition; SVD used for numerical stability",presi PCA Notes,,,,,PENDING,,,,"Overstated ('never'); find a numerical linear algebra source and soften"
+M08,SVD theorem and singular vectors as eigenvectors of AA^T and A^TA,presi SVD,,,,,PENDING,,,,Standard; rank(A)=n hypothesis in deck is unnecessary
+M09,Eigenvalues of covariance = sigma_i^2/(m-1),presi Application of SVD,,,,,PENDING,,,,Standard; Jolliffe-Cadima candidate
+M10,Truncated SVD gives best rank-k approximation (Frobenius),presi Projections,,,,,PENDING,,,,Eckart-Young 1936 primary
+M11,Proportion / cumulative variance explained,presi Explained Variance,,,,,PENDING,,,,Jolliffe-Cadima candidate
+M12,Scree plot elbow heuristic for choosing k,presi Selecting k,,,,,PENDING,,,,Jolliffe-Cadima or Cattell 1966
+M13,Cover by overlapping hypercubes; n_cubes and overlap as parameters,presi Step 2,,,,,PENDING,,,,KeplerMapper docs/paper; Singh 2007
+M14,Mapper output depends strongly on cover parameters,presi Step 2 (Parameterization),,,,,PENDING,,,,Carriere-Michel-Oudot 2018 candidate
+M15,"DBSCAN chosen for its popularity across Mapper applications",presi Step 3,,,,,PENDING,,,,HIGH RISK literature claim; support from a survey or reword to our actual reason
+M16,DBSCAN: eps-neighborhood; directly density-reachable (core condition),presi Density Reachable,ester1996dbscan,,,DBSCAN.pdf,PENDING,,,,Check deck definitions against Ester Def 1-2; deck notation inconsistent (x_i vs p_i)
+M17,DBSCAN: density-reachable and density-connected,presi Density Reachable / Connectivity,ester1996dbscan,,,DBSCAN.pdf,PENDING,,,,Deck drops 'from' qualifiers; check Def 3-4
+M18,DBSCAN: cluster (maximality + connectivity) and noise,presi Connectivity / Noise,ester1996dbscan,,,DBSCAN.pdf,PENDING,,,,Advisor flagged eps_i/M_i subscripts; check Def 5-6
+M19,DBSCAN lemma: cluster = set density-reachable from any core point,presi Noise and Uniqueness,ester1996dbscan,,,DBSCAN.pdf,PENDING,,,,Check Lemma 2 statement and direction
+M20,DBSCAN pseudocode,presi DBSCAN Algorithm,ester1996dbscan,,,DBSCAN.pdf,PENDING,,,,Deck reproduces the paper's pseudocode; cite and confirm fidelity
+M21,Mapper graph construction (nodes = clusters; edges = nonempty intersections),presi Building the Graph,singh2007mapper,,,mapperPBG.pdf,PENDING,,,,Check against Singh et al.
+M22,KeplerMapper: sklearn-compatible; part of scikit-tda,presi KeplerMapper,,,,,PENDING,,,,Software citation (van Veen et al. JOSS) + docs page
+M23,KeplerMapper logo image,presi KeplerMapper,,,,Pictures/keplermapper.png,PENDING,,,,Image source/license unknown
+M24,Mapper flowchart image,presi Overview,,,,Pictures/mapper_flow_chart.png,PENDING,,,,Image source/license unknown
+M25,Simplex examples image,presi n-Simplices,,,,Pictures/simplex.png,PENDING,,,,Image source/license unknown
+R01,Mapper stability/parameter-selection approach (grid + resampling),results 'is it real?',,,,,PENDING,,,,Carriere-Michel-Oudot 2018 JMLR candidate
+R02,Null-model hypothesis testing in TDA,results 'is it real?',,,,,PENDING,,,,Candidates: Blumberg et al. 2014; Robinson-Turner 2017; Fasy et al. 2014
+R03,Vietoris-Rips persistence computed with Ripser,results cycles slide,,,,,PENDING,,,,Bauer 2021 (Ripser); Tralie-Saul-Bar-On 2018 (ripser.py)
+R04,TwoNN intrinsic dimension estimator,results dimension slide,,,,,PENDING,,,,Facco et al. 2017 Sci Rep
+R05,Levina-Bickel MLE intrinsic dimension (with MacKay-Ghahramani averaging),results dimension slide,,,,,PENDING,,,,Levina-Bickel 2005 NeurIPS; MacKay-Ghahramani note is grey literature (decide)
+R06,Isomap lens,results lens robustness,,,,,PENDING,,,,Tenenbaum-de Silva-Langford 2000 (likely paywalled)
+R07,scikit-learn implementations (PCA/DBSCAN/Isomap),methods,,,,,PENDING,,,,Pedregosa et al. 2011 JMLR
+R08,"Applied Mapper work rarely checks graph features against null models",results framing,,,,,PENDING,,,,HIGH RISK literature claim; support (e.g. review coverage) or soften
+R09,omega-squared effect size,backup ANOVA slide,,,,,PENDING,,,,Candidate: Olejnik-Algina 2003 or Hays; only if slide kept
+B01,Statcast field definitions (pfx_x/pfx_z movement; spin axis; extension; release position),baseball primer,,,,,PENDING,,,,Baseball Savant CSV documentation (web source + access date)
+B02,Statcast pitch-type codes (FF SI FC SL ST CU CH FS etc.),baseball primer,,,,,PENDING,,,,Baseball Savant documentation
+B03,"Statcast added sweeper and slurve labels in 2023",intro hook,,,,,PENDING,,,,HIGH RISK: needs dated official MLB/Savant source
+B04,"FF/SI, CH/FF, FC/FF, CU/ST, SL/ST are pairs pitch classifiers are known to confuse",results 'labels cut a continuum',,,,,PENDING,,,,HIGH RISK: unsourced; find evidence or reword to our adjacency result + observed Statcast reclassifications
+B05,Data pulled with pybaseball,methods,,,,,PENDING,,,,Software citation (GitHub/PyPI; version 2.2.7)
+L01,Mapper introduced by Singh-Memoli-Carlsson 2007,intro / related work,singh2007mapper,,,mapperPBG.pdf,PENDING,,,,Confirm venue/pages from registry (Eurographics PBG 2007)
+L02,Mapper applications (e.g. Lum et al. 2013),related work,lum2013extracting,,,extracting_insights_tda.pdf,PENDING,,,,Confirm DOI/volume from Crossref
+L03,Survey of Mapper applications 2007-2025,related work,madukpe2026review,,,s41060-025-00971-0.pdf,PENDING,,,,Cite published version (IJDSA 21:56); mapperOverview.pdf is the preprint duplicate
+L04,TDA / Mapper in sports analytics,related work,,,,,PENDING,,,,To search; do not cite until full text read
+L05,Pitch classification literature,related work,,,,,PENDING,,,,To search; do not cite until full text read
