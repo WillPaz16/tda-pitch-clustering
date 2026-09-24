@@ -3,7 +3,7 @@ Topological stability of the Mapper graph, plus null models.
 
 Refits Mapper on the saved (pitcher, pitch_type) archetypes under:
   grid       -- n_cubes x perc_overlap x eps around the chosen parameters
-  bootstrap  -- pitchers resampled with replacement, chosen parameters
+  subsample  -- 80% of pitchers drawn without replacement, chosen parameters
   null_gauss -- Gaussian with the archetypes' mean/covariance (no structure)
   null_shuffle -- each feature shuffled within pitch type (keeps per-type
                   marginals, destroys within-type joint structure)
@@ -43,7 +43,7 @@ from tda_classifier import load_tda_model
 
 BASE = dict(n_cubes=10, perc_overlap=0.3, eps=1.0)
 GRID = dict(n_cubes=[8, 10, 12], perc_overlap=[0.2, 0.3, 0.4], eps=[0.8, 1.0, 1.2])
-N_BOOT, N_NULL, SEED = 30, 10, 42
+N_BOOT, N_NULL, SEED, SUBSAMPLE_FRAC = 30, 10, 42, 0.8
 SLOW_MPH, BRIDGE_TYPES, TOP_K, MIN_ANCHOR_SIZE = 70, {'SL', 'FC'}, 5, 10
 
 
@@ -80,6 +80,15 @@ def fit_graph(X_raw, n_cubes, perc_overlap, eps):
     return G, graph['nodes']
 
 
+def top_betweenness(G, nodes, ptype, k=TOP_K):
+    """The k highest-betweenness giant-component nodes, with each node's
+    majority pitch type. Bridge nodes = those whose majority is SL/FC."""
+    giant = max(nx.connected_components(G), key=len, default=set())
+    btw = nx.betweenness_centrality(G.subgraph(giant))
+    top = sorted(btw, key=btw.get, reverse=True)[:k]
+    return [(n, Counter(ptype[nodes[n]]).most_common(1)[0][0]) for n in top]
+
+
 def features(G, nodes, speed, ptype):
     comps = sorted(nx.connected_components(G), key=len, reverse=True)
     giant = comps[0] if comps else set()
@@ -94,10 +103,8 @@ def features(G, nodes, speed, ptype):
     out['slow_isolated'] = (np.mean([not (node_of[i] & giant) for i in slow]) if slow else np.nan)
 
     Gg = G.subgraph(giant)
-    majority = {n: Counter(ptype[nodes[n]]).most_common(1)[0][0] for n in giant}
-    btw = nx.betweenness_centrality(Gg)
-    top = sorted(btw, key=btw.get, reverse=True)[:TOP_K]
-    out['bridge_frac'] = np.mean([majority[n] in BRIDGE_TYPES for n in top]) if top else np.nan
+    top = top_betweenness(G, nodes, ptype)
+    out['bridge_frac'] = np.mean([t in BRIDGE_TYPES for _, t in top]) if top else np.nan
 
     def anchor(t):
         big = [n for n in giant if len(nodes[n]) >= MIN_ANCHOR_SIZE]
@@ -135,11 +142,13 @@ def main():
     for vals in itertools.product(*GRID.values()):
         record('grid', X_raw, speed, ptype, **dict(zip(GRID, vals)))
 
+    # subsample pitchers WITHOUT replacement: resampling with replacement
+    # duplicates points, which inflates DBSCAN density (~2x the nodes)
     uniq = np.unique(pitchers)
     for _ in range(N_BOOT):
-        pick = rng.choice(uniq, size=len(uniq), replace=True)
-        idx = np.concatenate([np.flatnonzero(pitchers == p) for p in pick])
-        record('bootstrap', X_raw[idx], speed[idx], ptype[idx], **BASE)
+        pick = rng.choice(uniq, size=int(SUBSAMPLE_FRAC * len(uniq)), replace=False)
+        idx = np.flatnonzero(np.isin(pitchers, pick))
+        record('subsample', X_raw[idx], speed[idx], ptype[idx], **BASE)
 
     Xs_real = StandardScaler().fit(X_raw)
     for _ in range(N_NULL):

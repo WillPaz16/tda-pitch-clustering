@@ -356,7 +356,7 @@ def main():
         "clusters": clusters_list,
         "num_clusters": len(clusters_list),
         "num_edges": len(G.edges()),
-        "usage": "Use cluster IDs like 'cube52_cluster0', 'cube61_cluster1', etc."
+        "usage": f"Use cluster IDs like '{clusters_list[0]}', '{clusters_list[1]}', etc."
     }
     
     with open(_DEFAULT_DATA_DIR / 'cluster_query_info.json', 'w') as f:

@@ -86,7 +86,12 @@ def main():
         })
     df = pd.DataFrame(rows)
 
-    candidates = ['cube59_cluster1', 'cube62_cluster2', 'cube62_cluster3']
+    # candidates re-derived from the current model's misroutes (node IDs change
+    # on refit): the 3 destinations reached from the most distinct large hubs
+    mis = pd.read_csv(_ROOT / 'data' / 'crowded_continuum_misroutes.csv')
+    mis = mis[mis['origin_train_n'] >= LARGE_NEIGHBOR_THRESHOLD]
+    candidates = mis.groupby('reassigned_to')['origin_cluster'].nunique().nlargest(3).index.tolist()
+    print(f"Candidates (most distinct large-hub origins of misroutes): {candidates}\n")
 
     print("Candidate attractor nodes vs. all other nodes of the same degree:\n")
     for cand in candidates:

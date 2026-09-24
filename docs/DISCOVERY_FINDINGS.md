@@ -9,6 +9,11 @@ first real attempt to answer that, using the actual fitted graph in
 
 Reproducible via `src/tda/graph_topology_analysis.py`.
 
+> **Model note (2026-09-24):** sections below dated 2026-08-17 were
+> computed on the pre-refit 57-node model. The model was refit 2026-08-18
+> (66 nodes). See "Re-check on the refit model" at the end for which
+> numbers still hold.
+
 ## What the fitted graph actually looks like
 
 The saved KeplerMapper graph has 57 nodes and is **not one connected
@@ -417,8 +422,9 @@ Verified at scale.
   but not distinctive: they describe where pitch types sit in feature
   space, not topology beyond that. Don't present them as topological
   discoveries.
-- Known issue: the bootstrap samples with replacement, which duplicates
-  points and inflates DBSCAN density. It should subsample instead.
+- Resampling: 30 fits on 80% of pitchers drawn without replacement (an
+  earlier with-replacement bootstrap duplicated points and doubled the
+  node count). The three features hold in 97–100% of them.
 
 **2. Persistent homology** (`src/tda/persistence_check.py`). Passes a
 noisy-circle sanity check.
@@ -463,3 +469,32 @@ because, if the graph mostly encodes feature-space geometry, "outcomes
 are smooth on the graph" largely restates what the Stuff+ models already
 capture. The within-tag, usage-controlled test is deferred to future
 work.
+
+## Re-check on the refit model (2026-09-24)
+
+The 2026-08-17 findings above came from the pre-refit 57-node model. All
+model-derived scripts were rerun on the current 66-node model (fit on the
+full 2025 season, 3,943 archetypes). Hardcoded node IDs were replaced with
+ones derived from the graph, since node IDs change on every refit.
+
+| Finding | Pre-refit (57 nodes) | Refit (66 nodes) | Status |
+|---|---|---|---|
+| Misroutes landing on a graph-adjacent cluster | 93.8% | 89.7% (3,972 of 4,430) | holds |
+| degree ↔ round-trip accuracy (Spearman) | −0.67 | −0.72 | holds, **but see below** |
+| Top-5 betweenness nodes, majority type | SL/FC band | SL, FF, FC, ST, FC | mostly holds (3/5 SL/FC, 4/5 counting ST) |
+| Pitchers with 2+ own types in bridge nodes | 156 | 66 (3 bridge nodes, not 5) | smaller; count depends on how many nodes qualify |
+| Most common same/adjacent label pairs | FF/SI, CH/FF, FC/FF, CU/ST, SL/ST | FF/SI, CH/FF, CH/SI, FC/FF, FC/SI, FF/FS, CH/FC, CU/ST, …, SL/ST | holds |
+| "Attractor node" hypothesis | refuted | still no pattern (re-derived candidates: betweenness at or below same-degree peers except the top hub itself) | still refuted |
+
+**Caveat on the confidence-map claim (verified on all 66 nodes, but small
+n).**
+- Node size (`train_n`) predicts round-trip accuracy more strongly than
+  degree does (ρ = −0.78 vs −0.72), and degree and size are strongly
+  correlated (ρ = 0.84).
+- Controlling for size, degree's partial Spearman correlation with
+  accuracy is only −0.21 (p = 0.10). Controlling for degree, size's
+  partial correlation is −0.47 (p < 10⁻⁴).
+- So "crowded = less reliable" is mostly a statement about node *size*,
+  not graph *topology*. The confidence-map option (option 2 above) should
+  say so, or drop the topology wording. Degree adds at most a small effect
+  that n = 66 can't confirm.

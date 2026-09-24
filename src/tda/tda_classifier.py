@@ -6,12 +6,10 @@ which both classify individual pitches against the fitted Mapper cluster
 centroids and previously duplicated this logic independently.
 """
 
-import io
 import pickle
 import re
 import numpy as np
-import pandas as pd
-import requests
+import pybaseball
 from kmapper.cover import Cover
 from scipy.spatial.distance import cdist
 from sklearn.preprocessing import MinMaxScaler
@@ -25,22 +23,12 @@ def load_tda_model(model_path):
 
 def fetch_savant_csv(start_date, end_date):
     """
-    Fetch raw Statcast data via the Baseball Savant CSV export directly.
-    Avoids the pybaseball.statcast() postprocessing bug (duplicate-column
-    crash) present in this environment -- see docs/METHODOLOGY_REVIEW.md.
+    Fetch raw Statcast data for a date range.
+    A single Savant CSV export silently caps at 25,000 rows (~3 days of
+    games), so multi-day ranges were truncated. pybaseball splits the range
+    into small requests; its old postprocessing crash was fixed by 2.2.7.
     """
-    url = (
-        "https://baseballsavant.mlb.com/statcast_search/csv?"
-        "all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&"
-        "hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&"
-        "pitcher_throws=&batter_stands=&hfSA=&game_date_gt={}&game_date_lt={}&"
-        "team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&"
-        "min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&"
-        "sort_order=desc&min_abs=0&type=details&"
-    ).format(start_date, end_date)
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-    return pd.read_csv(io.StringIO(response.text))
+    return pybaseball.statcast(start_dt=start_date, end_dt=end_date, verbose=False)
 
 
 def prepare_pitch_features(df, feature_cols):
