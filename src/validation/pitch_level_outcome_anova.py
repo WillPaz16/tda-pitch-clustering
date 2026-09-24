@@ -87,7 +87,12 @@ def anova(groups):
     allv = np.concatenate(groups)
     ss_total = ((allv - allv.mean()) ** 2).sum()
     ss_between = sum(len(g) * (g.mean() - allv.mean()) ** 2 for g in groups)
-    return f, p, ss_between / ss_total, len(groups), len(allv)
+    k, n = len(groups), len(allv)
+    ms_within = (ss_total - ss_between) / (n - k)
+    # omega^2 corrects eta^2's upward bias from the number of groups, so a
+    # 60-cluster labeling can't beat a 12-pitch-type labeling just by being finer
+    omega2 = (ss_between - (k - 1) * ms_within) / (ss_total + ms_within)
+    return f, p, ss_between / ss_total, omega2, k, n
 
 
 def run(df, metrics, labelings):
@@ -105,8 +110,9 @@ def run(df, metrics, labelings):
             for level, groups in (('pitch', pitch_groups), ('pitcher', cell_groups)):
                 if len(groups) < 2:
                     continue
-                f, p, eta2, k, n = anova(groups)
-                rows.append(dict(labeling=label, level=level, metric=m, F=f, p=p, eta2=eta2, groups=k, n=n))
+                f, p, eta2, omega2, k, n = anova(groups)
+                rows.append(dict(labeling=label, level=level, metric=m, F=f, p=p, eta2=eta2,
+                                 omega2=omega2, groups=k, n=n))
     return pd.DataFrame(rows)
 
 
@@ -124,7 +130,8 @@ def main():
     agree = (df['mapper_primary'] == df['centroid_primary']).mean()
     print(f"Labeled {len(df)} pitches | DBSCAN noise {noise:.1%} | labelings agree on {agree:.1%}")
 
-    res = run(df, ['whiff', 'chase', 'gb', 'fb', 'xwoba'], ['centroid_primary', 'mapper_primary'])
+    # pitch_type = Statcast's own tag: the baseline the clusters have to beat
+    res = run(df, ['whiff', 'chase', 'gb', 'fb', 'xwoba'], ['pitch_type', 'centroid_primary', 'mapper_primary'])
     res['bonferroni_sig'] = res['p'] < 0.05 / len(res)
     pd.set_option('display.width', 160)
     print(res.to_string(index=False, float_format=lambda v: f'{v:.3g}'))

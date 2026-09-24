@@ -357,6 +357,21 @@ the "discovery" work to do next.
      almost always vary less within groups than 6 pitch types). Not yet
      rebuilt.
 
+   **Pitch-type baseline (2026-09-24), with ω² to correct for group
+   count:** Statcast's own `pitch_type` tag explains *more* outcome
+   variance than either cluster labeling on every metric (pitch-level ω²:
+   whiff 2.8% vs 1.9% centroid / 1.5% Mapper; GB 3.4% vs 1.8% / 0.9%;
+   FB 1.8% vs 0.9% / 0.5%; chase 0.56% vs 0.40% / 0.27%; xwOBA ≈ 0 for
+   all). The pitcher-level test agrees. So "clusters describe pitch
+   outcomes better than tags" is **not supported** as a marginal claim.
+   Caveats: the tags encode usage (count, location) and are pitcher-aware,
+   and a one-way ANOVA uses only the node partition, not the graph's
+   edges. Decision (2026-09-24): the thesis claim is reframed from outcome
+   prediction to shape, i.e. that pitch-shape space has stable, measurable
+   topology which the tags partition away. The plan is stability plus a
+   null model, graph-signal smoothness of outcomes, and a persistent
+   homology appendix.
+
 7. **Chase% uses a fixed rectangular strike zone**
    (`zone_z_min, zone_z_max = 1.6, 3.5` in `ProStuff+.ipynb`) instead of
    the actual per-pitch, batter-specific `sz_top`/`sz_bot` columns
