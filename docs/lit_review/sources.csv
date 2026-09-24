@@ -1,0 +1,43 @@
+bib_key,file,identifier,version,metadata_checked_against,status,notes
+deymemoliwang2017,DeyMemoliWang2017_arXiv1703.07387.pdf,arXiv:1703.07387v1,preprint (full version),arXiv API,IN_HAND,Theorem numbers in ledger T21/T22 come from this version
+deymemoliwang2017socg,DeyMemoliWang2017_LIPIcs_SoCG.pdf,doi:10.4230/LIPIcs.SoCG.2017.36,published (LIPIcs 77),DataCite,IN_HAND,Cross-check theorem numbering vs arXiv v1
+hatcher2002,Hatcher_AlgebraicTopology.pdf,author-hosted free edition (pi.math.cornell.edu/~hatcher),published book (free online edition),PENDING (Open Library ISBN),IN_HAND,
+borsuk1948,Borsuk1948_FundMath35.pdf,doi:10.4064/fm-35-1-217-234,published (Fund. Math. 35),publisher page (IMPAN; CC-BY),IN_HAND,Original nerve theorem
+bauerkerberrollrolle2023,A unified view on the functorial nerve theorem and its variations.pdf,doi:10.1016/j.exmath.2023.04.005,published (Expo. Math. 41(4) 125503),Crossref,IN_HAND,Miami access
+edelsbrunnerharerpatel2008,Reeb Spaces of Piecewise Linear Mappings.pdf,doi:10.1145/1377676.1377720,CHECK (header lacks ACM block; may be author copy),Crossref,IN_HAND,Miami access; confirm it matches SoCG 2008 pp. 242-250
+munchwang2016,MunchWang2016_LIPIcs_SoCG.pdf,doi:10.4230/LIPIcs.SoCG.2016.53,published (LIPIcs 51),DataCite,IN_HAND,
+carriereoudot2018,Structure and Stability of the One-Dimensional Mapper.pdf,doi:10.1007/s10208-017-9370-z,published (FoCM 18(6) 1333-1396),Crossref,IN_HAND,Miami access. arXiv journal_ref wrongly says 'Journal of Computational Mathematics'
+carrieremicheloudot2018,CarriereMichelOudot2018_JMLR.pdf,JMLR 19(12):1-39,published,publisher page (jmlr.org),IN_HAND,
+singh2007mapper,mapperPBG.pdf,doi:10.2312/SPBG/SPBG07/091-100,published (Eurographics SPBG 2007),DataCite,IN_HAND,
+ester1996dbscan,Ester1996_KDD96_AAAI.pdf,KDD-96 pp. 226-231 (AAAI Press),published,publisher page (aaai.org),IN_HAND,Supersedes folder copy DBSCAN.pdf (same paper; AAAI copy is OCR'd scan)
+levinabickel2004,LevinaBickel2004_NIPS17.pdf,NIPS 17 (2004),published,publisher page + official BibTeX (proceedings.neurips.cc),IN_HAND,Official bib lists no pages
+pedregosa2011sklearn,Pedregosa2011_sklearn_JMLR.pdf,JMLR 12(85):2825-2830,published,publisher page (jmlr.org),IN_HAND,
+tralie2018ripserpy,TralieSaulBarOn2018_ripserpy_JOSS.pdf,doi:10.21105/joss.00925,published,OpenAlex,IN_HAND,
+vanveen2019keplermapper,vanVeen2019_KeplerMapper_JOSS.pdf,doi:10.21105/joss.01315,published,OpenAlex,IN_HAND,
+facco2017twonn,Facco2017_TwoNN_SciRep.pdf,doi:10.1038/s41598-017-11873-y,published,OpenAlex,IN_HAND,
+lum2013extracting,extracting_insights_tda.pdf,doi:10.1038/srep01236,published,OpenAlex,IN_HAND,
+madukpe2026review,s41060-025-00971-0.pdf,doi:10.1007/s41060-025-00971-0,published (IJDSA 21:56),OpenAlex,IN_HAND,Online 2025; issue 2026 - settle year from Crossref
+axler2024ladr,Axler2024_LADR4e.pdf,doi:10.1007/978-3-031-41026-0,CHECK edition (author-hosted),OpenAlex,IN_HAND,Only needed if spectral theorem/SVD slides cite a textbook
+fasy2014confidence,Fasy2014_arXiv1303.7117.pdf,doi:10.1214/14-AOS1252,preprint (arXiv),OpenAlex,IN_HAND,Get published version before any pinpoint citation
+robinsonturner2017,RobinsonTurner2017_arXiv1310.7467.pdf,doi:10.1007/s41468-017-0008-7,preprint (arXiv),OpenAlex,IN_HAND,Get published version before any pinpoint citation
+bauer2021ripser,Bauer2021_Ripser_arXiv1908.02518.pdf,doi:10.1007/s41468-021-00071-5,preprint (arXiv),arXiv API,IN_HAND,Published version is open access (manual download)
+dorogush2018catboost,CatBoost.pdf,arXiv:1810.11363,preprint,OpenAlex,IN_HAND,Future work only
+mohnhaupt2023,Mohnhaupt_Bsc.pdf,ETH Zurich BSc thesis 2023,thesis,none,IN_HAND,Secondary pointer only
+,DBSCAN.pdf,,,,SUPERSEDED,Use ester1996dbscan (AAAI copy)
+,mapperOverview.pdf,,,,SUPERSEDED,Preprint of madukpe2026review
+,algebraic-topology.pdf,,,,SUPERSEDED,Lecture notes; replaced by hatcher2002
+edelsbrunnerletscherzomorodian2002,,doi:10.1007/s00454-002-2885-2,,OpenAlex,MANUAL_DOWNLOAD,Free (bronze OA) but site bot-protected - download in browser
+zomorodiancarlsson2005,,doi:10.1007/s00454-004-1146-y,,OpenAlex,MANUAL_DOWNLOAD,Free (bronze OA) but site bot-protected
+carlsson2009topology,,doi:10.1090/S0273-0979-09-01249-X,,OpenAlex,MANUAL_DOWNLOAD,Free (AMS) but Cloudflare-protected
+jolliffecadima2016,,doi:10.1098/rsta.2015.0202,,OpenAlex + Europe PMC (PMC4792409),MANUAL_DOWNLOAD,Free in PMC; PDF endpoint bot-protected
+nicolau2011,,doi:10.1073/pnas.1102826108,,OpenAlex + Europe PMC (PMC3084136),MANUAL_DOWNLOAD,Optional related work
+tenenbaum2000isomap,,doi:10.1126/science.290.5500.2319,,OpenAlex,NEEDS_MIAMI,Isomap lens
+eckartyoung1936,,doi:10.1007/BF02288367,,OpenAlex,NEEDS_MIAMI,Best rank-k approximation (original)
+pearson1901,,doi:10.1080/14786440109462720,,OpenAlex,NEEDS_MIAMI,PCA original
+hotelling1933,,doi:10.1037/h0071325,,OpenAlex,NEEDS_MIAMI,PCA original
+edelsbrunnerharer2010,,doi:10.1090/mbk/069,,OpenAlex,NEEDS_MIAMI,Textbook: nerve theorem (convex version) / persistence / Reeb graphs
+blumberg2014,,doi:10.1007/s10208-014-9201-4,,OpenAlex,NEEDS_MIAMI,Optional (null-model framing)
+schubert2017dbscan,,doi:10.1145/3068335,,OpenAlex,NEEDS_MIAMI,Optional (modern DBSCAN definitions)
+munkres,,Topology 2nd ed.,,PENDING,NEEDS_MIAMI,Point-set definitions (T01-T03); ISBN to verify
+reeb1946,,C. R. Acad. Sci. Paris 222:847-849,,CiNii,LOCATING,Gallica scan not yet found
+prokhorenkova2018catboost,,arXiv:1706.09516 / NeurIPS 2018,,OpenAlex,LOCATING,Future work only
