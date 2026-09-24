@@ -493,6 +493,24 @@ noisy-circle sanity check.
 - Real archetypes are more concentrated (median merge scale 1.00 vs
   1.52–1.54 Gaussian, 1.24–1.25 shuffle).
 - Caveat: that shuffle null breaks the spin_cos/spin_sin circle; see 3.
+- **Why the graph has cycles anyway (verified at scale,
+  `src/tda/nerve_homology.py`).** KeplerMapper draws only the 1-skeleton
+  of the nerve. With a 2-D lens, many triples of nodes share archetypes,
+  so the nerve has 2-simplices (113 triangles in the saved model) that
+  fill the graph's cycles.
+
+  | | graph b₁ | full-nerve b₁ |
+  |---|---|---|
+  | saved model | 86 | 1 |
+  | real, 27 grid fits | 33–147 (median 76) | 0–4 (median 1) |
+  | Gaussian null, 5 draws | 56–97 | 2–9 |
+  | shuffle null, 5 draws | 56–80 | 0–2 |
+
+  Graph cycles track the parameters, not the data. Once the nerve is
+  treated as the simplicial complex it is, b₁ is small, unstable, and
+  within the null range, consistent with persistent homology. This is
+  the precise version of "the cycles are cover artifacts", and it ties
+  straight back to the simplicial-complex slides.
 
 **3. Intrinsic dimension** (`src/tda/intrinsic_dimension.py`). The TwoNN
 and Levina–Bickel MLE estimators both pass sanity checks (2-D plane → 2.0,
