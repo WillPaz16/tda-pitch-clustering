@@ -26,18 +26,18 @@ mohnhaupt2023,Mohnhaupt_Bsc.pdf,ETH Zurich BSc thesis 2023,thesis,none,IN_HAND,S
 ,DBSCAN.pdf,,,,SUPERSEDED,Use ester1996dbscan (AAAI copy)
 ,mapperOverview.pdf,,,,SUPERSEDED,Preprint of madukpe2026review
 ,algebraic-topology.pdf,,,,SUPERSEDED,Lecture notes; replaced by hatcher2002
-edelsbrunnerletscherzomorodian2002,,doi:10.1007/s00454-002-2885-2,,OpenAlex,MANUAL_DOWNLOAD,Free (bronze OA) but site bot-protected - download in browser
-zomorodiancarlsson2005,,doi:10.1007/s00454-004-1146-y,,OpenAlex,MANUAL_DOWNLOAD,Free (bronze OA) but site bot-protected
-carlsson2009topology,,doi:10.1090/S0273-0979-09-01249-X,,OpenAlex,MANUAL_DOWNLOAD,Free (AMS) but Cloudflare-protected
-jolliffecadima2016,,doi:10.1098/rsta.2015.0202,,OpenAlex + Europe PMC (PMC4792409),MANUAL_DOWNLOAD,Free in PMC; PDF endpoint bot-protected
-nicolau2011,,doi:10.1073/pnas.1102826108,,OpenAlex + Europe PMC (PMC3084136),MANUAL_DOWNLOAD,Optional related work
-tenenbaum2000isomap,,doi:10.1126/science.290.5500.2319,,OpenAlex,NEEDS_MIAMI,Isomap lens
-eckartyoung1936,,doi:10.1007/BF02288367,,OpenAlex,NEEDS_MIAMI,Best rank-k approximation (original)
-pearson1901,,doi:10.1080/14786440109462720,,OpenAlex,NEEDS_MIAMI,PCA original
-hotelling1933,,doi:10.1037/h0071325,,OpenAlex,NEEDS_MIAMI,PCA original
-edelsbrunnerharer2010,,doi:10.1090/mbk/069,,OpenAlex,NEEDS_MIAMI,Textbook: nerve theorem (convex version) / persistence / Reeb graphs
-blumberg2014,,doi:10.1007/s10208-014-9201-4,,OpenAlex,NEEDS_MIAMI,Optional (null-model framing)
-schubert2017dbscan,,doi:10.1145/3068335,,OpenAlex,NEEDS_MIAMI,Optional (modern DBSCAN definitions)
-munkres,,Topology 2nd ed.,,PENDING,NEEDS_MIAMI,Point-set definitions (T01-T03); ISBN to verify
+edelsbrunnerletscherzomorodian2002,Topological Persistence and Simplification.pdf,doi:10.1007/s00454-002-2885-2,"published (DCG 28:511-533, 2002)",OpenAlex,IN_HAND,Original persistence paper
+zomorodiancarlsson2005,Computing Persistent Homology.pdf,doi:10.1007/s00454-004-1146-y,"published (DCG 33:249-274, 2005)",OpenAlex,IN_HAND,Print year 2005 per PDF header (online 2004)
+carlsson2009topology,Topology and data.pdf,doi:10.1090/S0273-0979-09-01249-X,"published (Bull. AMS 46(2):255-308, 2009)",OpenAlex,IN_HAND,
+jolliffecadima2016,Principal component analysis a review and recent developments.pdf,doi:10.1098/rsta.2015.0202,published (Phil. Trans. R. Soc. A 374:20150202),OpenAlex + Europe PMC (PMC4792409),IN_HAND,Also documents Pearson/Hotelling as PCA origin (p2)
+nicolau2011,nicolau-et-al-2011-topology-based-data-analysis-identifies-a-subgroup-of-breast-cancers-with-a-unique-mutational.pdf,doi:10.1073/pnas.1102826108,published (PNAS),OpenAlex + Europe PMC (PMC3084136),IN_HAND,Optional related work
+tenenbaum2000isomap,,doi:10.1126/science.290.5500.2319,,OpenAlex; documented by scikit-learn user guide sec 2.2.2 (accessed 2026-09-24),ATTRIBUTION_ONLY,Unavailable via Miami. May name as Isomap's origin; no content claims or pinpoints
+eckartyoung1936,,doi:10.1007/BF02288367,,OpenAlex,UNAVAILABLE,Unavailable via Miami. Substitute: Axler LADR4e Thm 7.92 (check norm vs deck's Frobenius claim)
+pearson1901,Pearson1901_PhilMag_Zenodo1430636.pdf,doi:10.1080/14786440109462720,published (Phil. Mag. 2(11):559-572; public-domain scan),"OpenAlex + Zenodo API (record 1430636, CC0, linked to DOI)",IN_HAND,Original PCA paper
+hotelling1933,,doi:10.1037/h0071325,,OpenAlex,NEEDS_MIAMI,PCA original; not yet obtained. Origin documented by jolliffecadima2016 p2
+edelsbrunnerharer2010,,doi:10.1090/mbk/069,,OpenAlex,UNAVAILABLE,Unavailable via Miami. Substitute: bauerkerberrollrolle2023 p4 (closed convex covers of R^n) and p10 (Leray; Borsuk Cor 3)
+blumberg2014,"Robust Statistics, Hypothesis Testing, and Confidence Intervals for Persistent Homology on Metric Measure Spaces.pdf",doi:10.1007/s10208-014-9201-4,"published (FoCM 14:745-789, 2014)",OpenAlex,IN_HAND,Null-model / hypothesis-testing framing
+schubert2017dbscan,"DBSCAN Revisited, Revisited Why and How You Should (Still) Use DBSCAN.pdf",doi:10.1145/3068335,"published (ACM TODS, article 19)",OpenAlex,IN_HAND,Modern DBSCAN definitions
+munkres2000topology,,ISBN 0131816292,"Topology, 2nd ed., Prentice Hall, 2000 (537 pp)",Open Library ISBN record,BOOK_NO_PDF,Will has a physical copy: confirm ISBN on copyright page and supply page numbers for T01-T03 (check 3)
 reeb1946,,C. R. Acad. Sci. Paris 222:847-849,,CiNii,LOCATING,Gallica scan not yet found
 prokhorenkova2018catboost,,arXiv:1706.09516 / NeurIPS 2018,,OpenAlex,LOCATING,Future work only
