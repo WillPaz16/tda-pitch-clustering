@@ -30,5 +30,5 @@ python -m pip install -r requirements.txt
 1. `notebooks/TDA_Pitch_Clustering.ipynb` — fits the Mapper model on a season of Statcast data, saves `models/tda_mapper_model.pkl`.
 2. `notebooks/ProStuff+.ipynb` / `CollegeStuff+.ipynb` — train the xwOBA/miss/chase CatBoost models and compute pitcher-level Stuff+.
 3. `src/tda/classify_pitches_to_csv.py` or `src/tda/assign_pitch_stuffplus_clusters.py` — assign new pitches to existing clusters (and Stuff+, in the latter) via nearest-centroid distance. See [CLASSIFY_PITCHES_README.md](CLASSIFY_PITCHES_README.md).
-4. `src/tda/tda_graph_visualization.py` — builds the cluster graph visualization.
-5. `src/validation/*.py` — consistency, variance, and predictive validation of the resulting clusters against outcomes.
+4. `src/validation/pitch_level_outcome_anova.py` — outcome ANOVA of the clusters against a pitch-type baseline; other `src/validation/*.py` scripts cover consistency and predictive checks.
+5. `src/tda/mapper_stability.py`, `persistence_check.py`, `intrinsic_dimension.py` — shape analyses against null models (see [DISCOVERY_FINDINGS.md](DISCOVERY_FINDINGS.md)).

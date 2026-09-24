@@ -26,8 +26,13 @@ Flat directory reorganized into a standard research-repo layout. Baseline
 - `predictive_model_comparison_only.py` — explicit subset of `predictive_model_comparison.py`
 - `analyze_weights.py`, `analyze_correlation.py` — read CSVs that no longer exist anywhere in the repo
 
+## Deleted 2026-09-24 (superseded or orphaned, recoverable from git history)
+- `fetch_real_statcast_new.py`, `integrate_real_data.py`, `anova_real_data.py`, `cluster_outcome_validation.py` and their CSVs — old ANOVA pipeline (pseudo-replicated, fake p-values); replaced by `src/validation/pitch_level_outcome_anova.py`
+- `analyze_graph_distances.py` — read `graph_data.json`, which nothing produced; its output was never read
+- `tda_graph_visualization.py` — its HTML was already removed as the wrong visualization; its CSV/JSON outputs had no readers
+- `variance_analysis.py` — no same-k baseline; superseded by the pitch-type baseline in the outcome ANOVA
+
 ## Kept despite overlap
-- `src/validation/cluster_outcome_validation.py` subsumes `fetch_real_statcast_new.py` + `integrate_real_data.py` + `anova_real_data.py` as an all-in-one script. Kept as a possible end-to-end reproduction entry point — not deleted.
 - `src/tda/classify_pitches_to_csv.py` vs `src/tda/assign_pitch_stuffplus_clusters.py` — different scope (classify-only vs classify+Stuff+ combined), both kept.
 
 ## Resolved since this reorg
