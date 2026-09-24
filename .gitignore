@@ -6,3 +6,7 @@ catboost_info/
 .vscode/
 .ipynb_checkpoints/
 graphify-out/
+
+# Source PDFs stay local: many are publisher-copyrighted and this repo is
+# public. Citations live in docs/lit_review/ instead.
+Lit Review/
