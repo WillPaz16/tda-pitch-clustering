@@ -351,21 +351,26 @@ crowded, popular ones that are least self-consistent). Corrected here.
    descriptive result about the fitted model, not an operational claim
    about how new pitches get classified.
 
-2. **The topology-as-confidence-map framing (recommended — strongest,
-   most accurate, no code changes needed).** State it as: the graph's
-   own shape predicts where downstream classification can and can't be
-   trusted, for two distinct, explainable reasons — (a) the densest,
-   most crowded part of the continuum has real ambiguity between many
-   similar archetypes (measurable: high-degree clusters have the lowest
-   ground-truth self-consistency, Spearman r=−0.67), and (b) rare
-   archetypes are hard to observe reliably over short time windows,
-   independent of whether the classifier works (ground-truth
-   self-consistency for the isolated clusters is actually high). This is
-   accurate, quantified, and turns the whole investigation into a
-   feature rather than an apology — genuinely useful framing for the
-   player-development/R&D angle too: know how much to trust a specific
-   pitch classification based on how crowded or how rare its region of
-   the graph is.
+2. **Node size as a reliability map (reworded 2026-09-24; secondary to
+   the shape claim below).** The original wording said graph degree
+   predicts where classification can be trusted. On the refit model,
+   degree's apparent effect turned out to be mostly node size (see "Re-check
+   on the refit model"). State it as: **how much to trust a cluster label
+   depends on how crowded the node is, i.e. how many archetypes it holds.**
+   - Big nodes in the dense core are the least self-consistent. Their own
+     training archetypes round-trip to them least often (Spearman ρ = −0.78
+     between node size and round-trip accuracy, n = 66), because many
+     near-identical neighboring nodes compete for the same points.
+   - Small nodes, including the isolated slow-pitch ones, are highly
+     self-consistent on training data.
+   - The graph's topology (degree, component) adds no reliable signal beyond
+     size. Degree adds −0.21 to −0.35 after controlling for size, depending
+     on whether two tiny nodes are included, so the effect isn't robust.
+   - R&D reading: treat a cluster label as a confident call for a pitch in
+     a small, distinct node, and as "one of several near-identical shapes"
+     in a big core node. Multi-membership (docs/METHODOLOGY_REVIEW.md item
+     3) is the better tool for the core, since it reports all the nodes a
+     pitch belongs to.
 
 3. **Restrict any single-pitch live-classification demo to the
    well-populated clusters**, and be explicit that the crowded, dense
@@ -389,12 +394,12 @@ crowded, popular ones that are least self-consistent). Corrected here.
    would still help the crowded-continuum ambiguity, though.
 
 Given the timeline (defense a few months out, presentation work
-intentionally paused for now), **option 2 is the realistic and strongest
-near-term choice** — it requires no pipeline changes, just precise
-language in the deck, and the underlying numbers (the 78% ground-truth
-round-trip rate, the degree/self-consistency correlation,
-the asymmetric direction of the errors) are already documented above if
-you want to cite them directly. Option 4 is the right thing to do
+intentionally paused for now), **option 2 is the realistic near-term
+choice** — it requires no pipeline changes, just precise language in the
+deck, and the underlying numbers (the 78% ground-truth round-trip rate,
+the node-size/self-consistency correlation, the asymmetric direction of
+the errors) are already documented above if you want to cite them
+directly. Option 4 is the right thing to do
 eventually and is now a clearly scoped, well-understood fix — worth
 doing if there's time before the defense, but it's a methodology change,
 not a wording change, so it should happen deliberately and separately
@@ -454,7 +459,9 @@ and Levina–Bickel MLE estimators both pass sanity checks (2-D plane → 2.0,
 - It is **moderately constrained** by within-type physical coupling
   (~0.5–0.8 of a dimension below a fair null).
 - Pitch-type tags draw hard boundaries across it. The label-overlap
-  result and the ~45% multi-membership rate support this.
+  result supports this. So does multi-membership: ~55% of live pitches
+  belong to 2+ overlapping nodes, and for ~45% the single centroid label
+  isn't one of the pitch's actual memberships.
 - Mapper's merit here is not discovering exotic structure. It produces an
   interpretable summary of a simple, continuous space, and, **paired with
   null models, persistent homology, and dimension estimates**, it
@@ -494,7 +501,15 @@ n).**
 - Controlling for size, degree's partial Spearman correlation with
   accuracy is only −0.21 (p = 0.10). Controlling for degree, size's
   partial correlation is −0.47 (p < 10⁻⁴).
-- So "crowded = less reliable" is mostly a statement about node *size*,
-  not graph *topology*. The confidence-map option (option 2 above) should
-  say so, or drop the topology wording. Degree adds at most a small effect
-  that n = 66 can't confirm.
+- Dropping the two tiny nodes that have no live data moves degree's
+  partial correlation to −0.35 (p = 0.004), so the residual degree effect
+  isn't robust. Size's effect stays strong either way (−0.47 to −0.64).
+- Live-data check: `data/pitch_stuffplus_clusters.csv` (2025-03-28 to
+  04-04) was truncated at the 25k Savant cap and has been regenerated in
+  full (28,522 pitches). On the truncated pull, degree seemed to predict
+  live speed-matching error beyond size (partial −0.46). On the full pull
+  that disappears (−0.16, p = 0.20). Degree, size, and component size each
+  correlate about −0.4 with live error, and none separates from the
+  others.
+- So "crowded = less reliable" is a statement about node *size*, not graph
+  *topology*. Option 2 above has been reworded to match.

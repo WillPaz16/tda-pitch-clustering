@@ -186,12 +186,14 @@ Rough target for an hour-long talk (fine to run over/under):
       the whole approach and gives a concrete, actionable framing:
       specific pitchers whose "two different" pitches may not be
       functionally distinct, worth a real pitch-design conversation.
-- [ ] **Decide whether to adopt the "topology as confidence map" framing
-      for the MLB section** (see docs/DISCOVERY_FINDINGS.md) — this is
-      now the recommended option, needs no pipeline changes, just deck
-      language once presentation work resumes. The slider/cutter bridge
-      finding and the named-pitcher repertoire-overlap validation are
-      strong complementary talking points alongside it.
+- [x] **Reworded (2026-09-24)**: the "topology as confidence map"
+      framing became "node size as a reliability map". On the refit
+      model, degree's link to reliability is mostly node size, and the
+      live-data degree effect vanished once the truncated
+      pitch_stuffplus_clusters.csv was regenerated. It's now secondary
+      to the shape claim (DISCOVERY_FINDINGS.md, "Merit of Mapper"
+      section). Numbers above from the 57-node model are superseded; see
+      "Re-check on the refit model" there.
 - [x] **FIXED (2026-08-18)**: circular-`spin_axis`-treated-as-linear and
       feature-space-mismatch-between-fit-and-inference holes, together
       (both touch the same fit). `spin_axis` is now encoded as
