@@ -460,6 +460,31 @@ Verified at scale.
     nulls isolate slow pitches in only about half the fits, against 100%
     for real data. That's a single-lens result, so don't lean on it.
 
+**Data provenance and small-sample archetypes (verified, 2026-09-24).**
+- Provenance: a fresh pull of 2025-03-28 to 11-04 returns exactly 721,799
+  pitches and rebuilds 3,943 archetypes. Only 0.3% of archetypes differ
+  from the saved ones by more than 0.01 scaled units, and 3 changed pitch
+  type (Statcast reclassification after the fit). The saved model is the
+  full season as documented.
+- The notebook applies **no minimum pitch count**. The median archetype
+  averages 98 pitches, but 8.8% average fewer than 5 and 22% fewer than
+  20. The slow (< 70 mph) archetypes are especially thin: median 9
+  pitches, and a quarter average 2 or fewer.
+- Sensitivity (one PCA fit at the chosen parameters per threshold):
+
+  | Min pitches | Archetypes | Slow | Components | Slow isolated | CU→FF ρ |
+  |---|---|---|---|---|---|
+  | 1 (as fitted) | 3,940 | 131 | 9 | 97% | 1.00 |
+  | 10 | 3,388 | 63 | 5 | 83% | 1.00 |
+  | 20 | 3,073 | 29 | 8 | none in any node | 0.98 |
+
+  The continuum ordering is unaffected. The slow pitches stay off the
+  continuum at every threshold, but at ≥ 20 pitches they're too sparse to
+  form nodes at all (DBSCAN noise). So "slow pitches sit apart from the
+  continuum" is robust, while "they form their own small components"
+  depends on keeping low-count archetypes. Persistent homology and
+  intrinsic dimension have not been rerun with a threshold.
+
 **2. Persistent homology** (`src/tda/persistence_check.py`). Passes a
 noisy-circle sanity check.
 - **No persistent H₁**, in real data or either null (5 subsamples of

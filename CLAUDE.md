@@ -13,6 +13,29 @@ Thesis defense/talk is a few months out (as of 2026-08-17). Presentation
 source lives in `docs/presentation/` (`main.tex` — paper skeleton with
 abstract only; `presi.tex` — Beamer slide deck, the real content).
 
+## Scope decisions (2026-09-24)
+
+- Thesis claim is about the **shape** of pitch-shape space (see
+  docs/DISCOVERY_FINDINGS.md "Merit of Mapper"), not outcome prediction.
+- **Stuff+ is future work only**: one bullet on the pitch-design map idea
+  (Mapper graph = realistic nearby shapes, Stuff+ = objective). Will wants
+  to pursue it later, but it's out of scope for this thesis.
+- **Arm angle is future work, not added to the model.** Arm slot is
+  largely encoded by release position already, and it's a pitcher-level
+  (delivery) trait. The right use is movement *relative to* arm slot,
+  which means redesigning the features, not adding a column.
+- No `main.tex` paper for now; Will is getting guidelines and will report
+  back.
+- Talk: about 45 min of math (topology + Mapper), 15 min of results.
+  The audience is mathematicians, not baseball people, so the deck needs a
+  short primer on pitch types and features, and the R&D framing stays
+  light. **But all baseball language must stay correct and standard**
+  (induced vertical break, arm-side/glove-side, extension, spin axis,
+  Statcast pitch-type codes), so the material can be reused for
+  baseball-audience talks later.
+- The slider/cutter "bridge" is dropped as a finding (it depends on the
+  lens and the nulls reproduce it).
+
 ## Presentation status
 
 Both `.tex` files are drafts, not close to finished. `main.tex` has only a
