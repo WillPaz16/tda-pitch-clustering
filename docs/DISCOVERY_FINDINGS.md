@@ -430,6 +430,35 @@ Verified at scale.
 - Resampling: 30 fits on 80% of pitchers drawn without replacement (an
   earlier with-replacement bootstrap duplicated points and doubled the
   node count). The three features hold in 97–100% of them.
+- **Lens robustness (verified at scale, 2026-09-24).** The same grid,
+  subsamples, and nulls were rerun under three more lenses: baseball
+  (velocity × induced vertical break), Isomap 2-D, and density (1-D mean
+  distance to 10 nearest neighbors). All four lenses see identical
+  subsample and null draws, and the PCA rows reproduce the earlier run
+  exactly.
+
+  | Feature (share of real grid + subsample fits) | PCA | Baseball | Isomap | Density |
+  |---|---|---|---|---|
+  | Slow pitches isolated | 97–100% | 94–97% | 100% | 94–100% |
+  | CU→FF velocity ordering (ρ ≥ 0.7) | 100% | 100% | 100% | 100% |
+  | Slider/cutter bridge (≥ 3 of top 5) | 93–100% | 3–19% | 81–90% | 7–17% |
+
+  - **Lens-independent:** the continuum ordering and slow-pitch
+    isolation. These are safe to present.
+  - **Lens-dependent: the bridge.** Under the baseball lens, sliders still
+    take the top two betweenness spots, but sinker, changeup, and curveball
+    nodes fill out the top five. Isomap makes all five SL/FC. Since
+    betweenness picks out the middle of a roughly path-shaped graph, and
+    the graph is ordered by velocity, "mid-velocity pitches are central"
+    is close to automatic. Combined with the nulls reproducing it, **the
+    bridge shouldn't be presented as a finding.** The graph-wide
+    label-overlap pairs don't depend on it.
+  - The density lens is 1-D and gives far fewer nodes (median 25 vs 68),
+    so it isn't directly comparable. It still isolates the slow pitches.
+  - Nulls under the new lenses match the PCA picture: they reproduce the
+    ordering and mostly reproduce isolation. One exception: under Isomap,
+    nulls isolate slow pitches in only about half the fits, against 100%
+    for real data. That's a single-lens result, so don't lean on it.
 
 **2. Persistent homology** (`src/tda/persistence_check.py`). Passes a
 noisy-circle sanity check.

@@ -18,8 +18,9 @@ per pitcher per pitch type (3,943 archetypes, 2025 season), and every
 shape feature is tested against null models.
 
 - **Connected continuum.** One giant component (CU → SL/ST → FC → FF → CH)
-  plus isolated slow-pitch outliers. Stable across 97–100% of parameter
-  grid points and pitcher subsamples.
+  plus isolated slow-pitch outliers. Stable across 94–100% of parameter
+  grid points and pitcher subsamples, under four different lenses (PCA,
+  velocity × vertical break, Isomap, density).
 - **No hidden structure.** Persistent homology finds no loops and no more
   gaps than a same-covariance Gaussian. The graph's cycles are cover
   artifacts.
