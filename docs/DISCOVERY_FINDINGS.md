@@ -510,7 +510,31 @@ noisy-circle sanity check.
   treated as the simplicial complex it is, b₁ is small, unstable, and
   within the null range, consistent with persistent homology. This is
   the precise version of "the cycles are cover artifacts", and it ties
-  straight back to the simplicial-complex slides.
+  straight back to the simplicial-complex slides. Computed over ℤ₂ to
+  match the theorem below (identical to ℚ on all 38 fits).
+- **Theorem backing it (citation verified against the paper).**
+  T. K. Dey, F. Mémoli, Y. Wang, *Topological Analysis of Nerves, Reeb
+  Spaces, Mappers, and Multiscale Mappers*, SoCG 2017, LIPIcs 77:36
+  ([arXiv:1703.07387](https://arxiv.org/abs/1703.07387)).
+  - **Theorem 8:** if a cover 𝒰 of X is path connected, H₁(X) → H₁(N(𝒰))
+    is a surjection.
+  - **Theorem 18** applies this to Mapper, N(f\*𝒰), whose pullback cover
+    (the path components of f⁻¹(U_α)) is path connected by construction.
+    So **b₁(Mapper) ≤ b₁(X)**: "nerves can only kill" H₁.
+  - **Hypotheses:** X compact; f : X → Z continuous and well-behaved
+    (preimages of path-connected open sets have finitely many path
+    components); 𝒰 an open cover of Z; ℤ₂ coefficients.
+  - The same paper shows the quotient X → Reeb space is surjective on H₁
+    (Claim 4.2, in the proof of Theorem 27).
+  - **How it applies here, honestly stated.** The theorem is about a
+    space X, and we have a finite sample. DBSCAN clusters only approximate
+    the path components of preimages (of, say, a union of ε-balls around
+    the core points). So the argument is: persistent homology estimates
+    b₁(X) ≈ 0, the theorem says any correct Mapper of X has b₁ = 0, and
+    the observed nerve b₁ of 0–4 (null-range, unstable) is consistent
+    with that. The 76–86 graph cycles come from reading only the
+    1-skeleton. Present it as "theorem + consistent evidence", not as a
+    proof about the data.
 
 **3. Intrinsic dimension** (`src/tda/intrinsic_dimension.py`). The TwoNN
 and Levina–Bickel MLE estimators both pass sanity checks (2-D plane → 2.0,
