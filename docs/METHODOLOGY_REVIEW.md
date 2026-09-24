@@ -311,6 +311,52 @@ the "discovery" work to do next.
    `scipy.stats.f_oneway`, in both files) independent of anything about
    multiple comparisons.
 
+   **CORRECTION (2026-09-24): the "conclusions are not wrong" claim above
+   was not supported.** It checked the p-value arithmetic but not the unit
+   of analysis feeding it. `integrate_real_data.py` computes each outcome
+   metric once *per pitcher* (from an April 2023 pull) and copies it onto
+   every one of that pitcher's pitches: `integrated_real_data.csv` has
+   11,441 rows but only 187 pitchers, and whiff%/chase%/xwOBA are constant
+   within every pitcher. The ANOVA treats those ~60x duplicated values as
+   independent observations — pseudo-replication that inflates F, so the
+   ~10⁻⁷⁰–10⁻²²⁰ p-values are artifacts, not evidence. It also joins those
+   2023 outcomes onto the lexically "latest" classified file (April 2026),
+   which was labeled by the pre-refit model. The old ANOVA conclusions are
+   therefore **unverified**, not confirmed. Rebuilt as
+   `src/validation/pitch_level_outcome_anova.py` (per-pitch outcomes from a
+   single pull, both labelings, pitch- and pitcher-level tests, eta²);
+   results below.
+
+   **Rebuilt results (June 2025, 114,604 labeled pitches; 10.9% DBSCAN
+   noise; labelings agree 56.4%; Bonferroni α = 0.0025 over 20 tests —
+   `data/pitch_level_anova_results.csv`):**
+   - **Whiff** (per swing): significant under both labelings at both levels.
+     Pitch-level η² 1.6–2.0%.
+   - **Chase** (per out-of-zone pitch): significant everywhere, but small —
+     η² 0.4–0.5%.
+   - **GB / FB** (per ball in play): significant at pitch level under both
+     labelings (η² 0.7–2.1%); at pitcher level, significant for the
+     centroid labeling, mixed for Mapper (GB p = 0.0034, just misses α).
+   - **xwOBA** (per ball in play): **not significant under either labeling
+     at either level** (η² ≈ 0.3%). The old pipeline reported p ≈ 10⁻⁹⁶;
+     that was the pseudo-replication artifact. Consistent with the xwOBA
+     model's R² ≈ 0.017: pitch shape barely predicts contact quality.
+   - Conclusions barely depend on which labeling is used, so they are not
+     an artifact of the centroid-vs-Mapper choice.
+   - Effects are real but small: cluster membership explains ~1–2% of
+     pitch-level variance in whiff/batted-ball type. Pitcher-level η²
+     (5–22%) is on cell means and not comparable to pitch-level η².
+   - Pitch-level p-values remain optimistic (pitches within a pitcher are
+     correlated); the pitcher-level rows are the conservative check.
+   - `anova_real_data.py` / `integrate_real_data.py` are superseded, not
+     deleted. `variance_analysis.py` has the same pseudo-replication (one
+     pitcher-level Stuff+ copied to every pitch: 22,373 rows, 341 values),
+     mixes two models' labels (92 "clusters" vs. 66 nodes — the April 2026
+     classified file predates the refit), and is near-circular by design
+     (a 66-group partition of the same features Stuff+ is built from will
+     almost always vary less within groups than 6 pitch types). Not yet
+     rebuilt.
+
 7. **Chase% uses a fixed rectangular strike zone**
    (`zone_z_min, zone_z_max = 1.6, 3.5` in `ProStuff+.ipynb`) instead of
    the actual per-pitch, batter-specific `sz_top`/`sz_bot` columns
