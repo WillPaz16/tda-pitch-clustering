@@ -4,11 +4,11 @@ Open the source (PDF in `Lit Review/`, or the saved web snapshot in `docs/lit_re
 
 - **DECK FIX**: the current slide disagrees with the source (fix planned in the deck rewrite).
 - **ATTRIBUTION**: slide wording closely follows a source that must be credited or rewritten.
-- Each item also shows what the blind check-2 agent concluded, so you can see where it disagreed.
+- Each item shows the blind check-2 verdict so you can see where it disagreed.
 
 Random sample seed: 20260928 (reproducible).
 
-## Required (30): manual items, slide fixes, attribution issues, theorems/definitions
+## Required (33): manual items, slide fixes, attribution issues, theorems/definitions
 
 - [ ] **T01** Definition of a topological space (open-set axioms)
     - `ISBN 0131816292` → page TBD (Will, check 3)
@@ -69,14 +69,24 @@ Random sample seed: 20260928 (reproducible).
 - [ ] **M02** PCA is the most popular lens choice in the TDA literature  — *DECK FIX*
     - `s41060-025-00971-0.pdf` → Sec. 2 (lens usage summary), p. 10 (PDF p10)
     - check 2: PARTIAL: supported for the Mapper articles reviewed; 'across TDA literature' overreaches (Sec. 2.3.5; Fig. 7 p. 11)
+- [ ] **M03** PCA as variance-maximizing orthogonal projection
+    - `Principal component analysis a review and recent developments.pdf` → Abstract, p. 1 (PDF p1)
+    - `Principal component analysis a review and recent developments.pdf` → Sec. 2(a), Eqs. (2.1)-(2.2), p. 3 (PDF p3)
+    - `Principal component analysis a review and recent developments.pdf` → Sec. 2(a), after Eq. (2.5), p. 4 (PDF p4)
+    - check 2: PARTIAL at abstract ('orthogonal projection' not there); resolved by adding Sec. 2(a) pp. 3-4
+- [ ] **M05** Sample covariance matrix; symmetric positive semidefinite  — *DECK FIX*
+    - `Principal component analysis a review and recent developments.pdf` → Sec. 2, p. 3 (PDF p3)
+    - check 2: PARTIAL: 'positive semidefinite' is never stated in J-C (only in a reference title - confirmed); diagonal-entries claim only implicit (p. 4 trace)
 - [ ] **M06** Spectral theorem for real symmetric matrices
-    - `Axler2024_LADR4e.pdf` → Thm 7.29 (Real Spectral Theorem), p. 243 of the author's web edition (PDF p259)
+    - `Axler2024_LADR4e.pdf` → Thm 7.29 (self-adjoint operators), p. 245 of the author's web edition (PDF p259)
+    - check 2: WRONG PAGE: Thm 7.29 is on printed p. 245 (I had taken 243 from the TOC section start) - fixed. Stated for self-adjoint OPERATORS, not symmetric matrices
 - [ ] **M07** PCA is never computed by eigendecomposition; SVD used for numerical stability  — *DECK FIX*
     - `Principal component analysis a review and recent developments.pdf` → Sec. 1, p. 2 (PDF p2)
     - check 2: NOT SUPPORTED; agent also cites Axler p. 282 recommending eigen-computation of T*T, so 'never' is false. Slide typo 'computer'
 - [ ] **M08** SVD theorem and singular vectors as eigenvectors of AA^T and A^TA  — *DECK FIX*
-    - `Axler2024_LADR4e.pdf` → Thm 7.70 (SVD), p. 273 of the author's web edition (PDF p287)
+    - `Axler2024_LADR4e.pdf` → Thm 7.80 (matrix SVD), p. 277 of the author's web edition (PDF p291)
     - `Principal component analysis a review and recent developments.pdf` → Sec. 2, Eq. (2.3), p. 3 (PDF p3)
+    - check 2: SUPPORTED, but by J-C Eq. (2.3) for the eigenvector statements (non-zero eigenvalues only); Axler matrix form is 7.80 p. 277 - locator switched from 7.70
 - [ ] **M09** Eigenvalues of covariance = sigma_i^2/(m-1)  — *DECK FIX*
     - `Principal component analysis a review and recent developments.pdf` → Sec. 2, Eqs. (2.2)-(2.4), p. 3 (PDF p3)
     - check 2: SUPPORTED; locator refined to the sentence after (2.3) and Eq. (2.4)
@@ -114,6 +124,9 @@ Random sample seed: 20260928 (reproducible).
     - `Ester1996_KDD96_AAAI.pdf` → Lemma 2, p. 228 (PDF p3)
     - check 2: SUPPORTED source; slide drops 'from x' (confirmed)
     - ⚠️ manual: read the page image (scan/OCR symbols)
+- [ ] **M20** DBSCAN pseudocode  — *ATTRIBUTION*
+    - `Ester1996_KDD96_AAAI.pdf` → Sec. 4, algorithm DBSCAN, p. 229 (PDF p4)
+    - check 2: SUPPORTED; slide copies the main loop near-verbatim with no citation, and calls ExpandCluster which the deck never defines. Ester p. 229 says DBSCAN uses GLOBAL Eps/MinPts
 - [ ] **M21** Mapper graph construction (nodes = clusters; edges = nonempty intersections)  — *ATTRIBUTION*
     - `mapperPBG.pdf` → Sec. 3, no printed page (PDF p4)
     - `s41060-025-00971-0.pdf` → Sec. 2.3.5 Step 4, p. 10 (PDF p10)
@@ -124,7 +137,8 @@ Random sample seed: 20260928 (reproducible).
     - `http://www.inference.org.uk/mackay/dimension/` → note (SNAPSHOT mackay_dimension_2026-09-28.html)
     - check 2: PARTIAL: MLE supported; MacKay-Ghahramani averaging is not in Levina-Bickel (they average directly, Eq. 9)
 - [ ] **R06** Isomap lens  — *ATTRIBUTION*
-    - `https://scikit-learn.org/stable/modules/manifold.html` → Sec. 2.2.2 Isomap (SNAPSHOT sklearn_manifold_2026-09-28.html)
+    - `s41060-025-00971-0.pdf` → Table 1 (lens column), p. 6 (PDF p6)
+    - check 2: PARTIAL: sklearn page documents Isomap but not its use as a Mapper lens. Resolved: Madukpe Table 1 p. 6 lists an application using ISOMAP as the lens
 - [ ] **R08** Applied Mapper work rarely checks graph features against null models  — *DECK FIX*
     - `CarriereMichelOudot2018_JMLR.pdf` → Abstract, p. 1 (PDF p1)
     - `s41060-025-00971-0.pdf` → Sec. 3, p. 16 (PDF p16)
@@ -132,18 +146,19 @@ Random sample seed: 20260928 (reproducible).
 
 ## Random 20% sample of the rest (5)
 
-- [ ] **M03** PCA as variance-maximizing orthogonal projection
-    - `Principal component analysis a review and recent developments.pdf` → Abstract, p. 1 (PDF p1)
-- [ ] **R04** TwoNN intrinsic dimension estimator
-    - `Facco2017_TwoNN_SciRep.pdf` → Abstract, no printed page (PDF p1)
-    - check 2: SUPPORTED
-- [ ] **T07** Contractible = homotopy equivalent to a point
-    - `Hatcher_AlgebraicTopology.pdf` → Ch. 0, p. 4 (PDF p13)
+- [ ] **B02** Statcast pitch-type codes (FF SI FC SL ST CU CH FS etc.)
+    - `https://www.mlb.com/glossary/pitch-types` → code list (SNAPSHOT mlb_glossary_pitchtypes_2026-09-28.html)
+    - check 2: SUPPORTED; caveat: glossary lists pitch abbreviations but does not say they are the pitch_type column's values
+- [ ] **M04** Why mean-center before PCA
+    - `Principal component analysis a review and recent developments.pdf` → Sec. 2, p. 3 (PDF p3)
+    - check 2: SUPPORTED (nuance: centring doesn't change the PCs; it links PCA to the SVD of the data matrix)
+- [ ] **T06** Homotopy equivalence of spaces
+    - `Hatcher_AlgebraicTopology.pdf` → Ch. 0, p. 3 (PDF p12)
     - `algebraic-topology.pdf` → wording source, PDF p4
     - check 2: SUPPORTED; slide wording copies Hoehn PDF p4 verbatim
-- [ ] **T10** Definition of a simplicial complex (closed under faces; intersections are faces)
-    - `Topological Persistence and Simplification.pdf` → Sec. 2, p. 513 (PDF p3)
-    - check 2: ELZ p. 513 matches the slide exactly. Mohnhaupt Def. 2.1.3 has a typo and a weaker condition 2; Borsuk p. 219 has no face-closure condition. Resolved: cite ELZ only
+- [ ] **T15** Mapper is a discrete approximation of the Reeb graph
+    - `CarriereMichelOudot2018_JMLR.pdf` → Abstract, p. 1 (PDF p1)
+    - check 2: SUPPORTED with qualifier: result is for the 1-dimensional Mapper; Munch-Wang 53:1 notes this was long assumed without formal proof
 - [ ] **T20** Definition of the Reeb space for a map to R^k
     - `MunchWang2016_LIPIcs_SoCG.pdf` → Sec. 2, 53:3 (PDF p3)
     - `Reeb Spaces of Piecewise Linear Mappings.pdf` → Abstract, p. 242 if copy matches published (PDF p1)
