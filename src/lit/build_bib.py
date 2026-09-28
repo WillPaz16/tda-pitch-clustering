@@ -51,6 +51,15 @@ MANUAL = {
                                               note="Fields from aaai.org paper page; pages from the PDF")),
     "munkres2000topology": ("book", dict(author="Munkres, James R.", title="Topology", edition="2nd", publisher="Prentice Hall",
                                          year="2000", isbn="0131816292", note="Open Library ISBN record")),
+    "mackay2005comments": ("misc", dict(author="MacKay, David J. C. and Ghahramani, Zoubin",
+                                        title="Comments on `Maximum Likelihood Estimation of Intrinsic Dimension' by E. Levina and P. Bickel (2004)",
+                                        howpublished="Web note", url="http://www.inference.org.uk/mackay/dimension/", year="2005",
+                                        note="Accessed 2026-09-28; year from the page's 'Last modified' line; snapshot in registry_cache")),
+    "sklearn_userguide_manifold": ("misc", dict(author="{scikit-learn developers}", title="Manifold learning (User Guide, Sec. 2.2)",
+                                                howpublished="scikit-learn 1.9.1 documentation", url="https://scikit-learn.org/stable/modules/manifold.html",
+                                                year="2026", note="Accessed 2026-09-28; owner from page footer; snapshot in registry_cache")),
+    "keplermapper_repo": ("misc", dict(author="{scikit-tda}", title="Kepler Mapper (GitHub repository)", url="https://github.com/scikit-tda/kepler-mapper",
+                                       year="2026", note="Accessed 2026-09-28; README snapshot in registry_cache")),
     "mohnhaupt2023": ("mastersthesis", dict(author="Mohnhaupt, Mona", title="The Nerve Theorem and its Applications in Topological Data Analysis",
                                             school="ETH Z{\\\"u}rich", year="2023", type="Bachelor's thesis",
                                             note="Read from PDF title page (supervisor: S. Kali{\\v{s}}nik Hintz)")),
@@ -156,6 +165,11 @@ def entry(key, row):
     ident = row["identifier"]
     if key in MANUAL:
         return MANUAL[key]
+    if ident.startswith("pypi:"):
+        name, ver = ident[5:].split("==")
+        i = json.loads(fetch("https://pypi.org/pypi/%s/%s/json" % (name, ver), "pypi_%s_%s.json" % (name, ver)))
+        return "software", dict(author=i["info"]["author"], title=name, version=ver, url=i["info"]["home_page"],
+                                year=i["urls"][0]["upload_time"][:4], note="PyPI release %s (%s license)" % (ver, i["info"]["license"]))
     if row["status"] == "WEB_SNAPSHOT":
         return from_snapshot(row)
     if key in PUBLISHER_BIB:

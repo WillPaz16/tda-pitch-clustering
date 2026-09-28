@@ -1,0 +1,205 @@
+<html> <head>
+<title>Comments on 'Maximum Likelihood Estimation of Intrinsic Dimension' by E. Levina and P. Bickel
+</title>
+</head>
+
+<body>
+  <table bgcolor=#ccccdd><tr><Td  bgcolor=#ddddee>
+<h2>Comments on 'Maximum Likelihood Estimation of Intrinsic Dimension' by E. Levina and P. Bickel (2004)</h2>
+</td></tr><tr><td   bgcolor=#cceef4>
+<h3>David J.C. MacKay<sup>+*</sup> and Zoubin Ghahramani<sup>+</sup></h3>
+</td></tr><tr><td   bgcolor=#ccf4ee>
+<p>
+<small>+ Gatsby Computational Neuroscience Unit, University College London<br>
+* Department of Physics, University of Cambridge</small>
+</p>
+</td></tr></table>
+<p>
+ We like Levina and Bickel's paper, because it confirms
+ our longstanding view that the way to solve most inference problems
+ is to write down an appropriate likelihood function.
+<img align=right  src="Fig1a.png" alt="Fig1a" width="417" height="328">
+</p>
+<p>
+ However, we feel that the authors missed the chance to apply this
+ `likelihood principle' all the way to the final hurdle.
+ We came to this conclusion when we saw their figure 1a, 
+ which shows the estimated dimension of a five-dimensional manifold
+ as a function of the number of nearest neighbours <em>k</em>
+ used to obtain the estimate.
+ We were surprised that for small <em>k</em>,
+ there is a strong bias in the estimated dimension, even
+ when there are large quantities of data.
+ We would not expect a maximum likelihood estimator to
+ misbehave in this way.
+ For <em>large</em> <em>k</em>, yes, we would expect biases because
+ of the breakdown of the 'locally-uniform density' assumption.
+ But for small <em>k</em>, we expected that the estimator would
+ be unbiased, albeit with  increasing variance as <em>k</em> decreased.
+</p><p>
+ Fortunately there is a simple explanation of the bias,
+ and  the problem is easily fixed.
+</p><p>
+ At equations (7) and (8), the authors write down two nice likelihood-derived
+ estimators of dimension <em>m</em>
+ based on the distances {<em>T</em>} to the nearest neighbours
+ of a single point on the manifold.
+<center>
+<img src="eqn7.png" alt="eqn7" width="355" height="58">
+<br>
+<img src="eqn8.png" alt="eqn8" width="332" height="59">
+
+</center>
+
+</p><p>
+ The question then is how to combine
+ the results 
+ obtained in the neighbourhood of all <em>n</em>  datapoints
+ to give a single inference of the dimension <em>m</em>.
+</p><p>
+ Surely the correct way to proceed is to write down a likelihood function?
+ Sadly, the authors decide to <em>average</em>  the <em>n</em> estimators
+<center>
+<img src="eqn9a.png" alt="eqn9a" width="120" height="46">
+</center>
+</p>
+<p>
+ It's not hard to come up with a better-motivated way of
+ combining the statistics.
+ Treating the data surrounding each of the  <em>n</em>  points
+ as if they are independent (which they are not, of course),
+ we can write down a likelihood of exactly the same form
+ we already encountered.  This approach motivates an estimator
+ just like (7),
+<center>
+<img src="mha.png" alt="mha" width="209" height="108">
+</center>
+ Rather than <em>averaging</em> the estimators,
+ we think you should <em>average their inverses</em>.
+</p><p>
+ Figures 2 and 3 below show the results of  experiments involving
+ 2000 uniformly-distributed points on a manifold of dimension 5.
+ We fixed R to a sequence of values and used the above estimator
+ to obtain
+ individual estimates of <em>m</em> as illustrated
+ in figure 3b (for one particular choice
+of R).
+ The inverses of those estimators are shown in figure 3a.
+ Figure 2 shows, for each value of R (controlling position on the horizontal axis),
+ the average of the m-hats (i.e. the authors' estimator) (yellow),
+ the inverse of the average of the inverse m-hats (orange),
+ and our preferred maximum likelihood estimator (which is just equation (7) again).
+ [2a shows a log scale on the horizontal axis, which is the average number
+ of enclosed points.]
+ Of course, where the data density varies, we can't expect to
+ use a single value of R.
+ So figure 4 
+ shows similar results for the case where we fix k.
+ One way of writing the estimator is
+<center>
+<img src="mha2.png" alt="mha2" width="186" height="106">
+</center>
+</p>
+
+<center>
+<table bgcolor=#dddddd >
+<tr><td>
+<table bgcolor=#aaaaaa>
+<tr><td>
+<img src="estimatorsLog.png" alt="estimatorsLog"  width="422" height="328">
+     </td>
+     </tr><tr><td align=center>
+     (2a)
+	  </td></tr></table>
+	  </td><Td>
+<table bgcolor=#aaaaaa>
+<tr><td>
+     <img src="estimators.png" alt="estimators"  width="372" height="328">
+     </td>
+     </tr><tr><td align=center>
+	  (2b) 
+	  </td></tr></table>
+	  </td></tr></table>
+</center>
+ 
+<center>
+<table  bgcolor=#dddddd>
+<tr><td>
+<table width=307 bgcolor=#aaaaaa>
+<tr><td>
+ <img src="scatter.im.png" alt="scatter.im" width="307" height="305"></td>
+     </tr>
+     <tr><Td  align=center>
+	       (3a)
+	  </td></tr></table>
+</td><td>
+	  <table width=291  bgcolor=#aaaaaa>
+<tr><td>
+ <img src="scatter.m.png" alt="scatter.m" width="291" height="304">
+	       </td></tr><tr><td align=center>
+(3b)
+	  </td></tr></table>
+	  </td></tr></table>
+</center>
+
+	  <table bgcolor=#dddddd>
+	  	       <tr><Td>
+<img src="Kestimators.png" alt="Kestimators" width="372" height="328">
+	       </td>
+			    <td bgcolor=#e7e7e7 align=center width=335>
+			    <table bgcolor=#ccdddd><tr><td align=center width=300 colspan=2>
+			    <b>Figure 4</b></td></tr>
+			    <tr>
+<td  valign=top>Left</td>
+				 <td  bgcolor=#ffffee> Yellow - their estimator, found by
+			    averaging the individual estimators.
+				      <br>
+	Red - 		    Our maximum likelihood estimator,
+			    found by averaging the inverses.
+</td></tr><tr><Td valign=top>Below
+     </td><td bgcolor=#ffffee>
+			    The scatterplots show
+			    individual estimators of 1/m (left) and m (right)
+			    based on the neighbours of each of the 2000
+			    datapoints, with colour coding
+			    the value of k used, starting from
+			    red (k=2), orange (k=3), yellow (k=4), green (k=6),
+			    cyan (k=8), etc.
+     <br>
+     Notice the modest asymmetry of the  distribution of estimators of 1/m,
+      and the extreme kurtosis of the distribution of estimators of m.
+	  </td></tr></table>
+				 </td></tr>
+			    <tr><td>
+	  <img src="Kscatterim.png" alt="Kscatterim" width="334" height="378">
+	       </td><Td>
+<img src="Kscatterm.png" alt="Kscatterm" width="335" height="376">
+	       </td></tr>
+</table>
+
+</p><p>
+ Fixing the poor behaviour of the estimator at small <em>k</em> simplifies
+ matters arising later in the paper: for example,  the fine-tuning of the
+ range of <em>k</em> values (<em>k</em><sub>1</sub>, <em>k</em><sub>2</sub>)
+ can probably be done away with;  instead, there could be  a single controlling
+ hyperparameter
+ describing the lengthscale at which the assumptions of the model
+ break down. This hyperparameter could itself be inferred automatically
+ with a Bayesian approach.
+</p><p>
+ Take-home message: <b>never average anything without consulting
+ a likelihood function</b>.
+</p><p>
+P.S.
+ Octave code used to generate these figures is supplied
+ in <A href=octave/RUNME2.m>RUNME2.m</a>, <a href=octave/doplots.m>doplots.m</a>,
+ and <A href=octave/RUNME3.m>RUNME3.m</a>.
+</p>
+
+<hr>
+<address><a href="http://www.inference.org.uk/mackay/">David MacKay</a> <BODY BGCOLOR="#ffffee"  TEXT="#000000" LINK="#0000C8" ALINK="#C80000" VLINK="#C80000"></address>
+<!-- hhmts start -->
+Last modified: Wed Jan 26 09:48:24 2005
+<!-- hhmts end -->
+</body> </html>
+
