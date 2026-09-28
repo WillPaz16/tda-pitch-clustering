@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="en_US">
+    <head>
+        <title>Statcast Search CSV Documentation | baseballsavant.com</title>
+
+        <!-- meta meta tag -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta http-equiv="Cache-Control" content="no-cache" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="-1" />
+        <meta name="keywords" content="Baseball Savant" />
+        <!-- -->
+        <meta property="og:title" content="Statcast Search CSV Documentation" />
+        <meta itemprop="name" content="Statcast Search CSV Documentation baseballsavant.com" />
+        
+        <meta property="og:site_name" content="baseballsavant.com" />
+        <meta property="og:type" content="website" />
+        
+        <meta property="og:image" content="https://baseballsavant.mlb.com/site-core/images/statcast-x-card-2026.png" />
+        <meta itemprop="image" content="https://baseballsavant.mlb.com/site-core/images/statcast-x-card-2026.png" />
+         <meta name="twitter:card" content="summary" />
+        <meta name="twitter:image" content="https://baseballsavant.mlb.com/site-core/images/statcast-x-card-2026.png" />
+        
+        <link rel="canonical" href="https://baseballsavant.mlb.com/csv-docs" />
+        <meta property="og:url" content="https://baseballsavant.mlb.com/csv-docs" />
+        
+        <meta name="description" content="Baseball Savant" />
+        <meta
+            property="og:description"
+            content="Baseball Savant"
+        />
+        <meta property="description" content="Baseball Savant" />
+        
+        <meta property="fb:app_id" content="" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <meta name="env" content="production" />
+        
+        <meta name="build" content="true" />
+        
+        <meta name="server_url" content="https://baseballsavant.mlb.com" />
+        <meta name="secure_url" content="https://baseballsavant.mlb.com" />
+        <meta name="service_url" content="" />
+        <meta name="suggest_url" content="" />
+        <meta name="uistatic_url" content="https://builds.mlbstatic.com/baseballsavant.mlb.com/v1" />
+        <meta name="bamcontent_client_url" content="" />
+        <meta name="control_plane_url" content="" />
+        <meta
+            name="control_plane_client_token"
+            content=""
+        />
+        <meta name="recon_rest" content="" />
+        <meta name="recon_ws" content="" />
+        <meta name="msapplication-config" content="none" />
+        <meta name="locale" content="en" />
+        
+        <meta name="flipTime" content="11:00" />
+        <meta name="flipTimeZoneOffset" content="+00:00" />
+        <meta name="serverTime" content="2026-09-28T13:48:55+00:00" />
+        
+        <meta name="omniturePageName" content="Statcast Search CSV Documentation" />
+         
+        <meta
+            name="omniturePageProps"
+            content="%7B%22pageName%22%3A%22csv-docs%22%2C%22registrationPoints%22%3A%22csv-docs%22%7D"
+        />
+          <meta name="paywall" content="true" />
+         
+        
+        <meta name="apple-mobile-web-app-title" content="baseballsavant.com" />
+        
+        <link rel="shortcut icon" href="/site-core/images/favicon-savant.png" />
+
+        <!-- avoid console log errors-->
+        <script type="text/javascript">
+            // Avoid `console` errors in browsers that lack a console.
+            (function () {
+                var method;
+                var noop = function () {};
+                var methods = [
+                    "assert",
+                    "clear",
+                    "count",
+                    "debug",
+                    "dir",
+                    "dirxml",
+                    "error",
+                    "exception",
+                    "group",
+                    "groupCollapsed",
+                    "groupEnd",
+                    "info",
+                    "log",
+                    "markTimeline",
+                    "profile",
+                    "profileEnd",
+                    "table",
+                    "time",
+                    "timeEnd",
+                    "timeStamp",
+                    "trace",
+                    "warn",
+                ];
+                var length = methods.length;
+                var console = (window.console = window.console || {});
+        
+                while (length--) {
+                    method = methods[length];
+        
+                    // Only stub undefined methods.
+                    if (!console[method]) {
+                        console[method] = noop;
+                    }
+                }
+            })();
+        </script>
+
+        <!-- device detection -->
+        <!--[if lte IE 9]>
+            <script type="text/javascript">
+                window.location.replace(
+                    "https://" + window.location.host + "/unsupported"
+                );
+            </script>
+        <![endif]-->
+
+        <!-- CSS -->
+        
+                <link rel="stylesheet" type="text/css" href="https://builds.mlbstatic.com/baseballsavant.mlb.com/v1/builds/site-core/71b8a5733b11dc94559a1b78c422b63a0611b623/scripts/build/site-styles.css" crossorigin="anonymous" />
+        
+                <link rel="stylesheet" type="text/css" href="https://builds.mlbstatic.com/baseballsavant.mlb.com/v1/sections/statcast-search-new/builds/5163813ff451040a23c1ddd7e5b916134e269cda/scripts/build/section-styles.css" crossorigin="anonymous" />
+        
+        
+
+        <!-- paths to servers-->
+
+    </head>
+
+    <body
+        id="statcast-search-new_csv-docs"
+        class="lang-en_US section-statcast-search-new"
+    >
+        <!-- header-->
+        <header id="header-nav">
+    <div class="header-top">
+        <div id="header-bar">
+            <div>
+                <a href="/"
+                    ><img
+                        class="mlb-logo"
+                        src="/site-core/images/savant-logo.svg"
+                /></a>
+            </div>
+            <div class="logo-text">
+                <div class="logo">
+                    <a href="/">
+                        <div class="logo-text-lines">
+                            <div class="logo-text-upper-line">
+                                <span class="primary-color main-logo-emphasized">savant</span>
+                                <span class="secondary-color feature-sized">featuring</span>
+                            </div>
+                            <div class="logo-text-bottom-line">
+                                <span class="secondary-color">Statcast powered by Google Cloud</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <nav class="nav">
+            <div id="hamburger" class="temp">
+                <div class="ham1"></div>
+                <div class="ham2"></div>
+                <div class="ham3"></div>
+            </div>
+            <ul class="nav-menu">
+                <li class="item">
+                    <a href="https://www.mlb.com"><img src="https://www.mlbstatic.com/team-logos/league-on-dark/1.svg"
+                            style="width: 50px" /></a>
+                </li>
+                <li class="item"><a href="/illustrator">illustrator</a></li>
+                <li class="item"><a href="/gamefeed">Gamefeed</a></li>
+                <li class="item"><a href="/scoreboard">Scoreboard</a></li>
+                <li class="item">
+                    <a href="/probable-pitchers">Probable Pitchers</a>
+                <li class="item">
+                    <div class="leaderboards">
+                        <a href="/statcast_search">Search</a>
+                        <div class="lbbox box">
+                            <div
+                                class="title"
+                                style="margin-bottom: 0rem !important"
+                            >
+                                Statcast Search
+                            </div>
+                            <div>
+                                <div>
+                                    <ul class="sub-menu">
+                                        <li>
+                                            <a href="/statcast_search">Major League Search</a>
+                                        </li>
+                                        <li>
+                                            <a href="/statcast-search-minors">Minor League Search</a>
+                                        </li>
+                                        <li>
+                                            <a href="/statcast-search-world-baseball-classic">World Baseball Classic Search</a>
+                                        </li>
+
+                                        <li></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="item"><a href="/visuals">Visuals</a></li>
+                <li class="item"><a href="/comparison-tool">Compare Players</a><sup class="nav-badge"><span>New</span></sup></li>
+                <li class="item">
+                    <div class="leaderboards">
+                        <a href="/abs">ABS</a>
+                        <div class="lbbox box">
+                            <div
+                                class="title"
+                                style="margin-bottom: 0rem !important"
+                            >
+                                ABS Challenges
+                            </div>
+                            <div>
+                                <div>
+                                    <ul class="sub-menu">
+                                        <li>
+                                            <a href="/abs">Dashboard</a>
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/abs-challenges">Leaderboard</a>
+                                        </li>
+                                        <li>
+                                            <a href="/abs-metrics-documentation">Metric Documentation</a>
+                                        </li>
+                                        <li></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="item">
+                    <div class="leaderboards">
+                        <a href="/league">Statistics</a>
+                        <div class="box lbbox">
+                            <div
+                                class="title"
+                                style="margin-bottom: 0rem !important"
+                            >
+                                Statcast Statistics
+                            </div>
+                            <div class="stats-menu sub-menu">
+                                <div>
+                                    <ul>
+                                        <li class="menu title-leaderboard">
+                                            Player Batting
+                                        </li>
+
+                                            <li style="font-size: 0.9rem">
+                                                <a href="/leaderboard/custom?year=2026">
+                                                    2026
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2025">
+                                                    2025
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2024">
+                                                    2024
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2023">
+                                                    2023
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2022">
+                                                    2022
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2021">
+                                                    2021
+                                                </a>
+                                                |
+                                            <a
+                                                href="/leaderboard/custom?year=2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015"
+                                            >
+                                                All
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            Player Pitching
+                                        </li>
+                                        <li style="font-size: 0.9rem">
+                                                <a href="/leaderboard/custom?year=2026&type=pitcher">
+                                                    2026
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2025&type=pitcher">
+                                                    2025
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2024&type=pitcher">
+                                                    2024
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2023&type=pitcher">
+                                                    2023
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2022&type=pitcher">
+                                                    2022
+                                                </a>
+                                                |
+                                                <a href="/leaderboard/custom?year=2021&type=pitcher">
+                                                    2021
+                                                </a>
+                                                |
+                                            <a
+                                                href="/leaderboard/custom?year=2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015&type=pitcher"
+                                            >
+                                                All
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            League Batting
+                                        </li>
+                                        <li style="font-size: 0.9rem">
+                                                <a href="/league?season=2026#statcastHitting">
+                                                    2026
+                                                </a>
+                                                |
+                                                <a href="/league?season=2025#statcastHitting">
+                                                    2025
+                                                </a>
+                                                |
+                                                <a href="/league?season=2024#statcastHitting">
+                                                    2024
+                                                </a>
+                                                |
+                                                <a href="/league?season=2023#statcastHitting">
+                                                    2023
+                                                </a>
+                                                |
+                                                <a href="/league?season=2022#statcastHitting">
+                                                    2022
+                                                </a>
+                                                |
+                                                <a href="/league?season=2021#statcastHitting">
+                                                    2021
+                                                </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            League Pitching
+                                        </li>
+                                        <li style="font-size: 0.9rem">
+                                                <a href="/league?view=statcast&nav=pitching&season=2026#statcastPitching">
+                                                    2026
+                                                </a>
+                                                |
+                                                <a href="/league?view=statcast&nav=pitching&season=2025#statcastPitching">
+                                                    2025
+                                                </a>
+                                                |
+                                                <a href="/league?view=statcast&nav=pitching&season=2024#statcastPitching">
+                                                    2024
+                                                </a>
+                                                |
+                                                <a href="/league?view=statcast&nav=pitching&season=2023#statcastPitching">
+                                                    2023
+                                                </a>
+                                                |
+                                                <a href="/league?view=statcast&nav=pitching&season=2022#statcastPitching">
+                                                    2022
+                                                </a>
+                                                |
+                                                <a href="/league?view=statcast&nav=pitching&season=2021#statcastPitching">
+                                                    2021
+                                                </a>
+                                        </li>
+
+                                        <li></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="item leaderboard-item">
+                    <div class="leaderboards">
+                        <a href="/leaderboard/first-base-scoops-receiving">
+                            Leaderboards
+                            <sup class="nav-badge"><span>New</span></sup>
+                        </a>
+                        <div class="lbbox box leaderboard-sub">
+                            <div
+                                class="title"
+                                style="margin-bottom: 0rem !important"
+                            >
+                                Leaderboards
+                            </div>
+                            <div class="leaderboard-menu sub-menu">
+                                <div>
+                                    <ul>
+                                        <li class="menu title-leaderboard">
+                                            Batting
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/bat-tracking"
+                                                >Bat Tracking</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/batted-ball"
+                                                >Batted Ball Profile</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/statcast"
+                                                >Exit Velocity & Barrels</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/expected_statistics"
+                                                >Expected Statistics</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/home-runs"
+                                                >Home Runs</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/percentile-rankings?type=batter&team="
+                                                >Percentile Rankings</a
+                                            >
+                                            <sup class="nav-badge">
+                                                <span>Updated</span>
+                                            </sup>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/pitch-arsenal-stats?type=batter"
+                                                >Pitch Arsenal Stats</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/pitch-tempo?type=Bat"
+                                            >
+                                                Pitch Tempo
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/rolling"
+                                                >Rolling Windows</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/swing-take?year=2026"
+                                                >Run Value</a
+                                            >
+                                        </li>
+                                        <li class="swing-timing-nav-item">
+                                            <a
+                                                href="/leaderboard/bat-tracking/swing-timing-miss-distance?type=batter&season[]=2026&split[]=api_pitch_type_group09"
+                                                >Swing Timing + Miss Distance</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/statcast-year-to-year"
+                                                >Year to Year Changes</a
+                                            >
+                                        </li>
+                                        <li><hr style="margin: 10px 20px 10px 0" /></li>
+                                        <li>
+                                            <a href="/visuals/batting-stance"
+                                                >Batting Stance & Intercept</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/bat-tracking/swing-path-attack-angle"
+                                            >
+                                            Swing Path & Attack Angle
+                                            </a>
+                                        </li>
+                                        <li></li>
+                                        <li></li>
+                                        <li></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <ul>
+                                        <li class="menu title-leaderboard">
+                                            Pitching
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/bat-tracking?type=pitcher"
+                                                >Bat Tracking</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/batted-ball?type=pitcher"
+                                                >Batted Ball Profile</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/statcast?type=pitcher"
+                                            >
+                                                Exit Velocity & Barrels
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/expected_statistics?type=pitcher"
+                                            >
+                                                Expected Statistics
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/home-runs?player_type=Pitcher"
+                                            >
+                                                Home Runs
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/percentile-rankings?type=pitcher&team="
+                                            >
+                                                Percentile Rankings
+                                            </a>
+                                            <sup class="nav-badge">
+                                                <span>Updated</span>
+                                            </sup>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/pitch-arsenal-stats"
+                                            >
+                                                Pitch Arsenal Stats
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/pitch-tempo">
+                                                Pitch Tempo
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/rolling#pitching-rolling"
+                                                >Rolling Windows</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/swing-take?year=2026&team=&group=Pitcher&type=All&sub_type=null&min=q"
+                                            >
+                                                Run Value
+                                            </a>
+                                        </li>
+                                        <li class="swing-timing-nav-item">
+                                            <a
+                                                href="/leaderboard/bat-tracking/swing-timing-miss-distance?type=pitcher&season[]=2026&split[]=api_pitch_type_group03"
+                                                >Swing Timing + Miss Distance</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/statcast-year-to-year?group=Pitcher"
+                                            >
+                                                Year to Year Changes
+                                            </a>
+                                        </li>
+                                        <li><hr style="margin: 10px 20px 10px 0" /></li>
+                                        <li>
+                                            <a href="/leaderboard/active-spin">
+                                                Active Spin
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/pitcher-arm-angles">
+                                                Arm Angle
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/pitch-arsenals"
+                                            >
+                                                Pitch Arsenals
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/pitch-movement"
+                                            >
+                                                Pitch Movement
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/pitcher-running-game"
+                                            >
+                                                Running Game
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/spin-direction-pitches"
+                                            >
+                                                Spin Direction
+                                            </a>
+                                        </li>
+                                        <li></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <ul>
+                                        <li class="menu title-leaderboard">
+                                            Fielding
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/fielding-run-value"
+                                            >
+                                                Fielding Run Value
+                                            </a>
+                                        </li>
+                                        <li><hr style="margin: 10px 20px 10px 0" /></li>
+
+                                        <li>
+                                            <a
+                                                href="/leaderboard/arm-strength"
+                                            >
+                                                Arm Strength
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/baserunning?type=Fld"
+                                            >
+                                                Arm Value
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/first-base-scoops-receiving"
+                                            >
+                                                First Base Receiving
+                                                <sup class="nav-badge">
+                                                    <span>New</span>
+                                                </sup>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/catch_probability"
+                                            >
+                                                Outfield Catch Probability
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/outfield_directional_outs_above_average"
+                                            >
+                                                Outfield Directional OAA
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/outfield_jump"
+                                            >
+                                                Outfield Jump
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/outs_above_average"
+                                            >
+                                                Outs Above Average
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard title-leaderboard-midcolumn">
+                                            Catching
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/catcher-blocking"
+                                            >
+                                                Catcher Blocking
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/catcher-framing"
+                                            >
+                                                Catcher Framing
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/poptime">
+                                                Catcher Pop Time
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/catcher-stance"
+                                            >
+                                                Catcher Stance
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/catcher-throwing"
+                                            >
+                                                Catcher Throwing
+                                            </a>
+                                        </li>
+                                        <li></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <ul>
+                                        <li class="menu title-leaderboard">
+                                            Running
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/baserunning-run-value"
+                                            >
+                                            Baserunning Run Value
+                                            </a>
+                                        </li>
+                                        <li class="leaderboard-sub-level">
+                                            <a
+                                                href="/leaderboard/basestealing-run-value"
+                                            >
+                                            ▸ Basestealing Run Value
+                                            </a>
+                                        </li>
+                                        <li class="leaderboard-sub-level">
+                                            <a
+                                                href="/leaderboard/baserunning"
+                                            >
+                                            ▸ Extra Bases Taken Run Value
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/leaderboard/sprint_speed">
+                                                Sprint Speed
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/leaderboard/running_splits"
+                                            >
+                                                90ft Splits</a
+                                            >
+                                        </li>
+                                        <li class="menu title-leaderboard title-leaderboard-midcolumn">
+                                            Fielder Positioning
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/visuals/batter-positioning"
+                                            >
+                                                Batter Positioning
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/visuals/fielder-positioning-all"
+                                            >
+                                                Fielder - All
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/visuals/fielder-positioning"
+                                                >Fielder - Situational
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="/visuals/pitcher-positioning"
+                                            >
+                                                Pitcher Positioning
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/visuals/team-positioning">
+                                                Team Positioning
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard title-leaderboard-midcolumn">
+                                            <a
+                                                href="/leaderboard/hot-stove"
+                                                style="color: #b00 !important"
+                                            >
+                                                Hot Stove Leaderboard
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            <a
+                                                href="/leaderboard/custom?type=batter"
+                                                style="color: #b00 !important"
+                                            >
+                                                Custom Leaderboard
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            <a
+                                                href="/leaderboard/top-performers"
+                                                style="color: #b00 !important"
+                                            >
+                                                Top Performers
+                                            </a>
+                                        </li>
+
+                                        <li class="menu title-leaderboard">
+                                            <a
+                                                href="/leaderboard/statcast-park-factors"
+                                                style="color: #b00 !important"
+                                            >
+                                                Statcast Park Factors
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            <a
+                                                href="/leaderboard/pitch-timer-infractions"
+                                                style="color: #b00 !important"
+                                            >
+                                                Timer Infractions
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            <a
+                                                href="/statcast-metrics-context"
+                                                style="color: #b00 !important"
+                                            >
+                                                Statcast Metrics Context
+                                            </a>
+                                        </li>
+                                        <li class="menu title-leaderboard">
+                                            <a
+                                                href="/birthday-index"
+                                                style="color: #b00 !important"
+                                            >
+                                                Sarah Langs Birthday Index
+                                            </a>
+                                        </li>
+                                        <li></li>
+                                        <li></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="item">
+                    <div class="gridnav">
+                        <svg
+                            id="grid"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 1000 1000"
+                            id="icon-grid"
+                            width="18px"
+                            height="18px"
+                        >
+                            <path
+                                d="M6.4 48.5C6.4 25.1 25.5 6 48.8 6h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H48.8c-23.4 0-42.5-19.1-42.5-42.5V48.5h.1zm366.5 0C372.9 25.1 392 6 415.4 6h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H415.4c-23.4 0-42.5-19.1-42.5-42.5V48.5zm367.5 0c0-23.4 19.1-42.5 42.5-42.5h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H782.9c-23.4 0-42.5-19.1-42.5-42.5V48.5zm0 366.9c0-23.4 19.1-42.5 42.5-42.5h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H782.9c-23.4 0-42.5-19.1-42.5-42.5V415.4zm-366.9 0c0-23.4 19.1-42.5 42.5-42.5h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H416c-23.4 0-42.5-19.1-42.5-42.5V415.4zm-366.4 0c0-23.4 19.1-42.5 42.5-42.5h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H49.6c-23.4 0-42.5-19.1-42.5-42.5V415.4zm-.7 367.3c0-23.4 19.1-42.5 42.5-42.5h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5h-169c-23.4 0-42.5-19.1-42.5-42.5V782.7h.1zm734 0c0-23.4 19.1-42.5 42.5-42.5h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H782.9c-23.4 0-42.5-19.1-42.5-42.5V782.7zm-366.9 0c0-23.4 19.1-42.5 42.5-42.5h168.9c23.4 0 42.5 19.1 42.5 42.5v168.9c0 23.4-19.1 42.5-42.5 42.5H416c-23.4 0-42.5-19.1-42.5-42.5V782.7z"
+                            ></path>
+                        </svg>
+                        <div class="applications box">
+                            <div style="text-align: left">
+                                <div class="title">Applications</div>
+                                <div class="app-menu sub-menu">
+                                    <div class="menu">
+                                        <a href="/comparison-tool">
+                                            Player Comparison Tool
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/player-scroll">
+                                            Pitcher Visualization Report
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/pitchmix">
+                                            Pitcher Arsenals
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/sprint-speed-scroller">
+                                            Sprint Speed Scroller
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/visuals/fielder-positioning">
+                                            Player Positioning
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/league">
+                                            League Statcast Stats
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/visuals/pitch3d">
+                                            3D Pitch Visualizations
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/visuals"> Visuals </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/statcast_hit_probability">
+                                            Hit Probability Breakdown
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/statcast_catch_probability">
+                                            Catch Probability Breakdown
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/statcast_field"
+                                            >Statcast Field Visualizer
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/replay">
+                                            Instant Replay Database
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/hr_derby"> HR Derby </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/draft"> Draft Tracker </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/games"> Savant Games </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a
+                                            href="/affinity-pitchersAndHitters-byHittingProfile"
+                                        >
+                                            Player Similarity Scores
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/leaderboard/weighted-score">
+                                            Enhanced Game Scores
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/drag-dashboard">
+                                            Drag Dashboard
+                                        </a>
+                                    </div>
+                                    <div class="menu">
+                                        <a href="/game-strategy-explorer">
+                                            Game Strategy Explorer
+                                        </a>
+                                    </div>
+
+                                    <div class="menu" >
+                                        <a href="/leaderboard/hot-stove">
+                                            Hot Stove
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="app-menu sub-menu">
+                                    <div class="menu" id="app-menu-spaced">
+                                        <a href="/changelog">
+                                            What's New on Savant
+                                        </a>
+                                        <sup class="nav-badge">
+                                            <span>New</span>
+                                        </sup>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div id="player_search_container"></div>
+</header>
+
+<div id="schedule">
+    <div id="ticker"></div>
+    <div style="clear: both"></div>
+</div>
+ 
+        <!-- <div class="banner-ad ad-responsive-slot">
+        <div id="ad-top-320" class="ad-responsive-size" data-thresholds="[1,2]" data-sizes="[[320,50]]"></div>
+        <div id="ad-top-728" class="ad-responsive-size" data-thresholds="[3,4,5]" data-sizes="[[728,90]]"></div>
+    </div>
+    -->
+        <!-- main content -->
+        <div class="article-template"><style>
+    .savant-docs-card {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .savant-docs-card h3 {
+        text-transform: lowercase;
+        min-width: 200px;
+        flex-shrink: 0;
+    }
+
+    .savant-docs-card img {
+        max-width: 100%;
+    }
+</style>
+
+<!-- New Style -->
+<div class="savant-docs">
+    <h2>Statcast Search CSV Documentation</h2>
+    <p>This is the documentation for the Statcast Search CSV data downloads.</p>
+
+    <div id="docs-pitch_type" class="savant-docs-card">
+        <h3><a href="#pitch_type">pitch_type</a></h3>
+        <p>The type of pitch derived from Statcast.</p>
+    </div>
+
+    <div id="docs-game_date" class="savant-docs-card">
+        <h3><a href="#game_date" name="game_date">game_date</a></h3>
+        <p>Date of the Game.</p>
+    </div>
+
+    <div id="docs-release_speed" class="savant-docs-card">
+        <h3><a href="#release_speed" name="release_speed">release_speed</a></h3>
+        <p>
+          Pitch velocity in MPH.
+          Values from 2008-16 are via PitchFX, and adjusted to roughly out-of-hand release point.
+          All velocities from 2017 and beyond are Statcast, which are reported out-of-hand.
+          All velocities are thus on the same scale.
+        </p>
+    </div>
+
+    <div id="docs-release_pos_x" class="savant-docs-card">
+        <h3><a href="#release_pos_x" name="release_pos_x">release_pos_x</a></h3>
+        <p>Horizontal Release Position of the ball measured in feet from the catcher's perspective.</p>
+    </div>
+
+    <div id="docs-release_pos_z" class="savant-docs-card">
+        <h3><a href="#release_pos_z" name="release_pos_z">release_pos_z</a></h3>
+        <p>Vertical Release Position of the ball measured in feet from the catcher's perspective.</p>
+    </div>
+
+    <div id="docs-player_name" class="savant-docs-card">
+        <h3><a href="#player_name" name="player_name">player_name</a></h3>
+        <p>Player's name tied to the event of the search.</p>
+    </div>
+
+    <div id="docs-batter" class="savant-docs-card">
+        <h3><a href="#batter" name="batter">batter</a></h3>
+        <p>MLB Player Id tied to the play event.</p>
+    </div>
+
+    <div id="docs-pitcher" class="savant-docs-card">
+        <h3><a href="#pitcher" name="pitcher">pitcher</a></h3>
+        <p>MLB Player Id tied to the play event.</p>
+    </div>
+
+    <div id="docs-events" class="savant-docs-card">
+        <h3><a href="#events" name="events">events</a></h3>
+        <p>Event of the resulting Plate Appearance.</p>
+    </div>
+
+    <div id="docs-description" class="savant-docs-card">
+        <h3><a href="#description" name="description">description</a></h3>
+        <p>Description of the resulting pitch.</p>
+    </div>
+
+    <div id="docs-spin_dir" class="savant-docs-card">
+        <h3><a href="#spin_dir" name="spin_dir">spin_dir</a></h3>
+        <p>* Deprecated field from the old tracking system.</p>
+    </div>
+
+    <div id="docs-spin_rate_deprecated" class="savant-docs-card">
+        <h3><a href="#spin_rate_deprecated" name="spin_rate_deprecated">spin_rate_deprecated</a></h3>
+        <p>* Deprecated field from the old tracking system. Replaced by <a href="#release_spin">release_spin</a></p>
+    </div>
+
+    <div id="docs-break_angle_deprecated" class="savant-docs-card">
+        <h3><a href="#break_angle_deprecated" name="break_angle_deprecated">break_angle_deprecated</a></h3>
+        <p>* Deprecated field from the old tracking system.</p>
+    </div>
+
+    <div id="docs-break_length_deprecated" class="savant-docs-card">
+        <h3><a href="#break_length_deprecated" name="break_length_deprecated">break_length_deprecated</a></h3>
+        <p>* Deprecated field from the old tracking system.</p>
+    </div>
+
+    <div id="docs-zone" class="savant-docs-card">
+        <h3><a href="#zone" name="zone">zone</a></h3>
+        <div>
+            <p>Zone location of the ball when it crosses the plate from the catcher's perspective.</p>
+            <img src="/sections/statcast-search-new/images/zones.png" />
+        </div>
+    </div>
+
+    <div id="docs-des" class="savant-docs-card">
+        <h3><a href="#des" name="des">des</a></h3>
+        <p>Plate appearance description from game day.</p>
+    </div>
+
+    <div id="docs-game_type" class="savant-docs-card">
+        <h3><a href="#game_type" name="game_type">game_type</a></h3>
+        <p>Type of Game. E = Exhibition, S = Spring Training, R = Regular Season, F = Wild Card, D = Divisional Series, L = League Championship Series, W = World Series</p>
+    </div>
+
+    <div id="docs-stand" class="savant-docs-card">
+        <h3><a href="#stand" name="stand">stand</a></h3>
+        <p>Side of the plate batter is standing.</p>
+    </div>
+
+    <div id="docs-p_throws" class="savant-docs-card">
+        <h3><a href="#p_throws" name="p_throws">p_throws</a></h3>
+        <p>Hand pitcher throws with.</p>
+    </div>
+
+    <div id="docs-home_team" class="savant-docs-card">
+        <h3><a href="#home_team" name="home_team">home_team</a></h3>
+        <p>Abbreviation of home team.</p>
+    </div>
+
+    <div id="docs-away_team" class="savant-docs-card">
+        <h3><a href="#away_team" name="away_team">away_team</a></h3>
+        <p>Abbreviation of away team.</p>
+    </div>
+
+    <div id="docs-type" class="savant-docs-card">
+        <h3><a href="#type" name="type">type</a></h3>
+        <p>Short hand of pitch result. B = ball, S = strike, X = in play.</p>
+    </div>
+
+    <div id="docs-hit_location" class="savant-docs-card">
+        <h3><a href="#hit_location" name="hit_location">hit_location</a></h3>
+        <p>Position of first fielder to touch the ball.</p>
+    </div>
+
+    <div id="docs-bb_type" class="savant-docs-card">
+        <h3><a href="#bb_type" name="bb_type">bb_type</a></h3>
+        <p>Batted ball type, ground_ball, line_drive, fly_ball, popup.</p>
+    </div>
+
+    <div id="docs-balls" class="savant-docs-card">
+        <h3><a href="#balls" name="balls">balls</a></h3>
+        <p>Pre-pitch number of balls in count.</p>
+    </div>
+
+    <div id="docs-strikes" class="savant-docs-card">
+        <h3><a href="#strikes" name="strikes">strikes</a></h3>
+        <p>Pre-pitch number of strikes in count.</p>
+    </div>
+
+    <div id="docs-game_year" class="savant-docs-card">
+        <h3><a href="#game_year" name="game_year">game_year</a></h3>
+        <p>Year game took place.</p>
+    </div>
+
+    <div id="docs-pfx_x" class="savant-docs-card">
+        <h3><a href="#pfx_x" name="pfx_x">pfx_x</a></h3>
+        <p>Horizontal movement in feet from the catcher's perspective.</p>
+    </div>
+
+    <div id="docs-pfx_z" class="savant-docs-card">
+        <h3><a href="#pfx_z" name="pfx_z">pfx_z</a></h3>
+        <p>Vertical movement in feet from the catcher's perpsective.</p>
+    </div>
+
+    <div id="docs-plate_x" class="savant-docs-card">
+        <h3><a href="#plate_x" name="plate_x">plate_x</a></h3>
+        <p>
+          Horizontal position of the ball when it crosses home plate from the catcher's perspective.
+          Through 2025, this was front-of-plate.
+          From 2026 on, this is middle-of-plate to align with the ABS system.
+        </p>
+    </div>
+
+    <div id="docs-plate_z" class="savant-docs-card">
+        <h3><a href="#plate_z" name="plate_z">plate_z</a></h3>
+        <p>
+          Vertical position of the ball when it crosses home plate from the catcher's perspective.
+          Through 2025, this was front-of-plate.
+          From 2026 on, this is middle-of-plate to align with the ABS system.
+        </p>
+    </div>
+
+    <div id="docs-on_3b" class="savant-docs-card">
+        <h3><a href="#on_3b" name="on_3b">on_3b</a></h3>
+        <p>Pre-pitch MLB Player Id of Runner on 3B.</p>
+    </div>
+
+    <div id="docs-on_2b" class="savant-docs-card">
+        <h3><a href="#on_2b" name="on_2b">on_2b</a></h3>
+        <p>Pre-pitch MLB Player Id of Runner on 2B.</p>
+    </div>
+
+    <div id="docs-on_1b" class="savant-docs-card">
+        <h3><a href="#on_1b" name="on_1b">on_1b</a></h3>
+        <p>Pre-pitch MLB Player Id of Runner on 1B.</p>
+    </div>
+
+    <div id="docs-outs_when_up" class="savant-docs-card">
+        <h3><a href="#outs_when_up" name="outs_when_up">outs_when_up</a></h3>
+        <p>Pre-pitch number of outs.</p>
+    </div>
+
+    <div id="docs-inning" class="savant-docs-card">
+        <h3><a href="#inning" name="inning">inning</a></h3>
+        <p>Pre-pitch inning number.</p>
+    </div>
+
+    <div id="docs-inning_topbot" class="savant-docs-card">
+        <h3><a href="#inning_topbot" name="inning_topbot">inning_topbot</a></h3>
+        <p>Pre-pitch top or bottom of inning.</p>
+    </div>
+
+    <div id="docs-hc_x" class="savant-docs-card">
+        <h3><a href="#hc_x" name="hc_x">hc_x</a></h3>
+        <p>Hit coordinate X of batted ball.</p>
+    </div>
+
+    <div id="docs-hc_y" class="savant-docs-card">
+        <h3><a href="#hc_y" name="hc_y">hc_y</a></h3>
+        <p>Hit coordinate Y of batted ball.</p>
+    </div>
+
+    <div id="docs-tfs_deprecated" class="savant-docs-card">
+        <h3><a href="#tfs_deprecated" name="tfs_deprecated">tfs_deprecated</a></h3>
+        <p>* Deprecated field from old tracking system.</p>
+    </div>
+
+    <div id="docs-tfs_zulu_deprecated" class="savant-docs-card">
+        <h3><a href="#tfs_zulu_deprecated" name="tfs_zulu_deprecated">tfs_zulu_deprecated</a></h3>
+        <p>* Deprecated field from old tracking system.</p>
+    </div>
+
+    <div id="docs-fielder_2" class="savant-docs-card">
+        <h3><a href="#fielder_2" name="fielder_2">fielder_2</a></h3>
+        <p>Pre-pitch MLB Player Id of Catcher.</p>
+    </div>
+
+    <div id="docs-umpire" class="savant-docs-card">
+        <h3><a href="#umpire" name="umpire">umpire</a></h3>
+        <p>* Deprecated field from old tracking system.</p>
+    </div>
+
+    <div id="docs-sv_id" class="savant-docs-card">
+        <h3><a href="#sv_id" name="sv_id">sv_id</a></h3>
+        <p>Non-unique Id of play event per game.</p>
+    </div>
+
+    <div id="docs-vx0" class="savant-docs-card">
+        <h3><a href="#vx0" name="vx0">vx0</a></h3>
+        <p>The velocity of the pitch, in feet per second, in x-dimension, determined at y=50 feet.</p>
+    </div>
+
+    <div id="docs-vy0" class="savant-docs-card">
+        <h3><a href="#vy0" name="vy0">vy0</a></h3>
+        <p>The velocity of the pitch, in feet per second, in y-dimension, determined at y=50 feet.</p>
+    </div>
+
+    <div id="docs-vx0-2" class="savant-docs-card">
+        <h3><a href="#vy0" name="vx0">vy0</a></h3>
+        <p>The velocity of the pitch, in feet per second, in z-dimension, determined at y=50 feet.</p>
+    </div>
+
+    <div id="docs-ax" class="savant-docs-card">
+        <h3><a href="#ax" name="ax">ax</a></h3>
+        <p>The acceleration of the pitch, in feet per second per second, in x-dimension, determined at y=50 feet.</p>
+    </div>
+
+    <div id="docs-ay" class="savant-docs-card">
+        <h3><a href="#ay" name="ay">ay</a></h3>
+        <p>The acceleration of the pitch, in feet per second per second, in y-dimension, determined at y=50 feet.</p>
+    </div>
+
+    <div id="docs-az" class="savant-docs-card">
+        <h3><a href="#az" name="az">az</a></h3>
+        <p>The acceleration of the pitch, in feet per second per second, in z-dimension, determined at y=50 feet.</p>
+    </div>
+
+    <div id="docs-sz_top" class="savant-docs-card">
+        <h3><a href="#sz_top" name="sz_top">sz_top</a></h3>
+        <p>
+          Top of the batter's strike zone set by the operator when the ball is halfway to the plate.
+          Through 2025, top of the batter's strike zone set by the operator when the ball is halfway to the plate.
+          From 2026 on, this is the top of the batter's ABS-defined strike zone.
+        </p>
+    </div>
+
+    <div id="docs-sz_bot" class="savant-docs-card">
+        <h3><a href="#sz_bot" name="sz_bot">sz_bot</a></h3>
+        <p>
+          Bottom of the batter's strike zone set by the operator when the ball is halfway to the plate.
+          Through 2025, bottom of the batter's strike zone set by the operator when the ball is halfway to the plate.
+          From 2026 on, this is the bottom of the batter's ABS-defined strike zone.
+        </p>
+    </div>
+
+    <div id="docs-hit_distance" class="savant-docs-card">
+        <h3><a href="#hit_distance" name="hit_distance">hit_distance</a></h3>
+        <p>Projected hit distance of the batted ball.</p>
+    </div>
+
+    <div id="docs-launch_speed" class="savant-docs-card">
+        <h3><a href="#launch_speed" name="launch_speed">launch_speed</a></h3>
+        <p>Exit velocity of the batted ball as tracked by Statcast.  For the limited subset of batted balls not tracked directly, estimates are included based on the process described <a href="http://tangotiger.com/index.php/site/article/statcast-lab-no-nulls-in-batted-balls-launch-parameters">here</a>.</p>
+    </div>
+
+    <div id="docs-launch_angle" class="savant-docs-card">
+        <h3><a href="#launch_angle" name="launch_angle">launch_angle</a></h3>
+        <p>Launch angle of the batted ball as tracked by Statcast.  For the limited subset of batted balls not tracked directly, estimates are included based on the process described <a href="http://tangotiger.com/index.php/site/article/statcast-lab-no-nulls-in-batted-balls-launch-parameters">here</a>.</p>
+    </div>
+
+    <div id="docs-effective_speed" class="savant-docs-card">
+        <h3><a href="#effective_speed" name="effective_speed">effective_speed</a></h3>
+        <p>Derived speed based on the the extension of the pitcher's release.</p>
+    </div>
+
+    <div id="docs-release_spin" class="savant-docs-card">
+        <h3><a href="#release_spin" name="release_spin">release_spin</a></h3>
+        <p>Spin rate of pitch tracked by Statcast.</p>
+    </div>
+
+    <div id="docs-release_extension" class="savant-docs-card">
+        <h3><a href="#release_extension" name="release_extension">release_extension</a></h3>
+        <p>Release extension of pitch in feet as tracked by Statcast.</p>
+    </div>
+
+    <div id="docs-game_pk" class="savant-docs-card">
+        <h3><a href="#game_pk" name="game_pk">game_pk</a></h3>
+        <p>Unique Id for Game.</p>
+    </div>
+
+    <div id="docs-pitcher-2" class="savant-docs-card">
+        <h3><a href="#pitcher" name="pitcher">pitcher</a></h3>
+        <p>MLB Player Id tied to the play event.</p>
+    </div>
+
+    <div id="docs-fielder_2-2" class="savant-docs-card">
+        <h3><a href="#fielder_2" name="fielder_2">fielder_2</a></h3>
+        <p>MLB Player Id for catcher.</p>
+    </div>
+
+    <div id="docs-fielder_3" class="savant-docs-card">
+        <h3><a href="#fielder_3" name="fielder_3">fielder_3</a></h3>
+        <p>MLB Player Id for 1B.</p>
+    </div>
+
+    <div id="docs-fielder_4" class="savant-docs-card">
+        <h3><a href="#fielder_4" name="fielder_4">fielder_4</a></h3>
+        <p>MLB Player Id for 2B.</p>
+    </div>
+
+    <div id="docs-fielder_5" class="savant-docs-card">
+        <h3><a href="#fielder_5" name="fielder_5">fielder_5</a></h3>
+        <p>MLB Player Id for 3B.</p>
+    </div>
+
+    <div id="docs-fielder_6" class="savant-docs-card">
+        <h3><a href="#fielder_6" name="fielder_6">fielder_6</a></h3>
+        <p>MLB Player Id for SS.</p>
+    </div>
+
+    <div id="docs-fielder_7" class="savant-docs-card">
+        <h3><a href="#fielder_7" name="fielder_7">fielder_7</a></h3>
+        <p>MLB Player Id for LF.</p>
+    </div>
+
+    <div id="docs-fielder_8" class="savant-docs-card">
+        <h3><a href="#fielder_8" name="fielder_8">fielder_8</a></h3>
+        <p>MLB Player Id for CF.</p>
+    </div>
+
+    <div id="docs-fielder_9" class="savant-docs-card">
+        <h3><a href="#fielder_9" name="fielder_9">fielder_9</a></h3>
+        <p>MLB Player Id for RF.</p>
+    </div>
+
+    <div id="docs-release_pos_y" class="savant-docs-card">
+        <h3><a href="#release_pos_y" name="release_pos_y">release_pos_y</a></h3>
+        <p>Release position of pitch measured in feet from the catcher's perspective.</p>
+    </div>
+
+    <div id="docs-estimated_ba_using_speedangle" class="savant-docs-card">
+        <h3><a href="#estimated_ba_using_speedangle" name="estimated_ba_using_speedangle">estimated_ba_using_speedangle</a></h3>
+        <p>Estimated Batting Avg based on launch angle and exit velocity.</p>
+    </div>
+
+    <div id="docs-estimated_woba_using_speedangle" class="savant-docs-card">
+        <h3><a href="#estimated_woba_using_speedangle" name="estimated_woba_using_speedangle">estimated_woba_using_speedangle</a></h3>
+        <p>Estimated wOBA based on launch angle and exit velocity.</p>
+    </div>
+
+    <div id="docs-woba_value" class="savant-docs-card">
+        <h3><a href="#woba_value" name="woba_value">woba_value</a></h3>
+        <p>wOBA value based on result of play.</p>
+    </div>
+
+    <div id="docs-woba_denom" class="savant-docs-card">
+        <h3><a href="#woba_denom" name="woba_denom">woba_denom</a></h3>
+        <p>wOBA denominator based on result of play.</p>
+    </div>
+
+    <div id="docs-babip_value" class="savant-docs-card">
+        <h3><a href="#babip_value" name="babip_value">babip_value</a></h3>
+        <p>BABIP value based on result of play.</p>
+    </div>
+
+    <div id="docs-iso_value" class="savant-docs-card">
+        <h3><a href="#iso_value" name="iso_value">iso_value</a></h3>
+        <p>ISO value based on result of play.</p>
+    </div>
+
+    <div id="docs-launch_speed_angle" class="savant-docs-card">
+        <h3><a href="#launch_speed_angle" name="launch_speed_angle">launch_speed_angle</a></h3>
+        <div>
+            <p>
+                Launch speed/angle zone based on launch angle and exit velocity.
+                <ol>
+                    <li>Weak</li>
+                    <li>Topped</li>
+                    <li>Under</li>
+                    <li>Flare/Burner</li>
+                    <li>Solid Contact</li>
+                    <li>Barrel </li>
+                </ol>
+            </p>
+            <img src="/sections/statcast-search-new/images/speed-angle.png" />
+        </div>
+    </div>
+
+    <div id="docs-at_bat_number" class="savant-docs-card">
+        <h3><a href="#at_bat_number" name="at_bat_number">at_bat_number</a></h3>
+        <p>Plate appearance number of the game.</p>
+    </div>
+
+    <div id="docs-pitch_number" class="savant-docs-card">
+        <h3><a href="#pitch_number" name="pitch_number">pitch_number</a></h3>
+        <p>Total pitch number of the plate appearance.</p>
+    </div>
+
+    <div id="docs-pitch_name" class="savant-docs-card">
+        <h3><a href="#pitch_name" name="pitch_name">pitch_name</a></h3>
+        <p>The name of the pitch derived from the Statcast Data.</p>
+    </div>
+
+    <div id="docs-home_score" class="savant-docs-card">
+        <h3><a href="#home_score" name="home_score">home_score</a></h3>
+        <p>Pre-pitch home score</p>
+    </div>
+
+    <div id="docs-away_score" class="savant-docs-card">
+        <h3><a href="#away_score" name="away_score">away_score</a></h3>
+        <p>Pre-pitch away score</p>
+    </div>
+
+    <div id="docs-bat_score" class="savant-docs-card">
+        <h3><a href="#bat_score" name="bat_score">bat_score</a></h3>
+        <p>Pre-pitch bat team score</p>
+    </div>
+
+    <div id="docs-fld_score" class="savant-docs-card">
+        <h3><a href="#fld_score" name="fld_score">fld_score</a></h3>
+        <p>Pre-pitch field team score</p>
+    </div>
+
+    <div id="docs-post_home_score" class="savant-docs-card">
+        <h3><a href="#post_home_score" name="post_home_score">post_home_score</a></h3>
+        <p>Post-pitch home score</p>
+    </div>
+
+    <div id="docs-post_away_score" class="savant-docs-card">
+        <h3><a href="#post_away_score" name="post_away_score">post_away_score</a></h3>
+        <p>Post-pitch away score</p>
+    </div>
+
+    <div id="docs-post_bat_score" class="savant-docs-card">
+        <h3><a href="#post_bat_score" name="post_bat_score">post_bat_score</a></h3>
+        <p>Post-pitch bat team score</p>
+    </div>
+
+    <div id="docs-if_fielding_alignment" class="savant-docs-card">
+        <h3><a href="#if_fielding_alignment" name="if_fielding_alignment">if_fielding_alignment</a></h3>
+        <p>Infield fielding alignment at the time of the pitch.</p>
+    </div>
+
+    <div id="docs-of_fielding_alignment" class="savant-docs-card">
+        <h3><a href="#of_fielding_alignment" name="of_fielding_alignment">of_fielding_alignment</a></h3>
+        <p>Outfield fielding alignment at the time of the pitch.</p>
+    </div>
+
+    <div id="docs-spin_axis" class="savant-docs-card">
+        <h3><a href="#spin_axis" name="spin_axis">spin_axis</a></h3>
+        <p>The Spin Axis in the 2D X-Z plane in degrees from 0 to 360, such that 180 represents a pure backspin fastball and 0 degrees represents a pure topspin (12-6) curveball</p>
+    </div>
+
+    <div id="docs-delta_home_win_exp" class="savant-docs-card">
+        <h3><a href="#delta_home_win_exp" name="delta_home_win_exp">delta_home_win_exp</a></h3>
+        <p>The change in Win Expectancy before the Plate Appearance and after the Plate Appearance</p>
+    </div>
+
+    <div id="docs-delta_run_exp" class="savant-docs-card">
+        <h3><a href="#delta_run_exp" name="delta_run_exp">delta_run_exp</a></h3>
+        <p>The change in Run Expectancy before the Pitch and after the Pitch</p>
+    </div>
+
+    <div id="docs-hyper_speed" class="savant-docs-card">
+        <h3><a href="#hyper_speed" name="hyper_speed">hyper_speed</a></h3>
+        <p>Savant display name: Adjusted EV. Adjusted Exit Velocity sets every batted ball hit below 88 mph as 88 mph, otherwise it uses the actual Exit Velocity</p>
+    </div>
+
+    <div id="docs-home_score_diff" class="savant-docs-card">
+        <h3><a href="#home_score_diff" name="home_score_diff">home_score_diff</a></h3>
+        <p>Home score minus Away score</p>
+    </div>
+
+    <div id="docs-bat_score_diff" class="savant-docs-card">
+        <h3><a href="#bat_score_diff" name="bat_score_diff">bat_score_diff</a></h3>
+        <p>Batting team score less Pitching team score</p>
+    </div>
+
+    <div id="docs-home_win_exp" class="savant-docs-card">
+        <h3><a href="#home_win_exp" name="home_win_exp">home_win_exp</a></h3>
+        <p>Home team win expectancy</p>
+    </div>
+
+    <div id="docs-bat_win_exp" class="savant-docs-card">
+        <h3><a href="#bat_win_exp" name="bat_win_exp">bat_win_exp</a></h3>
+        <p>Bat team win expectancy</p>
+    </div>
+
+    <div id="docs-age_pit_legacy" class="savant-docs-card">
+        <h3><a href="#age_pit_legacy" name="age_pit_legacy">age_pit_legacy</a></h3>
+        <p>pitcher age on 6/30</p>
+    </div>
+
+    <div id="docs-age_bat_legacy" class="savant-docs-card">
+        <h3><a href="#age_bat_legacy" name="age_bat_legacy">age_bat_legacy</a></h3>
+        <p>batter age on 6/30</p>
+    </div>
+
+    <div id="docs-age_pit" class="savant-docs-card">
+        <h3><a href="#age_pit" name="age_pit">age_pit</a></h3>
+        <p>pitcher age on 12/31</p>
+    </div>
+
+    <div id="docs-age_bat" class="savant-docs-card">
+        <h3><a href="#age_bat" name="age_bat">age_bat</a></h3>
+        <p>batter age on 12/31</p>
+    </div>
+
+    <div id="docs-n_thruorder_pitcher" class="savant-docs-card">
+        <h3><a href="#n_thruorder_pitcher" name="n_thruorder_pitcher">n_thruorder_pitcher</a></h3>
+        <p>pitcher times through the order</p>
+    </div>
+
+    <div id="docs-n_priorpa_thisgame_player_at_bat" class="savant-docs-card">
+        <h3><a href="#n_priorpa_thisgame_player_at_bat" name="n_priorpa_thisgame_player_at_bat">n_priorpa_thisgame_player_at_bat</a></h3>
+        <p>number of prior PAs in this game for this batter</p>
+    </div>
+
+    <div id="docs-pitcher_days_since_prev_game" class="savant-docs-card">
+        <h3><a href="#pitcher_days_since_prev_game" name="pitcher_days_since_prev_game">pitcher_days_since_prev_game</a></h3>
+        <p>number of days since pitcher's last game</p>
+    </div>
+
+    <div id="docs-batter_days_since_prev_game" class="savant-docs-card">
+        <h3><a href="#batter_days_since_prev_game" name="batter_days_since_prev_game">batter_days_since_prev_game</a></h3>
+        <p>number of days since batter's last game</p>
+    </div>
+
+    <div id="docs-pitcher_days_until_next_game" class="savant-docs-card">
+        <h3><a href="#pitcher_days_until_next_game" name="pitcher_days_until_next_game">pitcher_days_until_next_game</a></h3>
+        <p>number of days until the pitcher's next game</p>
+    </div>
+
+    <div id="docs-batter_days_until_next_game" class="savant-docs-card">
+        <h3><a href="#batter_days_until_next_game" name="batter_days_until_next_game">batter_days_until_next_game</a></h3>
+        <p>number of days until the batter's next game</p>
+    </div>
+
+    <div id="docs-api_break_z_with_gravity" class="savant-docs-card">
+        <h3><a href="#api_break_z_with_gravity" name="api_break_z_with_gravity">api_break_z_with_gravity</a></h3>
+        <p>Vertical break with gravity included</p>
+    </div>
+
+    <div id="docs-api_break_x_arm" class="savant-docs-card">
+        <h3><a href="#api_break_x_arm" name="api_break_x_arm">api_break_x_arm</a></h3>
+        <p>Break, in inches, of a pitch to the pitcher's arm side.</p>
+    </div>
+
+    <div id="docs-api_break_x_batter_in" class="savant-docs-card">
+        <h3><a href="#api_break_x_batter_in" name="api_break_x_batter_in">api_break_x_batter_in</a></h3>
+        <p>Break, in inches, of a pitch toward the batter's side of plate.</p>
+    </div>
+
+    <div id="docs-arm_angle" class="savant-docs-card">
+        <h3><a href="#arm_angle" name="arm_angle">arm_angle</a></h3>
+        <p>The angle between a line parallel to the ground and a l line extending from the location of the pitcher's throwing shoulder and the location of the ball at the time of the pitch.</p>
+    </div>
+
+    <div id="docs-attack_angle" class="savant-docs-card">
+        <h3><a href="#attack_angle" name="attack_angle">attack_angle</a></h3>
+        <p>Attack Angle measures the vertical angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to the ground.</p>
+    </div>
+
+    <div id="docs-attack_direction" class="savant-docs-card">
+        <h3><a href="#attack_direction" name="attack_direction">attack_direction</a></h3>
+        <p>Attack Direction measures the horizontal angle of the direction in which the sweet spot of the bat is traveling as it impacts the ball, as compared to a line from home plate to straightaway center field.</p>
+    </div>
+
+    <div id="docs-swing_path_tilt" class="savant-docs-card">
+        <h3><a href="#swing_path_tilt" name="swing_path_tilt">swing_path_tilt</a></h3>
+        <p>The vertical angular orientation of the "plane" of the swing, as compared to the ground, defined by the path of the bat in the 40 ms prior to contact, which approximates a slice of a flat disc in shape.</p>
+    </div>
+
+    <div id="docs-intercept_ball_minus_batter_pos_x_inches" class="savant-docs-card">
+        <h3><a href="#intercept_ball_minus_batter_pos_x_inches" name="intercept_ball_minus_batter_pos_x_inches">intercept_ball_minus_batter_pos_x_inches</a></h3>
+        <p>Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the X (horizontal) direction.</p>
+    </div>
+
+    <div id="docs-intercept_ball_minus_batter_pos_y_inches" class="savant-docs-card">
+        <h3><a href="#intercept_ball_minus_batter_pos_y_inches" name="intercept_ball_minus_batter_pos_y_inches">intercept_ball_minus_batter_pos_y_inches</a></h3>
+        <p>Distance, in inches, between the intercept point of the bat/ball and the batter's center of mass, in the Y (mound-to-plate) direction.</p>
+    </div>
+</div>
+</div>
+        <!-- footer -->
+        <footer id="footer">
+            <div class="footer-bar-top">
+                <div id="footer-container">
+                    <h6 class="footer-statcast-header">
+                        <a href="https://www.mlb.com/glossary/statcast" target="_blank">
+                            Statcast Glossary
+                        </a>
+                    </h6>
+                    <div class="footer-glossary-wrapper">
+                        <h6 class="footer-subheader">Batting</h6>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/exit-velocity" target="_blank">
+                                    Exit Velocity (EV)
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How fast, in miles per hour, a ball was hit by a batter.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/launch-angle">
+                                    Launch Angle (LA)
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How high/low, in degrees, a ball was hit by a batter.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/barrel">
+                                    Barrels
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A batted ball with the perfect combination of exit
+                                velocity and launch angle
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/hard-hit-rate" target="_blank">
+                                    Hard Hit
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                Statcast defines a 'hard-hit ball' as one hit with an
+                                exit velocity of 95 mph or higher.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/sweet-spot" target="_blank">
+                                    Launch Angle Sweet-Spot
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A batted-ball event with a launch angle between eight
+                                and 32 degrees.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/batted-ball-event" target="_blank">
+                                    Batted Ball Event (BBE)
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A Batted Ball Event represents any batted ball that
+                                produces a result.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/expected-batting-average" target="_blank">
+                                    Expected Batting Average (xBA)
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                xBA measures the likelihood that a batted ball will
+                                become a hit.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/expected-woba" target="_blank">
+                                    Expected Weighted On-base Average (xwOBA)
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                xwOBA is formulated using exit velocity, launch angle
+                                and, on certain types of batted balls, Sprint Speed.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="http://tangotiger.com/index.php/site/article/statcast-metric-best-speed"
+                                    target="_blank">
+                                    EV50
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                For a batter, EV50 is an average of the hardest 50% of his batted balls. For a pitcher it is the
+                                average of his softest 50% of batted balls allowed.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="http://tangotiger.com/index.php/site/article/statcast-metric-escape-velocity"
+                                    target="_blank">
+                                    Adjusted EV
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                Adjusted EV averages the maximum of 88 and the actual exit velocity of each batted ball event.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container-spacer"></div>
+                        <div class="footer-flex-container-spacer"></div>
+        
+                        <h6 class="footer-subheader">Bat Tracking</h6>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="#">
+                                    Bat Speed
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                Bat speed is measured at the sweet-spot of the bat. Average bat speed is the average of the top 90% of a player’s swings.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/fast-swing-rate" target="_blank">
+                                    Fast Swing Rate
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A fast swing is one that has 75 MPH or more of bat speed.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/swing-length" target="_blank">
+                                    Swing Length
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                The total (sum) distance in feet traveled of the head of the bat in X/Y/Z space, from start of tracking data until impact point.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/attack-angle" target="_blank">
+                                    Attack Angle
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                The vertical angle at which the sweet spot of the bat is traveling at the point of impact with the ball.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/ideal-attack-angle" target="_blank">
+                                    Ideal Attack Angle
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A ball is hit at an "Ideal Attack Angle," per Statcast, when it is hit with a 5-20° Attack Angle.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/attack-direction" target="_blank">
+                                    Attack Direction
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                The horizontal angle at which the sweet spot of the bat is traveling at the point of impact with the ball, expressed as an angle to the "PULL" or "OPPO" direction.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/swing-path-tilt" target="_blank">
+                                    Swing Path Tilt
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                The vertical angle of the arc traced by the swing path over the 40 ms prior to contact. A higher tilt indicates a "steeper" swing, while a lower tilt indicates a "flatter" swing.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/squared-up" target="_blank">
+                                    Squared-Up Rate
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How much exit velocity was obtained compared to the maximum possible exit velocity available, given the speed of the swing and pitch.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/bat-tracking-blasts" target="_blank">
+                                    Blasts
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A more valuable subset of squared-up balls, defining batted balls that were both squared-up and with a fast swing.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/sword" target="_blank">
+                                    Swords
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A bat tracking metric that quantifies when a pitcher forces a batter to take a non-competitive, ugly-looking swing.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container-spacer"></div>
+                        <div class="footer-flex-container-spacer"></div>
+        
+                        <h6 class="footer-subheader">Pitching</h6>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/velocity" target="_blank">
+                                    Pitch Velocity
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How hard, in miles per hour, a pitch is thrown.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/pitch-movement" target="_blank">
+                                    Pitch Movement
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                The movement of a pitch is defined in inches, both in
+                                raw numbers and as a measurement against average.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/active-spin" target="_blank">
+                                    Active Spin
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                Statcast refers to the spin that contributes to movement
+                                as Active Spin.
+                            </div>
+                        </div>
+        
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/spin-rate" target="_blank">
+                                    Spin Rate
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How much spin, in revolutions per minute, a pitch was
+                                thrown with.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/extension" target="_blank">
+                                    Extension
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How far off the mound, in feet, a pitcher releases the
+                                pitch.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/expected-era" target="_blank">
+                                    Expected Earned Run Avg (xERA)
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                xERA is a simple 1:1 translation of xwOBA, converted to
+                                the ERA scale.
+                            </div>
+                        </div>
+        
+                        <h6 class="footer-subheader">Fielding / Catching</h6>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/pop-time" target="_blank">
+                                    Pop Time
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How quickly, in seconds, a catcher can get the ball out
+                                of his glove and to the base on a stolen base or pickoff
+                                attempt.
+                            </div>
+                        </div>
+        
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/arm-strength" target="_blank">
+                                    Arm Strength
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How hard, in miles per hour, a fielder throws the ball.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/lead-distance" target="_blank">
+                                    Lead Distance
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                How far, in feet, a runner is ranging off the bag at the
+                                time of a pitcher's first movement or pitch release.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/jump" target="_blank">
+                                    Jump
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                Jump is a Statcast metric that shows which players have
+                                the fastest reactions and most direct routes in the
+                                outfield.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/outs-above-average" target="_blank">
+                                    Outs Above Average (OAA)
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A range-based metric of skill that shows how many outs a
+                                player has saved over his peers.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/fielding-run-value" target="_blank">
+                                    Fielding Run Value
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                Statcast's overall metric for capturing a player’s measurable defensive performance onto a
+                                run-based scale, converting various metrics like OAA, blocking, framing, etc.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/catch-probability" target="_blank">
+                                    Catch Probability
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                The likelihood, in percent, that an outfielder will be
+                                able to make a catch on an individual batted ball.
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="http://tangotiger.com/index.php/site/comments/statcast-lab-block-pitches-model-for-catchers" target="_blank">
+                                    Blocks Above Average
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A Statcast metric designed to express the demonstrated skill of catchers at preventing wild
+                                pitches or passed balls compared to their peers.
+                            </div>
+                        </div>
+        
+                        <h6 class="footer-subheader">Running</h6>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/sprint-speed" target="_blank">
+                                    Sprint Speed
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A measurement of a player's top running speed, expressed
+                                in "feet per second in a player's fastest one-second
+                                window."
+                            </div>
+                        </div>
+                        <div class="footer-flex-container">
+                            <div class="footer-glossary-title">
+                                <a href="https://www.mlb.com/glossary/statcast/bolt" target="_blank">
+                                    Bolt
+                                </a>
+                            </div>
+                            <div class="footer-glossary-text">
+                                A Bolt is any run where the Sprint Speed (defined as
+                                "feet per second in a player's fastest one-second
+                                window") of the runner is at least 30 ft/sec.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-top">
+                    <div id="footer-bar">
+                        <div>
+                            <div style="text-align: right; width: 100%">
+                                <img class="mlb-logo" src="/site-core/images/savant-logo.svg" />
+                            </div>
+                        </div>
+                        <div class="logo">
+                            <a href="/">
+                                <span class="primary-color main-logo-emphasized">savant</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <ul id="footer-links">
+                    <li>
+                        <a class="footer-tou" href="https://www.mlb.com/official-information/terms-of-use">
+                            Terms of Use
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footer-privacy" href="https://www.mlb.com/official-information/privacy-policy">
+                            Privacy Policy
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footer-notices" href="https://www.mlb.com/official-information/legal-notices">
+                            Legal Notices
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footer-notices" data-phone-href="https://www.mlb.com" href="https://www.mlb.com">
+                            MLB.com
+                        </a>
+                    </li>
+                </ul>
+                <div id="copyright-container">
+                    © MLB Advanced Media, LP. All rights reserved.
+                </div>
+            </div>
+        </footer>
+
+
+
+        <!-- analytics -->
+                <script type="text/javascript">
+                    var s_account = "mlbglobal08,mlbcom08";
+                </script>
+            <script type="text/javascript" src="https://www.mlbstatic.com/mlb.com/scripts/mlbamscv2.js"></script>
+        
+            <script type="text/javascript">
+            s.pageName = "Baseballsavant.com Site: Statcast Search CSV Documentation"
+            s.channel = "Baseballsavant.com Site";
+            s.prop1 = "Baseballsavant.com Site";
+            s.prop22 = document.cookie?.split('; ').find(d => d.includes('oktaid='))?.replace('oktaid=', '') || null
+            s.prop24 = s_account;
+        
+            s.events = "event4";
+        
+            s.campaign = s.getQueryParam("partnerId");
+            s.eVar1 = s.getQueryParam("vbID");
+            s.eVar4 = s.getQueryParam("affiliateId");
+            s.eVar14 = s.getQueryParam("tcid");
+            s.eVar21 = s.getQueryParam("tdl");
+            s.eVar22 = s.getQueryParam("tfl");
+            s.eVar25 = s.getQueryParam("mlbkw");
+        
+        
+            s.linkInternalFilters="javascript:,mlb.com,localhost,ticketreturn.com,ticketmaster.com,tickets.com,glitnirticketing.com,etix.com,streamlineticketing.com,baseballsavant.com";
+        
+            /********* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+            var s_code=s.t();if(s_code)document.write(s_code)//--></script>
+            <script type="text/javascript"><!--
+            if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+            //--></script><noscript><a href="http://www.omniture.com" title="Web Analytics"><img
+            src="http://mlbglobal08.112.2O7.net/b/ss/mlbglobal08/1/H.13--NS/0?[AQB]&cdp=3&[AQE]"
+            height="1" width="1" border="0" alt="" /></a></noscript><!--/DO NOT REMOVE/-->
+            <!-- End SiteCatalyst code version: H.23.8 -->
+        
+        <script>
+            window.applicationEnvironment = 'production'
+            window.baseDeploy = '71b8a5733b11dc94559a1b78c422b63a0611b623'
+        </script>
+
+        <!-- core javascript files -->
+
+        <!-- build scripts -->
+        
+        
+            <script type="module" src="https://builds.mlbstatic.com/baseballsavant.mlb.com/v1/builds/site-core/71b8a5733b11dc94559a1b78c422b63a0611b623/scripts/build/site.js"></script>
+            <script type="module" src="https://builds.mlbstatic.com/baseballsavant.mlb.com/v1/sections/statcast-search-new/builds/5163813ff451040a23c1ddd7e5b916134e269cda/scripts/csv-docs.js"></script>
+        
+
+        <!-- TODO debugging -->
+    </body>
+</html>

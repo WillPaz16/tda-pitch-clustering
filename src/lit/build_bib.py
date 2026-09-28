@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LIT = ROOT / "docs" / "lit_review"
 CACHE = LIT / "registry_cache"
 REFRESH = "--refresh" in sys.argv
-CITABLE = {"IN_HAND", "ATTRIBUTION_ONLY", "BOOK_NO_PDF"}
+CITABLE = {"IN_HAND", "ATTRIBUTION_ONLY", "BOOK_NO_PDF", "WEB_SNAPSHOT"}
 
 # publisher BibTeX for venues without DOIs
 PUBLISHER_BIB = {
@@ -50,6 +50,10 @@ MANUAL = {
                                               note="Fields from aaai.org paper page; pages from the PDF")),
     "munkres2000topology": ("book", dict(author="Munkres, James R.", title="Topology", edition="2nd", publisher="Prentice Hall",
                                          year="2000", isbn="0131816292", note="Open Library ISBN record")),
+    "savantcsvdocs": ("misc", dict(author="{MLB Advanced Media}", title="Statcast Search CSV Documentation",
+                                   howpublished="Baseball Savant", url="https://baseballsavant.mlb.com/csv-docs", year="2026",
+                                   note="Accessed 2026-09-28; snapshot in docs/lit_review/registry_cache/",
+                                   fieldsource="title from page <title>; owner from page footer")),
     "mohnhaupt2023": ("mastersthesis", dict(author="Mohnhaupt, Mona", title="The Nerve Theorem and its Applications in Topological Data Analysis",
                                             school="ETH Z{\\\"u}rich", year="2023", type="Bachelor's thesis",
                                             note="Read from PDF title page (supervisor: S. Kali{\\v{s}}nik Hintz)")),
