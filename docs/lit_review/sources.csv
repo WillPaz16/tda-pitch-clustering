@@ -58,5 +58,5 @@ ledoux_pybaseball,,pypi:pybaseball==2.2.7,2.2.7 (released 2023-09-08; version in
 alexandroff1928,,doi:10.1007/BF01451612,,Crossref,SKIPPED_COVERED,Covered: Borsuk 1948 fn. 4 documents Alexandroff as the nerve's origin; definitions from Hatcher/Singh
 cattell1966scree,,doi:10.1207/s15327906mbr0102_10,,Crossref,NOT_NEEDED,"Not needed: drop the 'elbow' sentence; k = 2 justified by the 2-D cover, interpretability, and the lens-robustness check"
 cohensteiner2007stability,,doi:10.1007/s00454-006-1276-5,,OpenAlex,SKIPPED_COVERED,Covered: Fasy et al. p. 2302 explains persistence diagrams and cites this paper (PDF p7) - attribution via Fasy
-sidletran2018,,doi:10.3233/jsa-170171,,OpenAlex,OPTIONAL,Optional: only for a related-work line on pitch classification; B04 reworded to our own evidence
-hickey2020,,doi:10.24251/hicss.2020.031,,OpenAlex,OPTIONAL,Optional: only for a related-work line on pitch classification; B04 reworded to our own evidence
+sidletran2018,,doi:10.3233/jsa-170171,,OpenAlex,NOT_RELEVANT,Abstract read (OpenAlex): predicts the NEXT pitch type from pre-game data using MLBAM's labels - not about classifying pitches from physics
+hickey2020,,doi:10.24251/hicss.2020.031,,OpenAlex,NOT_RELEVANT,Abstract read (OpenAlex): interpretability of pitch-outcome prediction models - not about pitch-type classification
