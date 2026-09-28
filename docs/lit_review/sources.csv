@@ -1,7 +1,7 @@
 bib_key,file,identifier,version,metadata_checked_against,status,notes
 deymemoliwang2017,DeyMemoliWang2017_arXiv1703.07387.pdf,arXiv:1703.07387v1,preprint (full version),arXiv API,IN_HAND,Theorem numbers in ledger T21/T22 come from this version
 deymemoliwang2017socg,DeyMemoliWang2017_LIPIcs_SoCG.pdf,doi:10.4230/LIPIcs.SoCG.2017.36,published (LIPIcs 77),DataCite,IN_HAND,Cross-check theorem numbering vs arXiv v1
-hatcher2002,Hatcher_AlgebraicTopology.pdf,author-hosted free edition (pi.math.cornell.edu/~hatcher),published book (free online edition),PENDING (Open Library ISBN),IN_HAND,
+hatcher2001,Hatcher_AlgebraicTopology.pdf,ISBN 0521795400 (print); online edition PDF,"free online edition, PDF generated 2022-10-26","Open Library edition records (CUP, 2001-11-15)",IN_HAND,"Title/copyright pages are images or blank in the PDF; year from registry, not the PDF"
 borsuk1948,Borsuk1948_FundMath35.pdf,doi:10.4064/fm-35-1-217-234,published (Fund. Math. 35),publisher page (IMPAN; CC-BY),IN_HAND,Original nerve theorem
 bauerkerberrollrolle2023,A unified view on the functorial nerve theorem and its variations.pdf,doi:10.1016/j.exmath.2023.04.005,published (Expo. Math. 41(4) 125503),Crossref,IN_HAND,Miami access
 edelsbrunnerharerpatel2008,Reeb Spaces of Piecewise Linear Mappings.pdf,doi:10.1145/1377676.1377720,CHECK (header lacks ACM block; may be author copy),Crossref,IN_HAND,Miami access; confirm it matches SoCG 2008 pp. 242-250
@@ -18,9 +18,9 @@ facco2017twonn,Facco2017_TwoNN_SciRep.pdf,doi:10.1038/s41598-017-11873-y,publish
 lum2013extracting,extracting_insights_tda.pdf,doi:10.1038/srep01236,published,OpenAlex,IN_HAND,
 madukpe2026review,s41060-025-00971-0.pdf,doi:10.1007/s41060-025-00971-0,published (IJDSA 21:56),OpenAlex,IN_HAND,Online 2025; issue 2026 - settle year from Crossref
 axler2024ladr,Axler2024_LADR4e.pdf,doi:10.1007/978-3-031-41026-0,"published, 4th ed. (author-hosted; footer confirms 'fourth edition')",OpenAlex,IN_HAND,Only needed if spectral theorem/SVD slides cite a textbook
-fasy2014confidence,Fasy2014_arXiv1303.7117.pdf,doi:10.1214/14-AOS1252,preprint (arXiv),OpenAlex,IN_HAND,Get published version before any pinpoint citation
-robinsonturner2017,RobinsonTurner2017_arXiv1310.7467.pdf,doi:10.1007/s41468-017-0008-7,preprint (arXiv),OpenAlex,IN_HAND,Get published version before any pinpoint citation
-bauer2021ripser,Bauer2021_Ripser_arXiv1908.02518.pdf,doi:10.1007/s41468-021-00071-5,preprint (arXiv),arXiv API,IN_HAND,Published version is open access (manual download)
+fasy2014confidence,Fasy2014_arXiv1303.7117.pdf,arXiv:1303.7117v3,preprint 1303.7117v3,arXiv API; version read from PDF stamp,IN_HAND,Cited as the arXiv version we hold (rule 4). Published version: doi:10.1214/14-AOS1252 - swap in only after reading it
+robinsonturner2017,RobinsonTurner2017_arXiv1310.7467.pdf,arXiv:1310.7467v2,preprint 1310.7467v2,arXiv API; version read from PDF stamp,IN_HAND,Cited as the arXiv version we hold (rule 4). Published version: doi:10.1007/s41468-017-0008-7 - swap in only after reading it
+bauer2021ripser,Bauer2021_Ripser_arXiv1908.02518.pdf,arXiv:1908.02518v2,preprint 1908.02518v2,arXiv API; version read from PDF stamp,IN_HAND,Cited as the arXiv version we hold (rule 4). Published version: doi:10.1007/s41468-021-00071-5 - swap in only after reading it
 dorogush2018catboost,CatBoost.pdf,arXiv:1810.11363,preprint,OpenAlex,IN_HAND,Future work only
 mohnhaupt2023,Mohnhaupt_Bsc.pdf,ETH Zurich BSc thesis 2023,thesis,none,IN_HAND,Secondary pointer only
 ,DBSCAN.pdf,,,,SUPERSEDED,Use ester1996dbscan (AAAI copy)

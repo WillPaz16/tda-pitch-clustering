@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/eFvKfgREb3ueO5k7T/YMgNe3OH0</id>
+  <title>arXiv Query: search_query=&amp;id_list=1310.7467v2&amp;start=0&amp;max_results=10</title>
+  <updated>2026-09-28T13:41:08Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=1310.7467v2" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1310.7467v2</id>
+    <title>Hypothesis Testing for Topological Data Analysis</title>
+    <updated>2016-02-21T15:42:46Z</updated>
+    <link href="https://arxiv.org/abs/1310.7467v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1310.7467v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Persistent homology is a vital tool for topological data analysis. Previous work has developed some statistical estimators for characteristics of collections of persistence diagrams. However, tools that provide statistical inference for observations that are persistence diagrams are limited. Specifically, there is a need for tests that can assess the strength of evidence against a claim that two samples arise from the same population or process. We propose the use of randomization-style null hypothesis significance tests (NHST) for these situations. The test is based on a loss function that comprises pairwise distances between the elements of each sample and all the elements in the other sample. We use this method to analyze a range of simulated and experimental data. Through these examples we experimentally explore the power of the p-values. Our results show that the randomization-style NHST based on pairwise distances can distinguish between samples from different processes, which suggests that its use for hypothesis tests upon persistence diagrams is reasonable. We demonstrate its application on a real dataset of fMRI data of patients with ADHD.</summary>
+    <category term="stat.AP" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.AT" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2013-10-28T15:49:46Z</published>
+    <arxiv:comment>14 pages, 5 figures, 1 table</arxiv:comment>
+    <arxiv:primary_category term="stat.AP"/>
+    <author>
+      <name>Andrew Robinson</name>
+    </author>
+    <author>
+      <name>Katharine Turner</name>
+    </author>
+  </entry>
+</feed>
