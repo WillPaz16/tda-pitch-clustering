@@ -10,6 +10,7 @@ a thesis, KDD-96) are in MANUAL with a note on where each field was read.
 Usage: python3 src/lit/build_bib.py [--refresh]
 """
 import csv
+import html
 import json
 import re
 import sys
@@ -50,10 +51,6 @@ MANUAL = {
                                               note="Fields from aaai.org paper page; pages from the PDF")),
     "munkres2000topology": ("book", dict(author="Munkres, James R.", title="Topology", edition="2nd", publisher="Prentice Hall",
                                          year="2000", isbn="0131816292", note="Open Library ISBN record")),
-    "savantcsvdocs": ("misc", dict(author="{MLB Advanced Media}", title="Statcast Search CSV Documentation",
-                                   howpublished="Baseball Savant", url="https://baseballsavant.mlb.com/csv-docs", year="2026",
-                                   note="Accessed 2026-09-28; snapshot in docs/lit_review/registry_cache/",
-                                   fieldsource="title from page <title>; owner from page footer")),
     "mohnhaupt2023": ("mastersthesis", dict(author="Mohnhaupt, Mona", title="The Nerve Theorem and its Applications in Topological Data Analysis",
                                             school="ETH Z{\\\"u}rich", year="2023", type="Bachelor's thesis",
                                             note="Read from PDF title page (supervisor: S. Kali{\\v{s}}nik Hintz)")),
@@ -145,10 +142,22 @@ def from_publisher_bib(key):
     return kind, f
 
 
+def from_snapshot(row):
+    """Web source: title and owner read from the saved raw page."""
+    snap = re.search(r"snapshot=(\S+?\.html)", row["notes"]).group(1)
+    raw = (CACHE / snap).read_text()
+    title = re.search(r"<title[^>]*>(.*?)</title>", raw, re.S).group(1)
+    owner = "MLB Advanced Media" if "MLB Advanced Media" in raw else "unknown"
+    return "misc", dict(author="{%s}" % owner, title=tex(html.unescape(title)), url=row["identifier"], year=snap[-15:-11],
+                        note="Accessed %s; snapshot in docs/lit_review/registry_cache/%s" % (snap[-15:-5], snap))
+
+
 def entry(key, row):
     ident = row["identifier"]
     if key in MANUAL:
         return MANUAL[key]
+    if row["status"] == "WEB_SNAPSHOT":
+        return from_snapshot(row)
     if key in PUBLISHER_BIB:
         return from_publisher_bib(key)
     if ident.startswith("doi:"):

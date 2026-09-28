@@ -41,7 +41,13 @@ schubert2017dbscan,"DBSCAN Revisited, Revisited Why and How You Should (Still) U
 munkres2000topology,,ISBN 0131816292,"Topology, 2nd ed., Prentice Hall, 2000 (537 pp)",Open Library ISBN record,BOOK_NO_PDF,Edition confirmed by Will against his copy (2026-09-28). Page numbers for T01-T03 pending from Will
 reeb1946,,C. R. Acad. Sci. Paris 222:847-849,,CiNii,LOCATING,Gallica scan not yet found
 prokhorenkova2018catboost,,arXiv:1706.09516 / NeurIPS 2018,,OpenAlex,LOCATING,Future work only
-savantcsvdocs,,https://baseballsavant.mlb.com/csv-docs,"web page, snapshot 2026-09-28 (docs/lit_review/registry_cache/savant_csv_docs_2026-09-28.html)","raw HTML: <title> and footer '(c) MLB Advanced Media, LP'",WEB_SNAPSHOT,Official field definitions. Does NOT document release_spin_rate; calls pfx_z 'vertical movement' (not 'induced')
+savantcsvdocs,,https://baseballsavant.mlb.com/csv-docs,"web page, snapshot 2026-09-28 (docs/lit_review/registry_cache/savant_csv_docs_2026-09-28.html)","raw HTML: <title> and footer '(c) MLB Advanced Media, LP'",WEB_SNAPSHOT,snapshot=savant_csv_docs_2026-09-28.html; Official field definitions. Does NOT document release_spin_rate; calls pfx_z 'vertical movement' (not 'induced')
 ,Fasy2014_arXiv1303.7117.pdf,,,,SUPERSEDED,arXiv copy; published version now in hand
 ,RobinsonTurner2017_arXiv1310.7467.pdf,,,,SUPERSEDED,arXiv copy; published version now in hand
 ,Bauer2021_Ripser_arXiv1908.02518.pdf,,,,SUPERSEDED,arXiv copy; published version now in hand
+mlbglossary_sweeper,,https://www.mlb.com/glossary/pitch-types/sweeper,"web page, snapshot 2026-09-28",raw HTML <title> and footer,WEB_SNAPSHOT,snapshot=mlb_glossary_sweeper_2026-09-28.html
+mlbglossary_slurve,,https://www.mlb.com/glossary/pitch-types/slurve,"web page, snapshot 2026-09-28",raw HTML <title> and footer,WEB_SNAPSHOT,snapshot=mlb_glossary_slurve_2026-09-28.html
+mlbglossary_pitchtypes,,https://www.mlb.com/glossary/pitch-types,"web page, snapshot 2026-09-28",raw HTML <title> and footer,WEB_SNAPSHOT,snapshot=mlb_glossary_pitchtypes_2026-09-28.html
+mlbglossary_ivb,,https://www.mlb.com/glossary/statcast/induced-vertical-break,"web page, snapshot 2026-09-28",raw HTML <title> and footer,WEB_SNAPSHOT,snapshot=mlb_glossary_ivb_2026-09-28.html
+mlbglossary_movement,,https://www.mlb.com/glossary/statcast/pitch-movement,"web page, snapshot 2026-09-28",raw HTML <title> and footer,WEB_SNAPSHOT,snapshot=mlb_glossary_movement_2026-09-28.html
+mlbglossary_spinrate,,https://www.mlb.com/glossary/statcast/spin-rate,"web page, snapshot 2026-09-28",raw HTML <title> and footer,WEB_SNAPSHOT,snapshot=mlb_glossary_spinrate_2026-09-28.html
