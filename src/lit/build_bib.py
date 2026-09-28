@@ -80,6 +80,8 @@ OVERRIDES = {
         fieldsource="author given names from the published PDF title page (Crossref lists surnames only)"),
     "axler2024ladr": dict(edition="4th", series="Undergraduate Texts in Mathematics",
                           fieldsource="edition from PDF footer; series from Crossref container-title"),
+    "singh2007mapper": dict(author="Singh, Gurjeet and M{\\'e}moli, Facundo and Carlsson, Gunnar",
+                            fieldsource="accent from the published PDF (DataCite has 'Memoli')"),
     "hoehn2018notes": dict(year="2018", fieldsource="year = latest term on the notes' title page"),
 }
 
@@ -131,7 +133,7 @@ def from_arxiv(aid):
     g = lambda p: re.search(p, e, re.S).group(1).strip()
     names = re.findall(r"<name>(.*?)</name>", e)
     f = dict(author=" and ".join("%s, %s" % (n.split()[-1], " ".join(n.split()[:-1])) for n in names),
-             title=tex(g(r"<title>(.*?)</title>")), year=g(r"<published>(\d{4})"),
+             title=tex(g(r"<title>(.*?)</title>")), year=g(r"<updated>(\d{4})"),   # date of the version held
              eprint=re.sub(r"v\d+$", "", aid), archiveprefix="arXiv", note="arXiv:" + aid)
     return "misc", f
 

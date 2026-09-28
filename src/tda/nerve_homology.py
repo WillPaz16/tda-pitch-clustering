@@ -8,7 +8,7 @@ cycles. This computes, for each fit:
   graph_b1 = E - V + C                    (1-skeleton)
   nerve_b1 = E - V + C - rank(d2)         (2-skeleton; d2 = triangle boundary map)
 Higher simplices do not change b1. Homology is over Z2, matching
-Dey, Memoli & Wang (SoCG 2017), Thm 8 / Thm 18: for the Mapper's
+Dey, Memoli & Wang (SoCG 2017), Thm 8 with Def. 14: for the Mapper's
 path-connected pullback cover, H1(X) -> H1(N(f*U)) is a surjection, so
 b1(Mapper nerve) <= b1(X).
 
