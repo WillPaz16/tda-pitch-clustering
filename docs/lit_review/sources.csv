@@ -18,9 +18,9 @@ facco2017twonn,Facco2017_TwoNN_SciRep.pdf,doi:10.1038/s41598-017-11873-y,publish
 lum2013extracting,extracting_insights_tda.pdf,doi:10.1038/srep01236,published,OpenAlex,IN_HAND,
 madukpe2026review,s41060-025-00971-0.pdf,doi:10.1007/s41060-025-00971-0,published (IJDSA 21:56),OpenAlex,IN_HAND,Online 2025; issue 2026 - settle year from Crossref
 axler2024ladr,Axler2024_LADR4e.pdf,doi:10.1007/978-3-031-41026-0,"published, 4th ed. (author-hosted; footer confirms 'fourth edition')",OpenAlex,IN_HAND,Only needed if spectral theorem/SVD slides cite a textbook
-fasy2014confidence,Fasy2014_arXiv1303.7117.pdf,arXiv:1303.7117v3,preprint 1303.7117v3,arXiv API; version read from PDF stamp,IN_HAND,Cited as the arXiv version we hold (rule 4). Published version: doi:10.1214/14-AOS1252 - swap in only after reading it
-robinsonturner2017,RobinsonTurner2017_arXiv1310.7467.pdf,arXiv:1310.7467v2,preprint 1310.7467v2,arXiv API; version read from PDF stamp,IN_HAND,Cited as the arXiv version we hold (rule 4). Published version: doi:10.1007/s41468-017-0008-7 - swap in only after reading it
-bauer2021ripser,Bauer2021_Ripser_arXiv1908.02518.pdf,arXiv:1908.02518v2,preprint 1908.02518v2,arXiv API; version read from PDF stamp,IN_HAND,Cited as the arXiv version we hold (rule 4). Published version: doi:10.1007/s41468-021-00071-5 - swap in only after reading it
+fasy2014confidence,Confidence sets for persistence diagrams.pdf,doi:10.1214/14-AOS1252,"published (Ann. Statist. 42(6):2301-2339, 2014)",Crossref; PDF title page,IN_HAND,"Published version (Will, 2026-09-28) replaces the arXiv copy"
+robinsonturner2017,Hypothesis testing for topological data analysis.pdf,doi:10.1007/s41468-017-0008-7,published (JACT 2017),Crossref; PDF title page,IN_HAND,"Published version (Will, 2026-09-28) replaces the arXiv copy"
+bauer2021ripser,Ripser efficient computation of Vietoris-Rips persistence barcodes.pdf,doi:10.1007/s41468-021-00071-5,"published (JACT 5:391-423, 2021)",Crossref; PDF title page,IN_HAND,"Published version (Will, 2026-09-28) replaces the arXiv copy"
 dorogush2018catboost,CatBoost.pdf,arXiv:1810.11363,preprint,OpenAlex,IN_HAND,Future work only
 mohnhaupt2023,Mohnhaupt_Bsc.pdf,ETH Zurich BSc thesis 2023,thesis,none,IN_HAND,Secondary pointer only
 ,DBSCAN.pdf,,,,SUPERSEDED,Use ester1996dbscan (AAAI copy)
@@ -34,11 +34,14 @@ nicolau2011,nicolau-et-al-2011-topology-based-data-analysis-identifies-a-subgrou
 tenenbaum2000isomap,,doi:10.1126/science.290.5500.2319,,OpenAlex; documented by scikit-learn user guide sec 2.2.2 (accessed 2026-09-24),ATTRIBUTION_ONLY,Unavailable via Miami. May name as Isomap's origin; no content claims or pinpoints
 eckartyoung1936,,doi:10.1007/BF02288367,,OpenAlex,UNAVAILABLE,Unavailable via Miami. Substitute: Axler LADR4e Thm 7.92 (check norm vs deck's Frobenius claim)
 pearson1901,Pearson1901_PhilMag_Zenodo1430636.pdf,doi:10.1080/14786440109462720,published (Phil. Mag. 2(11):559-572; public-domain scan),"OpenAlex + Zenodo API (record 1430636, CC0, linked to DOI)",IN_HAND,Original PCA paper
-hotelling1933,,doi:10.1037/h0071325,,OpenAlex,NEEDS_MIAMI,PCA original; not yet obtained. Origin documented by jolliffecadima2016 p2
+hotelling1933,Hotelling_PCA_part2.pdf,doi:10.1037/h0071325,"published, PART 2 ONLY (J. Educ. Psychol. 24, pp. 498-520)",OpenAlex; PDF first page ('Continued from September issue'),IN_HAND,"Part 1 (pp. 417-441, the definition of principal components) not in hand"
 edelsbrunnerharer2010,,doi:10.1090/mbk/069,,OpenAlex,UNAVAILABLE,Unavailable via Miami. Substitute: bauerkerberrollrolle2023 p4 (closed convex covers of R^n) and p10 (Leray; Borsuk Cor 3)
 blumberg2014,"Robust Statistics, Hypothesis Testing, and Confidence Intervals for Persistent Homology on Metric Measure Spaces.pdf",doi:10.1007/s10208-014-9201-4,"published (FoCM 14:745-789, 2014)",OpenAlex,IN_HAND,Null-model / hypothesis-testing framing
 schubert2017dbscan,"DBSCAN Revisited, Revisited Why and How You Should (Still) Use DBSCAN.pdf",doi:10.1145/3068335,"published (ACM TODS, article 19)",OpenAlex,IN_HAND,Modern DBSCAN definitions
-munkres2000topology,,ISBN 0131816292,"Topology, 2nd ed., Prentice Hall, 2000 (537 pp)",Open Library ISBN record,BOOK_NO_PDF,Will has a physical copy: confirm ISBN on copyright page and supply page numbers for T01-T03 (check 3)
+munkres2000topology,,ISBN 0131816292,"Topology, 2nd ed., Prentice Hall, 2000 (537 pp)",Open Library ISBN record,BOOK_NO_PDF,Edition confirmed by Will against his copy (2026-09-28). Page numbers for T01-T03 pending from Will
 reeb1946,,C. R. Acad. Sci. Paris 222:847-849,,CiNii,LOCATING,Gallica scan not yet found
 prokhorenkova2018catboost,,arXiv:1706.09516 / NeurIPS 2018,,OpenAlex,LOCATING,Future work only
 savantcsvdocs,,https://baseballsavant.mlb.com/csv-docs,"web page, snapshot 2026-09-28 (docs/lit_review/registry_cache/savant_csv_docs_2026-09-28.html)","raw HTML: <title> and footer '(c) MLB Advanced Media, LP'",WEB_SNAPSHOT,Official field definitions. Does NOT document release_spin_rate; calls pfx_z 'vertical movement' (not 'induced')
+,Fasy2014_arXiv1303.7117.pdf,,,,SUPERSEDED,arXiv copy; published version now in hand
+,RobinsonTurner2017_arXiv1310.7467.pdf,,,,SUPERSEDED,arXiv copy; published version now in hand
+,Bauer2021_Ripser_arXiv1908.02518.pdf,,,,SUPERSEDED,arXiv copy; published version now in hand
