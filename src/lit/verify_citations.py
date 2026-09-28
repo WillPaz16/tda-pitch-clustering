@@ -15,6 +15,7 @@ since PDF extraction routinely splits or joins words. Exits 1 on failure.
 Usage: python3 src/lit/verify_citations.py   (needs pypdf)
 """
 import csv
+import html
 import re
 import sys
 from pathlib import Path
@@ -54,7 +55,7 @@ def main():
             continue
         f = sources[key]["file"]
         if not f:
-            manual.append("%s: no local PDF (%s) - metadata from registry only" % (key, sources[key]["status"]))
+            manual.append("%s: no local PDF (%s)" % (key, sources[key]["status"]))
             continue
         raw = re.search(r"^\s*title = \{(.*)\}", body, re.M).group(1)   # anchored: not 'booktitle'
         first = pages(f)[:5]
@@ -77,6 +78,14 @@ def main():
         for i, loc in enumerate(locs):
             if "[VISUAL]" in loc or "TBD" in loc:
                 manual.append("%s %s" % (r["claim_id"], loc))
+                continue
+            snap = re.search(r"\(SNAPSHOT ([^)]+)\)", loc)
+            if snap:   # web source: keywords must be in the saved raw page
+                text = squash(re.sub(r"<[^>]+>", " ", html.unescape((LIT / "registry_cache" / snap.group(1)).read_text())))
+                missing = [k for k in (kws[i] if i < len(kws) else "").split(";") if k and squash(k) not in text]
+                n_checked += 1
+                if missing:
+                    fails.append("%s: snapshot %s missing keywords %s" % (r["claim_id"], snap.group(1), missing))
                 continue
             m = re.match(r"(\w+):.*\(PDF p(\d+)\)\s*$", loc)
             if not m:

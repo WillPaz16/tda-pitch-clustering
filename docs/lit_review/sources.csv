@@ -41,3 +41,4 @@ schubert2017dbscan,"DBSCAN Revisited, Revisited Why and How You Should (Still) U
 munkres2000topology,,ISBN 0131816292,"Topology, 2nd ed., Prentice Hall, 2000 (537 pp)",Open Library ISBN record,BOOK_NO_PDF,Will has a physical copy: confirm ISBN on copyright page and supply page numbers for T01-T03 (check 3)
 reeb1946,,C. R. Acad. Sci. Paris 222:847-849,,CiNii,LOCATING,Gallica scan not yet found
 prokhorenkova2018catboost,,arXiv:1706.09516 / NeurIPS 2018,,OpenAlex,LOCATING,Future work only
+savantcsvdocs,,https://baseballsavant.mlb.com/csv-docs,"web page, snapshot 2026-09-28 (docs/lit_review/registry_cache/savant_csv_docs_2026-09-28.html)","raw HTML: <title> and footer '(c) MLB Advanced Media, LP'",WEB_SNAPSHOT,Official field definitions. Does NOT document release_spin_rate; calls pfx_z 'vertical movement' (not 'induced')
