@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/RAgD+F9pAHKZrgaERAjlQvl5yTI</id>
+  <title>arXiv Query: search_query=&amp;id_list=1703.07387v1&amp;start=0&amp;max_results=10</title>
+  <updated>2026-09-28T13:39:26Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=1703.07387v1" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1703.07387v1</id>
+    <title>Topological Analysis of Nerves, Reeb Spaces, Mappers, and Multiscale Mappers</title>
+    <updated>2017-03-21T18:50:24Z</updated>
+    <link href="https://arxiv.org/abs/1703.07387v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1703.07387v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Data analysis often concerns not only the space where data come from, but also various types of maps attached to data. In recent years, several related structures have been used to study maps on data, including Reeb spaces, mappers and multiscale mappers. The construction of these structures also relies on the so-called \emph{nerve} of a cover of the domain.
+  In this paper, we aim to analyze the topological information encoded in these structures in order to provide better understanding of these structures and facilitate their practical usage.
+  More specifically, we show that the one-dimensional homology of the nerve complex $N(\mathcal{U})$ of a path-connected cover $\mathcal{U}$ of a domain $X$ cannot be richer than that of the domain $X$ itself. Intuitively, this result means that no new $H_1$-homology class can be "created" under a natural map from $X$ to the nerve complex $N(\mathcal{U})$. Equipping $X$ with a pseudometric $d$, we further refine this result and characterize the classes of $H_1(X)$ that may survive in the nerve complex using the notion of \emph{size} of the covering elements in $\mathcal{U}$. These fundamental results about nerve complexes then lead to an analysis of the $H_1$-homology of Reeb spaces, mappers and multiscale mappers.
+  The analysis of $H_1$-homology groups unfortunately does not extend to higher dimensions. Nevertheless, by using a map-induced metric, establishing a Gromov-Hausdorff convergence result between mappers and the domain, and interleaving relevant modules, we can still analyze the persistent homology groups of (multiscale) mappers to establish a connection to Reeb spaces.</summary>
+    <category term="cs.CG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.AT" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2017-03-21T18:50:24Z</published>
+    <arxiv:comment>Full version of the paper appearing in International Symposium on Computational Geometry, 2017</arxiv:comment>
+    <arxiv:primary_category term="cs.CG"/>
+    <author>
+      <name>Tamal K. Dey</name>
+    </author>
+    <author>
+      <name>Facundo Memoli</name>
+    </author>
+    <author>
+      <name>Yusu Wang</name>
+    </author>
+  </entry>
+</feed>

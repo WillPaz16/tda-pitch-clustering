@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/PybyFr0XguLXtZBt9ImhYO2oFw0</id>
+  <title>arXiv Query: search_query=&amp;id_list=1810.11363&amp;start=0&amp;max_results=10</title>
+  <updated>2026-09-28T13:39:52Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=1810.11363" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1810.11363v1</id>
+    <title>CatBoost: gradient boosting with categorical features support</title>
+    <updated>2018-10-24T13:08:24Z</updated>
+    <link href="https://arxiv.org/abs/1810.11363v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1810.11363v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this paper we present CatBoost, a new open-sourced gradient boosting library that successfully handles categorical features and outperforms existing publicly available implementations of gradient boosting in terms of quality on a set of popular publicly available datasets. The library has a GPU implementation of learning algorithm and a CPU implementation of scoring algorithm, which are significantly faster than other gradient boosting libraries on ensembles of similar sizes.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MS" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2018-10-24T13:08:24Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Anna Veronika Dorogush</name>
+    </author>
+    <author>
+      <name>Vasily Ershov</name>
+    </author>
+    <author>
+      <name>Andrey Gulin</name>
+    </author>
+  </entry>
+</feed>

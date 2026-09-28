@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/abardIdKsdl1GwHzljUgPZkro7o</id>
+  <title>arXiv Query: search_query=&amp;id_list=1303.7117v3&amp;start=0&amp;max_results=10</title>
+  <updated>2026-09-28T13:41:03Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=1303.7117v3" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1303.7117v3</id>
+    <title>Confidence sets for persistence diagrams</title>
+    <updated>2014-11-20T08:16:51Z</updated>
+    <link href="https://arxiv.org/abs/1303.7117v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1303.7117v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Persistent homology is a method for probing topological properties of point clouds and functions. The method involves tracking the birth and death of topological features (2000) as one varies a tuning parameter. Features with short lifetimes are informally considered to be "topological noise," and those with a long lifetime are considered to be "topological signal." In this paper, we bring some statistical ideas to persistent homology. In particular, we derive confidence sets that allow us to separate topological signal from topological noise.</summary>
+    <category term="math.ST" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2013-03-28T12:59:00Z</published>
+    <arxiv:comment>Published in at http://dx.doi.org/10.1214/14-AOS1252 the Annals of Statistics (http://www.imstat.org/aos/) by the Institute of Mathematical Statistics (http://www.imstat.org)</arxiv:comment>
+    <arxiv:primary_category term="math.ST"/>
+    <arxiv:journal_ref>Annals of Statistics 2014, Vol. 42, No. 6, 2301-2339</arxiv:journal_ref>
+    <author>
+      <name>Brittany Terese Fasy</name>
+    </author>
+    <author>
+      <name>Fabrizio Lecci</name>
+    </author>
+    <author>
+      <name>Alessandro Rinaldo</name>
+    </author>
+    <author>
+      <name>Larry Wasserman</name>
+    </author>
+    <author>
+      <name>Sivaraman Balakrishnan</name>
+    </author>
+    <author>
+      <name>Aarti Singh</name>
+    </author>
+    <arxiv:doi>10.1214/14-AOS1252</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1214/14-AOS1252" title="doi"/>
+  </entry>
+</feed>
