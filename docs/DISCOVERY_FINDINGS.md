@@ -518,9 +518,14 @@ noisy-circle sanity check.
   ([arXiv:1703.07387](https://arxiv.org/abs/1703.07387)).
   - **Theorem 8:** if a cover 𝒰 of X is path connected, H₁(X) → H₁(N(𝒰))
     is a surjection.
-  - **Theorem 18** applies this to Mapper, N(f\*𝒰), whose pullback cover
+  - **Definition 14** defines Mapper as N(f\*𝒰), whose pullback cover
     (the path components of f⁻¹(U_α)) is path connected by construction.
-    So **b₁(Mapper) ≤ b₁(X)**: "nerves can only kill" H₁.
+    Theorem 8 therefore applies directly, so **b₁(Mapper) ≤ b₁(X)**:
+    "nerves can only kill" H₁. (That inequality is our one-line inference
+    from the surjection; the paper states the surjection. Theorem 18 is the
+    multiscale-Mapper version, and Theorem 29 refines the single-Mapper
+    case by cover size. Corrected 2026-09-28 after the blind citation
+    check; an earlier version of this note cited Theorem 18 alone.)
   - **Hypotheses:** X compact; f : X → Z continuous and well-behaved
     (preimages of path-connected open sets have finitely many path
     components); 𝒰 an open cover of Z; ℤ₂ coefficients.
