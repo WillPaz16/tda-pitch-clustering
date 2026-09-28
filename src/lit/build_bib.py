@@ -92,6 +92,7 @@ OVERRIDES = {
                           fieldsource="edition from PDF footer; series from Crossref container-title"),
     "singh2007mapper": dict(author="Singh, Gurjeet and M{\\'e}moli, Facundo and Carlsson, Gunnar",
                             fieldsource="accent from the published PDF (DataCite has 'Memoli')"),
+    "fasy2014confidence": dict(pages="2301--2339", fieldsource="pages from the published PDF header (Crossref record has none)"),
     "hoehn2018notes": dict(year="2018", fieldsource="year = latest term on the notes' title page"),
 }
 
