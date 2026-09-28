@@ -34,7 +34,7 @@ nicolau2011,nicolau-et-al-2011-topology-based-data-analysis-identifies-a-subgrou
 tenenbaum2000isomap,,doi:10.1126/science.290.5500.2319,,OpenAlex; documented by scikit-learn user guide sec 2.2.2 (accessed 2026-09-24),ATTRIBUTION_ONLY,Unavailable via Miami. May name as Isomap's origin; no content claims or pinpoints
 eckartyoung1936,,doi:10.1007/BF02288367,,OpenAlex,UNAVAILABLE,Unavailable via Miami. Substitute: Axler LADR4e Thm 7.92 (check norm vs deck's Frobenius claim)
 pearson1901,Pearson1901_PhilMag_Zenodo1430636.pdf,doi:10.1080/14786440109462720,published (Phil. Mag. 2(11):559-572; public-domain scan),"OpenAlex + Zenodo API (record 1430636, CC0, linked to DOI)",IN_HAND,Original PCA paper
-hotelling1933,Hotelling_PCA_part2.pdf,doi:10.1037/h0071325,"published, PART 2 ONLY (J. Educ. Psychol. 24, pp. 498-520)",OpenAlex; PDF first page ('Continued from September issue'),IN_HAND,"Part 1 (pp. 417-441, the definition of principal components) not in hand"
+hotelling1933,Hotelling_PCA_part2.pdf,doi:10.1037/h0071325,"published, PART 2 ONLY (J. Educ. Psychol. 24, pp. 498-520)",OpenAlex; PDF first page ('Continued from September issue'),IN_HAND,Part 2 in hand; part 1 not needed - Pearson 1901 (in hand) is the original and Jolliffe-Cadima p. 2 documents Hotelling
 edelsbrunnerharer2010,,doi:10.1090/mbk/069,,OpenAlex,UNAVAILABLE,Unavailable via Miami. Substitute: bauerkerberrollrolle2023 p4 (closed convex covers of R^n) and p10 (Leray; Borsuk Cor 3)
 blumberg2014,"Robust Statistics, Hypothesis Testing, and Confidence Intervals for Persistent Homology on Metric Measure Spaces.pdf",doi:10.1007/s10208-014-9201-4,"published (FoCM 14:745-789, 2014)",OpenAlex,IN_HAND,Null-model / hypothesis-testing framing
 schubert2017dbscan,"DBSCAN Revisited, Revisited Why and How You Should (Still) Use DBSCAN.pdf",doi:10.1145/3068335,"published (ACM TODS, article 19)",OpenAlex,IN_HAND,Modern DBSCAN definitions
@@ -55,8 +55,8 @@ mackay2005comments,,http://www.inference.org.uk/mackay/dimension/,"web note, las
 sklearn_userguide_manifold,,https://scikit-learn.org/stable/modules/manifold.html,"scikit-learn 1.9.1 user guide (stable), accessed 2026-09-28",raw HTML footer '(c) 2007-2026 scikit-learn developers',WEB_SNAPSHOT,snapshot=sklearn_manifold_2026-09-28.html; documents Isomap -> Tenenbaum et al. 2000
 keplermapper_repo,,https://github.com/scikit-tda/kepler-mapper,"GitHub README, accessed 2026-09-28",raw README (repo under the scikit-tda organization),WEB_SNAPSHOT,snapshot=keplermapper_readme_2026-09-28.html
 ledoux_pybaseball,,pypi:pybaseball==2.2.7,2.2.7 (released 2023-09-08; version installed and used),PyPI JSON API (registry_cache/pypi_pybaseball_2.2.7.json); pip show,WEB_SNAPSHOT,snapshot=pybaseball_readme_2026-09-28.html; software citation
-alexandroff1928,,doi:10.1007/BF01451612,,Crossref,MANUAL_DOWNLOAD,Math. Ann. 98:617-635; original nerve (Borsuk fn. 4 points to p. 634). Try the Springer page in a browser
-cattell1966scree,,doi:10.1207/s15327906mbr0102_10,,Crossref,NEEDS_MIAMI,Scree test (the 'elbow' on the Selecting-k slide). Alternative: drop the elbow claim
-cohensteiner2007stability,,doi:10.1007/s00454-006-1276-5,,OpenAlex,MANUAL_DOWNLOAD,Original persistence-diagram source (T19). Free on Springer; bot-protected - download in browser
-sidletran2018,,doi:10.3233/jsa-170171,,OpenAlex,MANUAL_DOWNLOAD,Pitch-type classification (J. Sports Analytics 4:85-93); check for confusion matrices (B04)
-hickey2020,,doi:10.24251/hicss.2020.031,,OpenAlex,MANUAL_DOWNLOAD,Pitch classification interpretability (HICSS 2020); check for confusion matrices (B04)
+alexandroff1928,,doi:10.1007/BF01451612,,Crossref,SKIPPED_COVERED,Covered: Borsuk 1948 fn. 4 documents Alexandroff as the nerve's origin; definitions from Hatcher/Singh
+cattell1966scree,,doi:10.1207/s15327906mbr0102_10,,Crossref,NOT_NEEDED,"Not needed: drop the 'elbow' sentence; k = 2 justified by the 2-D cover, interpretability, and the lens-robustness check"
+cohensteiner2007stability,,doi:10.1007/s00454-006-1276-5,,OpenAlex,SKIPPED_COVERED,Covered: Fasy et al. p. 2302 explains persistence diagrams and cites this paper (PDF p7) - attribution via Fasy
+sidletran2018,,doi:10.3233/jsa-170171,,OpenAlex,OPTIONAL,Optional: only for a related-work line on pitch classification; B04 reworded to our own evidence
+hickey2020,,doi:10.24251/hicss.2020.031,,OpenAlex,OPTIONAL,Optional: only for a related-work line on pitch classification; B04 reworded to our own evidence
