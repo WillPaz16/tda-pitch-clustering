@@ -17,7 +17,7 @@ vanveen2019keplermapper,vanVeen2019_KeplerMapper_JOSS.pdf,doi:10.21105/joss.0131
 facco2017twonn,Facco2017_TwoNN_SciRep.pdf,doi:10.1038/s41598-017-11873-y,published,OpenAlex,IN_HAND,
 lum2013extracting,extracting_insights_tda.pdf,doi:10.1038/srep01236,published,OpenAlex,IN_HAND,
 madukpe2026review,s41060-025-00971-0.pdf,doi:10.1007/s41060-025-00971-0,published (IJDSA 21:56),OpenAlex,IN_HAND,Online 2025; issue 2026 - settle year from Crossref
-axler2024ladr,Axler2024_LADR4e.pdf,doi:10.1007/978-3-031-41026-0,CHECK edition (author-hosted),OpenAlex,IN_HAND,Only needed if spectral theorem/SVD slides cite a textbook
+axler2024ladr,Axler2024_LADR4e.pdf,doi:10.1007/978-3-031-41026-0,"published, 4th ed. (author-hosted; footer confirms 'fourth edition')",OpenAlex,IN_HAND,Only needed if spectral theorem/SVD slides cite a textbook
 fasy2014confidence,Fasy2014_arXiv1303.7117.pdf,doi:10.1214/14-AOS1252,preprint (arXiv),OpenAlex,IN_HAND,Get published version before any pinpoint citation
 robinsonturner2017,RobinsonTurner2017_arXiv1310.7467.pdf,doi:10.1007/s41468-017-0008-7,preprint (arXiv),OpenAlex,IN_HAND,Get published version before any pinpoint citation
 bauer2021ripser,Bauer2021_Ripser_arXiv1908.02518.pdf,doi:10.1007/s41468-021-00071-5,preprint (arXiv),arXiv API,IN_HAND,Published version is open access (manual download)
@@ -25,7 +25,7 @@ dorogush2018catboost,CatBoost.pdf,arXiv:1810.11363,preprint,OpenAlex,IN_HAND,Fut
 mohnhaupt2023,Mohnhaupt_Bsc.pdf,ETH Zurich BSc thesis 2023,thesis,none,IN_HAND,Secondary pointer only
 ,DBSCAN.pdf,,,,SUPERSEDED,Use ester1996dbscan (AAAI copy)
 ,mapperOverview.pdf,,,,SUPERSEDED,Preprint of madukpe2026review
-,algebraic-topology.pdf,,,,SUPERSEDED,Lecture notes; replaced by hatcher2002
+hoehn2018notes,algebraic-topology.pdf,https://www.math.ksu.edu/~gerald/math875c/algebraic-topology.pdf,"lecture notes (MATH 875, Kansas State; Fall 2009, 2013, 2018)",author's KSU page; SHA-256 identical to local copy (2026-09-28),IN_HAND,Grey literature. Cited because deck frames 7-9 follow its wording (46-74% 6-gram overlap)
 edelsbrunnerletscherzomorodian2002,Topological Persistence and Simplification.pdf,doi:10.1007/s00454-002-2885-2,"published (DCG 28:511-533, 2002)",OpenAlex,IN_HAND,Original persistence paper
 zomorodiancarlsson2005,Computing Persistent Homology.pdf,doi:10.1007/s00454-004-1146-y,"published (DCG 33:249-274, 2005)",OpenAlex,IN_HAND,Print year 2005 per PDF header (online 2004)
 carlsson2009topology,Topology and data.pdf,doi:10.1090/S0273-0979-09-01249-X,"published (Bull. AMS 46(2):255-308, 2009)",OpenAlex,IN_HAND,
