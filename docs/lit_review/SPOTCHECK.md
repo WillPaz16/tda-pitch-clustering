@@ -1,88 +1,150 @@
 # Check 3: human spot-check sheet
 
-For each item, open the PDF in `Lit Review/`, go to the **PDF page** (the page number your PDF viewer shows), and confirm the source says what the claim says, with the same hypotheses. Mark ✅ or ❌ and add a note. Items marked DECK FIX are where the slide currently disagrees with the source.
+Open the source (PDF in `Lit Review/`, or the saved web snapshot in `docs/lit_review/registry_cache/`), go to the **PDF page** shown, and confirm the source says what the claim says, with the same hypotheses. Mark ✅ or ❌ with a note.
+
+- **DECK FIX**: the current slide disagrees with the source (fix planned in the deck rewrite).
+- **ATTRIBUTION**: slide wording closely follows a source that must be credited or rewritten.
+- Each item also shows what the blind check-2 agent concluded, so you can see where it disagreed.
 
 Random sample seed: 20260928 (reproducible).
 
-## Required (21): manual items, slide fixes, theorems/definitions
+## Required (30): manual items, slide fixes, attribution issues, theorems/definitions
 
 - [ ] **T01** Definition of a topological space (open-set axioms)
-    - `` → page TBD (Will, check 3)
+    - `ISBN 0131816292` → page TBD (Will, check 3)
     - ⚠️ manual: page number needed from your copy
 - [ ] **T02** Subspace topology definition
     - `algebraic-topology.pdf` → wording source, PDF p3
     - ⚠️ manual: read the page image (scan/OCR symbols)
-- [ ] **T08** Definition of an n-simplex
+- [ ] **T05** Homotopy rel A is an equivalence relation
+    - `algebraic-topology.pdf` → Prop. 1.1 (wording source), printed p. 2 (PDF p3)
+    - check 2: WRONG LOCATOR for Hatcher (p. 3 is about homotopy equivalence of SPACES). Resolved: removed Hatcher; source is Hoehn Prop. 1.1
+- [ ] **T08** Definition of an n-simplex  — *DECK FIX*
     - `Hatcher_AlgebraicTopology.pdf` → Sec. 2.1, p. 103 (PDF p112)
     - `Mohnhaupt_Bsc.pdf` → Def. 2.1.2, p. 4 (PDF p14)
     - `Borsuk1948_FundMath35.pdf` → Sec. 2, p. 219 (simplex = minimal convex set spanned by linearly independent points) [VISUAL]
+    - check 2: Sources SUPPORTED; SLIDE only partially faithful
     - ⚠️ manual: read the page image (scan/OCR symbols)
 - [ ] **T09** Face of a simplex
     - `Mohnhaupt_Bsc.pdf` → Def. 2.1.2, p. 4 (PDF p14)
     - `Borsuk1948_FundMath35.pdf` → Sec. 2, p. 219 (face) [VISUAL]
-    - ⚠️ manual: read the page image (scan/OCR symbols)
-- [ ] **T10** Definition of a simplicial complex (closed under faces; intersections are faces)
-    - `Topological Persistence and Simplification.pdf` → Sec. 2, p. 513 (PDF p3)
-    - `Mohnhaupt_Bsc.pdf` → Def. 2.1.3, p. 4 (PDF p14)
-    - `Borsuk1948_FundMath35.pdf` → Sec. 2, p. 219 (simplicial complex) [VISUAL]
-    - ⚠️ manual: read the page image (scan/OCR symbols)
-- [ ] **T11** Nerve of a cover
-    - `Hatcher_AlgebraicTopology.pdf` → Sec. 3.3, p. 256 (PDF p265)
-    - `Mohnhaupt_Bsc.pdf` → Def. 2.1.8, p. 5 (PDF p15)
-    - `Borsuk1948_FundMath35.pdf` → Sec. 4, p. 224 (nerve credited to Alexandroff, Math. Ann. 98 (1928) p. 634, fn. 4) [VISUAL]
+    - check 2: PARTIAL: Mohnhaupt matches (faces incl. sigma itself); Borsuk p. 219 counts proper faces only; no source uses <x0..xn> notation. Slide sentence ungrammatical
     - ⚠️ manual: read the page image (scan/OCR symbols)
 - [ ] **T12** Nerve theorem statement and hypotheses  — *DECK FIX*
     - `A unified view on the functorial nerve theorem and its variations.pdf` → Thm 3.9, p. 20 (PDF p20)
     - `A unified view on the functorial nerve theorem and its variations.pdf` → Table 1, p. 5 (PDF p5)
     - `Hatcher_AlgebraicTopology.pdf` → Cor. 4G.3, p. 459 (PDF p468)
     - `Borsuk1948_FundMath35.pdf` → Sec. 9 Corollary 3, p. 234 (scan 10 left); decomposition defined Sec. 4 p. 224; intro p. 217 describes 'regular' (AR sets with AR intersections) [VISUAL, image-only scan]
+    - check 2: Sources SUPPORTED; slide misstates hypotheses (confirmed): X general space vs convexity in R^d; closed+convex vs open; 'each' vs nonempty intersections; drops finiteness; X ~ N(U) should be |N(U)|; typo 'contractable'. Borsuk Cor. 3 p. 234 confirmed visually; 'regular' definition not located by agent either
     - ⚠️ manual: read the page image (scan/OCR symbols)
+- [ ] **T14** Definition of the Reeb graph  — *DECK FIX*
+    - `Structure and Stability of the One-Dimensional Mapper.pdf` → Sec. 1, p. 1334 (PDF p2)
+    - check 2: NOT SUPPORTED as the slide states it: slide defines only a level set, not the quotient by connected components (Carriere-Oudot p. 1334)
 - [ ] **T17** Pullback cover and topological graph / Mapper as nerve of pullback cover  — *DECK FIX*
     - `mapperPBG.pdf` → Sec. 2.1, no printed page on PDF (PDF p3)
+    - check 2: PARTIAL: confirms missing path-component refinement (Singh 2.1; DMW Def. 14); also 'sigma represents a subset of the pullback cover' is wrong (sigma is a subset of A)
+- [ ] **T18** Betti numbers (b0 components; b1 loops; b1 = E - V + C for a graph)
+    - `Hatcher_AlgebraicTopology.pdf` → Sec. 2.1, p. 130 (PDF p139)
+    - `Hatcher_AlgebraicTopology.pdf` → Prop. 2.7 (b0 = number of path components), p. 109 (PDF p118)
+    - `Hatcher_AlgebraicTopology.pdf` → Thm 2.44 (Euler characteristic), p. 146 (PDF p155)
+    - check 2: PARTIAL: p. 130 only defines Betti numbers; b0 at Prop. 2.7; b1 = E - V + C follows from Thm 2.44 (not stated). Resolved: added both
 - [ ] **T19** Persistent homology and persistence diagrams
     - `Topological Persistence and Simplification.pdf` → Sec. 3, Eq. (3), p. 517 (PDF p7)
     - `Computing Persistent Homology.pdf` → Abstract, p. 249 (PDF p1)
+    - `Confidence sets for persistence diagrams.pdf` → Title, p. 2301 (PDF p1)
+    - check 2: PARTIAL: 'persistence diagram' appears in neither ELZ nor ZC (confirmed). Resolved provisionally with Fasy et al.
 - [ ] **T21** Nerve map induces a surjection on H1 for path-connected covers (Thm 8); Mapper version b1(Mapper) <= b1(X) (Thm 18)
     - `DeyMemoliWang2017_arXiv1703.07387.pdf` → Thm 8, arXiv v1 (PDF p6)
-    - `DeyMemoliWang2017_arXiv1703.07387.pdf` → Thm 18, arXiv v1 (PDF p9)
-    - `DeyMemoliWang2017_LIPIcs_SoCG.pdf` → Thm 18 (published), 36:8 (PDF p8)
+    - `DeyMemoliWang2017_arXiv1703.07387.pdf` → Def. 14 (Mapper = nerve of the path-connected pullback cover), arXiv v1 (PDF p8)
+    - `DeyMemoliWang2017_arXiv1703.07387.pdf` → Thm 29 (H1 of a single Mapper), arXiv v1 (PDF p15)
+    - check 2: SUPPORTED, but Thm 18 is for the MULTISCALE mapper; single-Mapper H1 result is Thm 29. b1(Mapper) <= b1(X) is an inference (Thm 8 on the pullback cover). Resolved: cite Thm 8 + Def. 14 (+ Thm 29)
 - [ ] **T22** Quotient onto the Reeb space is surjective on H1
+    - `DeyMemoliWang2017_arXiv1703.07387.pdf` → Claim 4.2 in proof of Thm 27 (Sec. 4.2), arXiv v1 (PDF p14)
+    - check 2: SUPPORTED; locator was missing page - fixed (PDF p14)
+- [ ] **M01** Lens/filter function definition  — *ATTRIBUTION*
+    - `mapperPBG.pdf` → Sec. 3, no printed page (PDF p4)
+    - `mapperPBG.pdf` → Sec. 3.2, no printed page (PDF p5)
+    - `s41060-025-00971-0.pdf` → Sec. 2.3.5 Step 1, p. 10 (PDF p10)
+    - check 2: PARTIAL (Singh defines a real-valued filter; the R^k form is Madukpe's). Resolved: added Singh 3.2 + Madukpe Step 1
+- [ ] **M02** PCA is the most popular lens choice in the TDA literature  — *DECK FIX*
+    - `s41060-025-00971-0.pdf` → Sec. 2 (lens usage summary), p. 10 (PDF p10)
+    - check 2: PARTIAL: supported for the Mapper articles reviewed; 'across TDA literature' overreaches (Sec. 2.3.5; Fig. 7 p. 11)
+- [ ] **M06** Spectral theorem for real symmetric matrices
+    - `Axler2024_LADR4e.pdf` → Thm 7.29 (Real Spectral Theorem), p. 243 of the author's web edition (PDF p259)
 - [ ] **M07** PCA is never computed by eigendecomposition; SVD used for numerical stability  — *DECK FIX*
     - `Principal component analysis a review and recent developments.pdf` → Sec. 1, p. 2 (PDF p2)
-- [ ] **M09** Eigenvalues of covariance = sigma_i^2/(m-1)
-    - `Principal component analysis a review and recent developments.pdf` → Sec. 2, Eqs. (2.2)-(2.3), p. 3 (PDF p3)
+    - check 2: NOT SUPPORTED; agent also cites Axler p. 282 recommending eigen-computation of T*T, so 'never' is false. Slide typo 'computer'
+- [ ] **M08** SVD theorem and singular vectors as eigenvectors of AA^T and A^TA  — *DECK FIX*
+    - `Axler2024_LADR4e.pdf` → Thm 7.70 (SVD), p. 273 of the author's web edition (PDF p287)
+    - `Principal component analysis a review and recent developments.pdf` → Sec. 2, Eq. (2.3), p. 3 (PDF p3)
+- [ ] **M09** Eigenvalues of covariance = sigma_i^2/(m-1)  — *DECK FIX*
+    - `Principal component analysis a review and recent developments.pdf` → Sec. 2, Eqs. (2.2)-(2.4), p. 3 (PDF p3)
+    - check 2: SUPPORTED; locator refined to the sentence after (2.3) and Eq. (2.4)
 - [ ] **M10** Truncated SVD gives best rank-k approximation (Frobenius)  — *DECK FIX*
-    - `Axler2024_LADR4e.pdf` → Thm 7.92, p. 284 (PDF p298)
+    - `Axler2024_LADR4e.pdf` → Thm 7.92 (operator norm), p. 284 of the author's web edition (PDF p298)
+    - `Principal component analysis a review and recent developments.pdf` → Sec. 2, Eq. (2.5), p. 4 (PDF p4)
+    - check 2: Axler 7.92 is the OPERATOR norm (confirmed). Agent claimed J-C ref [7] is Eckart-Young: FALSE - J-C p. 15 shows [7] = Horn & Johnson 1985 (agent error caught on re-check)
 - [ ] **M11** Proportion / cumulative variance explained
     - `Principal component analysis a review and recent developments.pdf` → Sec. 2, Eq. (2.6), p. 4 (PDF p4)
+    - check 2: SUPPORTED (sigma^2 form follows from Eq. 2.4)
+- [ ] **M13** Cover by overlapping hypercubes; n_cubes and overlap as parameters  — *ATTRIBUTION*
+    - `s41060-025-00971-0.pdf` → Sec. 2.3.5 Step 2, p. 10 (PDF p10)
+    - `mapperPBG.pdf` → Sec. 3, no printed page (PDF p4)
+    - `mapperPBG.pdf` → Sec. 3.2, no printed page (PDF p5)
+    - check 2: WRONG LOCATOR (KeplerMapper paper never mentions cubes/overlap). Resolved: Madukpe Step 2 + Singh Sec. 3/3.2
 - [ ] **M15** DBSCAN chosen for its popularity across Mapper applications  — *DECK FIX*
     - `s41060-025-00971-0.pdf` → Sec. 2 (clustering usage summary), p. 10 (PDF p10)
+    - check 2: PARTIAL: HACA first, DBSCAN second (p. 10, Fig. 8 p. 11). Slide typo 'There various'
 - [ ] **M16** DBSCAN: eps-neighborhood; directly density-reachable (core condition)  — *DECK FIX*
     - `Ester1996_KDD96_AAAI.pdf` → Def. 1, p. 227 (PDF p2)
     - `Ester1996_KDD96_AAAI.pdf` → Def. 2, p. 228 (PDF p3)
+    - check 2: Read from page images: Def. 1 uses <=, Def. 2 core condition >= MinPts. Slide errors confirmed (chain reversed, x/p mixed, N_eps undefined) PLUS MinPts mis-described as 'minimum elements allowed in any eps-neighborhood' (it is only the core-point threshold)
     - ⚠️ manual: read the page image (scan/OCR symbols)
 - [ ] **M17** DBSCAN: density-reachable and density-connected  — *DECK FIX*
     - `Ester1996_KDD96_AAAI.pdf` → Def. 3, p. 228 (PDF p3)
     - `Ester1996_KDD96_AAAI.pdf` → Def. 4, p. 228 (PDF p3)
+    - check 2: SUPPORTED; locators correct
     - ⚠️ manual: read the page image (scan/OCR symbols)
 - [ ] **M18** DBSCAN: cluster (maximality + connectivity) and noise  — *DECK FIX*
     - `Ester1996_KDD96_AAAI.pdf` → Def. 5, p. 228 (PDF p3)
     - `Ester1996_KDD96_AAAI.pdf` → Def. 6, p. 228 (PDF p3)
+    - check 2: SUPPORTED; Def. 6 per-cluster Eps_i/MinPts_i confirmed; the algorithm (Sec. 4) uses one global pair
     - ⚠️ manual: read the page image (scan/OCR symbols)
 - [ ] **M19** DBSCAN lemma: cluster = set density-reachable from any core point  — *DECK FIX*
     - `Ester1996_KDD96_AAAI.pdf` → Lemma 2, p. 228 (PDF p3)
+    - check 2: SUPPORTED source; slide drops 'from x' (confirmed)
     - ⚠️ manual: read the page image (scan/OCR symbols)
+- [ ] **M21** Mapper graph construction (nodes = clusters; edges = nonempty intersections)  — *ATTRIBUTION*
+    - `mapperPBG.pdf` → Sec. 3, no printed page (PDF p4)
+    - `s41060-025-00971-0.pdf` → Sec. 2.3.5 Step 4, p. 10 (PDF p10)
+    - check 2: WRONG LOCATOR (Sec. 2.1 is the topological nerve). Resolved: Singh Sec. 3 PDF p4
+- [ ] **R05** Levina-Bickel MLE intrinsic dimension (with MacKay-Ghahramani averaging)
+    - `LevinaBickel2004_NIPS17.pdf` → Abstract, p. 1 (PDF p1)
+    - `LevinaBickel2004_NIPS17.pdf` → Eq. (9), PDF p. 4 (PDF p4)
+    - `http://www.inference.org.uk/mackay/dimension/` → note (SNAPSHOT mackay_dimension_2026-09-28.html)
+    - check 2: PARTIAL: MLE supported; MacKay-Ghahramani averaging is not in Levina-Bickel (they average directly, Eq. 9)
+- [ ] **R06** Isomap lens  — *ATTRIBUTION*
+    - `https://scikit-learn.org/stable/modules/manifold.html` → Sec. 2.2.2 Isomap (SNAPSHOT sklearn_manifold_2026-09-28.html)
 - [ ] **R08** Applied Mapper work rarely checks graph features against null models  — *DECK FIX*
     - `CarriereMichelOudot2018_JMLR.pdf` → Abstract, p. 1 (PDF p1)
     - `s41060-025-00971-0.pdf` → Sec. 3, p. 16 (PDF p16)
+    - check 2: NOT SUPPORTED: 'null' absent from both sources. Closest: Madukpe p. 26 item 4(b) (no standardized evaluation metrics); CMO p. 2 (no statistical guarantees)
 
-## Random 20% sample of the rest (4)
+## Random 20% sample of the rest (5)
 
-- [ ] **M01** Lens/filter function definition
-    - `mapperPBG.pdf` → Sec. 3, no printed page on PDF (PDF p4)
-- [ ] **M21** Mapper graph construction (nodes = clusters; edges = nonempty intersections)
-    - `mapperPBG.pdf` → Sec. 2.1, no printed page on PDF (PDF p3)
-- [ ] **R01** Mapper stability/parameter-selection approach (grid + resampling)
-    - `CarriereMichelOudot2018_JMLR.pdf` → Abstract, p. 1 (PDF p1)
-- [ ] **T14** Definition of the Reeb graph
-    - `Structure and Stability of the One-Dimensional Mapper.pdf` → Sec. 1, p. 1334 (PDF p2)
+- [ ] **M03** PCA as variance-maximizing orthogonal projection
+    - `Principal component analysis a review and recent developments.pdf` → Abstract, p. 1 (PDF p1)
+- [ ] **R04** TwoNN intrinsic dimension estimator
+    - `Facco2017_TwoNN_SciRep.pdf` → Abstract, no printed page (PDF p1)
+    - check 2: SUPPORTED
+- [ ] **T07** Contractible = homotopy equivalent to a point
+    - `Hatcher_AlgebraicTopology.pdf` → Ch. 0, p. 4 (PDF p13)
+    - `algebraic-topology.pdf` → wording source, PDF p4
+    - check 2: SUPPORTED; slide wording copies Hoehn PDF p4 verbatim
+- [ ] **T10** Definition of a simplicial complex (closed under faces; intersections are faces)
+    - `Topological Persistence and Simplification.pdf` → Sec. 2, p. 513 (PDF p3)
+    - check 2: ELZ p. 513 matches the slide exactly. Mohnhaupt Def. 2.1.3 has a typo and a weaker condition 2; Borsuk p. 219 has no face-closure condition. Resolved: cite ELZ only
+- [ ] **T20** Definition of the Reeb space for a map to R^k
+    - `MunchWang2016_LIPIcs_SoCG.pdf` → Sec. 2, 53:3 (PDF p3)
+    - `Reeb Spaces of Piecewise Linear Mappings.pdf` → Abstract, p. 242 if copy matches published (PDF p1)
+    - check 2: SUPPORTED; EHP local copy carries printed pp. 242/250 = published pagination

@@ -39,7 +39,7 @@ edelsbrunnerharer2010,,doi:10.1090/mbk/069,,OpenAlex,UNAVAILABLE,Unavailable via
 blumberg2014,"Robust Statistics, Hypothesis Testing, and Confidence Intervals for Persistent Homology on Metric Measure Spaces.pdf",doi:10.1007/s10208-014-9201-4,"published (FoCM 14:745-789, 2014)",OpenAlex,IN_HAND,Null-model / hypothesis-testing framing
 schubert2017dbscan,"DBSCAN Revisited, Revisited Why and How You Should (Still) Use DBSCAN.pdf",doi:10.1145/3068335,"published (ACM TODS, article 19)",OpenAlex,IN_HAND,Modern DBSCAN definitions
 munkres2000topology,,ISBN 0131816292,"Topology, 2nd ed., Prentice Hall, 2000 (537 pp)",Open Library ISBN record,BOOK_NO_PDF,Edition confirmed by Will against his copy (2026-09-28). Page numbers for T01-T03 pending from Will
-reeb1946,,C. R. Acad. Sci. Paris 222:847-849,,CiNii,LOCATING,Gallica scan not yet found
+reeb1946,,C. R. Acad. Sci. Paris 222:847-849,,"three concordant citations: carriereoudot2018 ref [31] (PDF p64), munchwang2016 ref 21 (PDF p16), lum2013extracting ref 6 (PDF p7)",ATTRIBUTION_ONLY,Original not read (Gallica scan not located). May be named as the origin of the Reeb graph; definitions cited from Carriere-Oudot
 prokhorenkova2018catboost,,arXiv:1706.09516 / NeurIPS 2018,,OpenAlex,LOCATING,Future work only
 savantcsvdocs,,https://baseballsavant.mlb.com/csv-docs,"web page, snapshot 2026-09-28 (docs/lit_review/registry_cache/savant_csv_docs_2026-09-28.html)","raw HTML: <title> and footer '(c) MLB Advanced Media, LP'",WEB_SNAPSHOT,snapshot=savant_csv_docs_2026-09-28.html; Official field definitions. Does NOT document release_spin_rate; calls pfx_z 'vertical movement' (not 'induced')
 ,Fasy2014_arXiv1303.7117.pdf,,,,SUPERSEDED,arXiv copy; published version now in hand
@@ -55,3 +55,8 @@ mackay2005comments,,http://www.inference.org.uk/mackay/dimension/,"web note, las
 sklearn_userguide_manifold,,https://scikit-learn.org/stable/modules/manifold.html,"scikit-learn 1.9.1 user guide (stable), accessed 2026-09-28",raw HTML footer '(c) 2007-2026 scikit-learn developers',WEB_SNAPSHOT,snapshot=sklearn_manifold_2026-09-28.html; documents Isomap -> Tenenbaum et al. 2000
 keplermapper_repo,,https://github.com/scikit-tda/kepler-mapper,"GitHub README, accessed 2026-09-28",raw README (repo under the scikit-tda organization),WEB_SNAPSHOT,snapshot=keplermapper_readme_2026-09-28.html
 ledoux_pybaseball,,pypi:pybaseball==2.2.7,2.2.7 (released 2023-09-08; version installed and used),PyPI JSON API (registry_cache/pypi_pybaseball_2.2.7.json); pip show,WEB_SNAPSHOT,snapshot=pybaseball_readme_2026-09-28.html; software citation
+alexandroff1928,,doi:10.1007/BF01451612,,Crossref,MANUAL_DOWNLOAD,Math. Ann. 98:617-635; original nerve (Borsuk fn. 4 points to p. 634). Try the Springer page in a browser
+cattell1966scree,,doi:10.1207/s15327906mbr0102_10,,Crossref,NEEDS_MIAMI,Scree test (the 'elbow' on the Selecting-k slide). Alternative: drop the elbow claim
+cohensteiner2007stability,,doi:10.1007/s00454-006-1276-5,,OpenAlex,MANUAL_DOWNLOAD,Original persistence-diagram source (T19). Free on Springer; bot-protected - download in browser
+sidletran2018,,doi:10.3233/jsa-170171,,OpenAlex,MANUAL_DOWNLOAD,Pitch-type classification (J. Sports Analytics 4:85-93); check for confusion matrices (B04)
+hickey2020,,doi:10.24251/hicss.2020.031,,OpenAlex,MANUAL_DOWNLOAD,Pitch classification interpretability (HICSS 2020); check for confusion matrices (B04)
