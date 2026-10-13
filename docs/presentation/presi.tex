@@ -1,627 +1,677 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
 \usepackage{listings}
-\lstset{language=Python,keepspaces=true}
 \usepackage{xcolor}
+\usepackage[style=authoryear-comp,maxcitenames=2,uniquelist=false,backend=bibtex,dashed=false]{biblatex}
+\addbibresource{../lit_review/references.bib}
+\renewcommand*{\bibfont}{\scriptsize}
 
-\lstset{
-    basicstyle=\ttfamily\small,
-    frame=single,
-    breaklines=true,
-    columns=fullflexible,
-    showstringspaces=false
-}
+\lstset{language=Python,basicstyle=\ttfamily\scriptsize,frame=single,breaklines=true,
+        columns=fullflexible,showstringspaces=false,keepspaces=true}
 
-\newcommand{\R}{\mathbb{R}}  
+\newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\C}{\mathbb{C}}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\rank}{rank}
+% source line under a block: right-aligned, small
+\newcommand{\src}[1]{\par\vspace{2pt}\hfill{\scriptsize\textcolor{gray}{\parencite{#1}}}}
 
 % Theme and colors (Miami University style)
 \usetheme{Madrid}
 \usecolortheme{default}
-
 \definecolor{MiamiRed}{RGB}{180,0,0}
-\definecolor{MiamiWhite}{RGB}{255,255,255}
 \setbeamercolor{structure}{fg=MiamiRed}
 \setbeamercolor{frametitle}{bg=MiamiRed, fg=white}
 \setbeamercolor{title}{fg=white, bg=MiamiRed}
 \setbeamercolor{titlelike}{fg=white}
 \setbeamercolor{block title}{bg=MiamiRed, fg=white}
 \setbeamercolor{block body}{bg=gray!10, fg=black}
+\setbeamertemplate{navigation symbols}{}
 
-\makeatletter
-\defbeamertemplate*{subsubsection page}{custom}{
-  \begin{centering}
-    \begin{beamercolorbox}[sep=8pt,center,rounded=true,shadow=false]{titlelike}
-      \usebeamerfont{subsubsec} 
-      \insertsection\par\vspace{0.2cm}
-      \usebeamerfont{subsection title}\insertsubsection\par\vspace{0.2cm}
-      \usebeamerfont{subsubsection title}\insertsubsubsection\par
-    \end{beamercolorbox}
-  \end{centering}
-}
-\newcommand{\subsubsectionpage}{\usebeamertemplate*{subsubsection page}}
-\makeatother
-
-
-\title{Traversing the Unlikely Intersection of Topological Data Analysis’s Mapper Algorithm and Pitch-Level MLB Data}
-\author{Will Paz}
+\title[Mapper and MLB Pitch Shape]{Traversing the Unlikely Intersection of Topological Data Analysis's Mapper Algorithm and Pitch-Level MLB Data}
+\author[Will Paz]{Will Paz}
+\institute[Miami University]{Miami University, Department of Mathematics}
 \date{\today}
 
 \begin{document}
 
 \frame{\titlepage}
-%------------------------------------------------
-\begin{frame}
-    \frametitle{Outline}
-    \tableofcontents
-\end{frame}
-%------------------------------------------------
+
+%================================================================
 \section{Introduction}
-\begin{frame}
-  \sectionpage
+%================================================================
+\begin{frame}{A pitch is a point in a 9-dimensional space}
+\begin{itemize}
+  \item Every MLB pitch is tracked: velocity, movement, spin, release point, \ldots \hfill\parencite{savantcsvdocs}
+  \item Each pitch also gets a \alert{label}: four-seam (FF), sinker (SI), cutter (FC), slider (SL), sweeper (ST), curveball (CU), changeup (CH), \ldots \hfill\parencite{mlbglossary_pitchtypes}
+  \item The labels change: in 2023 Statcast added \alert{sweeper} and \alert{slurve} as new classifications \hfill\parencite{mlbglossary_sweeper,mlbglossary_slurve}
+\end{itemize}
+\vspace{6pt}
+\begin{block}{Question}
+Is the space of pitch shapes made of separate clumps (so the labels are natural), or a \alert{continuum} that the labels cut into pieces?
+\end{block}
+\vspace{4pt}
+We answer with the \alert{Mapper algorithm}, a tool from topological data analysis, and we test every feature it shows us.
 \end{frame}
 
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Introduction}
-
+\begin{frame}{Roadmap}
+\begin{enumerate}
+  \item \textbf{Topological foundations}: simplicial complexes, nerves, homology, Reeb graphs
+  \item \textbf{The Mapper algorithm}: lens (PCA), cover, clustering (DBSCAN), graph
+  \item \textbf{MLB pitch data}: what Mapper shows, and how we check it is real
+\end{enumerate}
+\vspace{8pt}
+\textbf{Thread to watch:} the \emph{nerve} of a cover appears in part 1 as a theorem, in part 2 as the last step of the algorithm, and in part 3 as the reason the graph's loops are not real.
 \end{frame}
 
-%------------------------------------------------
-\begin{frame}{}
+%================================================================
+\section{Topological Foundations}
+%================================================================
+\begin{frame}{Topological spaces}
+\begin{block}{Definition (topology)}
+A \alert{topology} on a set $X$ is a collection $\tau$ of subsets of $X$ (the \emph{open sets}) such that
+\begin{enumerate}
+  \item $\emptyset \in \tau$ and $X \in \tau$;
+  \item any union of sets in $\tau$ is in $\tau$;
+  \item any finite intersection of sets in $\tau$ is in $\tau$.
+\end{enumerate}
+\src{munkres2000topology}
+\end{block}
+\begin{block}{Definition (subspace topology)}
+For $Y \subseteq X$, the \alert{subspace topology} is $\tau_Y = \{\, Y \cap U : U \in \tau \,\}$.
+\src{munkres2000topology}
+\end{block}
+For us, $X$ is always a subset of $\R^n$ with the topology coming from Euclidean distance.
+\end{frame}
 
-\end{frame}
-%------------------------------------------------
-\section{Toplogical Foundations}
-\begin{frame}
-  \sectionpage
+\begin{frame}{When are two spaces ``the same shape''?}
+\begin{block}{Definition (homotopy)}
+Continuous maps $f, g : X \to Y$ are \alert{homotopic}, $f \simeq g$, if there is a continuous $F : X \times [0,1] \to Y$ with $F(x,0) = f(x)$ and $F(x,1) = g(x)$ for all $x \in X$.
+\src{hatcher2001}
+\end{block}
+\begin{block}{Definition (homotopy equivalence)}
+$X$ and $Y$ are \alert{homotopy equivalent}, $X \simeq Y$, if there are maps $f : X \to Y$, $g : Y \to X$ with $g f \simeq \mathrm{id}_X$ and $f g \simeq \mathrm{id}_Y$.
+A space homotopy equivalent to a point is \alert{contractible}.
+\src{hatcher2001}
+\end{block}
+Examples: a disk is contractible; an annulus $\simeq$ a circle; a circle is \emph{not} contractible.
 \end{frame}
 
-%------------------------------------------------
-\begin{frame}{Topological Foundations}
-\begin{block}{Definition}
-    A topological space $(X, \tau)$ is a set $X$ equipped with a topology $\tau$, where $\tau$ is a collection of subsets of $X$, called open sets that satisfy the following conditions:
-    \begin{enumerate}
-        \item $\emptyset \in \tau$ and $X \in \tau$.
-        \item $\tau$ is closed under arbitrary union, i.e. for any index set $A$ if $\{ U_\alpha \}_{\alpha \in A} \subseteq \tau$, then $\bigcup_{\alpha \in A} U_\alpha \in \tau$.
-        \item $\tau$ is closed under finite intersection, i.e. if $U_1, U_2,...,U_n \in \tau$ then $\bigcap_{i=1}^n U_i \in \tau$.
-    \end{enumerate}
+\begin{frame}{Simplices}
+\begin{block}{Definition ($n$-simplex)}
+Points $v_0,\dots,v_n \in \R^m$ are \alert{affinely independent} if $v_1 - v_0, \dots, v_n - v_0$ are linearly independent. Their convex hull
+\[
+[v_0,\dots,v_n] = \Big\{ \textstyle\sum_{i=0}^n t_i v_i \;:\; t_i \ge 0,\ \sum_i t_i = 1 \Big\}
+\]
+is an \alert{$n$-simplex} with \emph{vertices} $v_i$. The simplex spanned by any nonempty subset of the vertices is a \alert{face}.
+\src{hatcher2001}
 \end{block}
+\centering
+\begin{tikzpicture}[scale=0.9, v/.style={circle, fill=black, inner sep=1.4pt}]
+  \node[v] at (0,0) {}; \node at (0,-0.5) {\small 0-simplex};
+  \draw[thick] (1.5,0) node[v]{} -- (2.7,0.8) node[v]{}; \node at (2.1,-0.5) {\small 1-simplex};
+  \fill[MiamiRed!25] (4.2,0) -- (5.6,0) -- (4.9,1.1) -- cycle;
+  \draw[thick] (4.2,0) node[v]{} -- (5.6,0) node[v]{} -- (4.9,1.1) node[v]{} -- cycle; \node at (4.9,-0.5) {\small 2-simplex};
+  \fill[MiamiRed!15] (7.1,0) -- (8.6,0) -- (7.9,1.3) -- cycle; \fill[MiamiRed!30] (8.6,0) -- (8.3,0.5) -- (7.9,1.3) -- cycle;
+  \draw[thick] (7.1,0) node[v]{} -- (8.6,0) node[v]{} -- (7.9,1.3) node[v]{} -- cycle;
+  \draw[thick] (8.6,0) -- (8.3,0.5) node[v]{} -- (7.9,1.3); \draw[thick, dashed] (7.1,0) -- (8.3,0.5);
+  \node at (7.85,-0.5) {\small 3-simplex};
+\end{tikzpicture}
 \end{frame}
-%------------------------------------------------
-%------------------------------------------------
-\begin{frame}{The Subspace Topology and Pairs}
-\begin{block}{Definition}
-    A subspace of a topological space $X$ is a subset $A \subset X$ equipped with the subspace topology $\tau_A$ defined by:
-    \[
-    \tau_A = \{ A \cap U : U \in \tau \}
-    \]
-\end{block}
 
-\begin{block}{Definition}
-    A pair of spaces $(X, A)$ is a space $X$ together with a subspace $A \subset X$. We can identify $X$ with the pair $(X,\emptyset)$. A pointed space is a pair $(X, \{x_0\}$). A map $f : (X, A) \to (Y, B)$ between pairs is a continuous function $f : X \to Y$ such that $f(A) \subset B$. Denote by $I = [0, 1]$ the unit interval.
+\begin{frame}{Simplicial complexes}
+\begin{block}{Definition (simplicial complex)}
+A \alert{simplicial complex} $K$ is a finite collection of simplices such that
+\begin{enumerate}
+  \item every face of a simplex of $K$ is in $K$;
+  \item any two simplices of $K$ are disjoint or intersect in a common face.
+\end{enumerate}
+Its \alert{vertex set} is the set of its 0-simplices.
+\src{edelsbrunnerletscherzomorodian2002}
+\end{block}
+\begin{block}{Abstract version}
+An \alert{abstract simplicial complex} on a vertex set $V$ is a collection $S$ of finite nonempty subsets of $V$ with $\{v\} \in S$ for all $v$, and $\tau \subseteq \sigma \in S \Rightarrow \tau \in S$. A $k$-simplex is a set of $k+1$ vertices. Placing vertices in general position gives a geometric realization $|K|$.
+\src{zomorodiancarlsson2005}
 \end{block}
 \end{frame}
-%------------------------------------------------
-%------------------------------------------------
-\begin{frame}{Introduction to Homotopy}
-\begin{block}{Definition}
-    Let $(X, A)$ be a pair and $f, g : X \to Y$ be two maps such that $f|_A$ = $g|_A$. Then we call $f$ homotopic to $g$ relative $A$ $(f \simeq g \operatorname{rel} A)$ if there exists a map 
-    \[
-    F : X \times I \to Y
-    \]
-    called homotopy such that $F(x, 0) = f(x)$ and $F(x, 1) = g(x)$ for all $x \in X$ and $F(x, t) = f(x) = g(x)$ for all $x \in A$ and $t \in I$. For $A = \emptyset$ we say $f$ is homotopic to $g$ ($f \simeq g$).
-\end{block}
 
-\begin{block}{Proposition}
-    Homotopic relative $A$ is an equivalence relation on the set of maps.
+\begin{frame}{The nerve of a cover}
+\begin{block}{Definition (nerve)}
+Let $\mathcal U = \{U_\alpha\}_{\alpha \in A}$ be a finite cover of a space $X$. The \alert{nerve} $N(\mathcal U)$ is the abstract simplicial complex with vertex set $A$, where a set $\{\alpha_0,\dots,\alpha_k\} \subseteq A$ spans a $k$-simplex if and only if
+\[ U_{\alpha_0} \cap \cdots \cap U_{\alpha_k} \ne \emptyset. \]
+\src{singh2007mapper,hatcher2001}
 \end{block}
+\centering
+\begin{tikzpicture}[scale=0.85, v/.style={circle, fill=black, inner sep=1.4pt}]
+  \draw[very thick, gray] (0,0) circle (1);
+  \draw[line width=4pt, red!60, opacity=0.6] (100:1.15) arc (100:260:1.15);
+  \draw[line width=4pt, blue!60, opacity=0.6] (220:1.3) arc (220:380:1.3);
+  \draw[line width=4pt, green!60!black, opacity=0.6] (340:1.45) arc (340:500:1.45);
+  \node at (0,-1.9) {\small circle, 3 arcs};
+  \draw[-{Latex}, thick] (1.9,0) -- (2.8,0);
+  \draw[thick] (3.4,-0.6) node[v]{} -- (4.8,-0.6) node[v]{} -- (4.1,0.7) node[v]{} -- cycle;
+  \node at (4.1,-1.3) {\small hollow triangle $\simeq$ circle};
+  \begin{scope}[xshift=7.4cm]
+  \fill[gray!20] (0,0) circle (1);
+  \fill[red!50, opacity=0.4] (-0.35,0.15) circle (0.75); \fill[blue!50, opacity=0.4] (0.35,0.15) circle (0.75); \fill[green!50!black, opacity=0.35] (0,-0.4) circle (0.75);
+  \node at (0,-1.9) {\small disk, 3 sets with a common point};
+  \draw[-{Latex}, thick] (1.4,0) -- (2.3,0);
+  \fill[MiamiRed!25] (2.9,-0.6) -- (4.3,-0.6) -- (3.6,0.7) -- cycle;
+  \draw[thick] (2.9,-0.6) node[v]{} -- (4.3,-0.6) node[v]{} -- (3.6,0.7) node[v]{} -- cycle;
+  \node at (3.6,-1.3) {\small filled triangle $\simeq$ point};
+  \end{scope}
+\end{tikzpicture}
 \end{frame}
-%------------------------------------------------
-%------------------------------------------------
-\begin{frame}{Homotopic Equivalence}
-\begin{block}{Definition}
-    Two spaces $X$ and $Y$ are called homotopy equivalent if there are maps $f : X \to Y$ and $g : Y \to X$ such that $gf \simeq \operatorname{id}_X$ and $fg \simeq \operatorname{id}_Y$. 
-\end{block}
-\begin{block}{Definition}
-    A space is called contractible if it is homotopy equivalent to a one-point space.
-\end{block}
-\end{frame}
-%------------------------------------------------
-%------------------------------------------------
-\begin{frame}{n-Simplices}
-\begin{block}{Defintion}
-    An $n$-simplex is a geometric object with $(n+1)$ vertices that lives in a $n$-dimensional space and cannot fit in any space of smaller dimension.
-\end{block}
-\begin{block}{Examples}
-    \centering
-    \includegraphics[width=0.7\linewidth]{Pictures/simplex.png}
-\end{block}
-\end{frame}
-%------------------------------------------------
-%------------------------------------------------
-\begin{frame}{Simplicial Complexes}
-\begin{block}{Definition}
-    Let $\sigma = \langle x_0, .., x_n \rangle$ be a $n$-dimensional simplex. A face of $\sigma$ is a sub-simplex of $\sigma$ the simplex generated by a subset of vertices of $\sigma$. To get a face of $\sigma$ of dimension $m \leq n$, choose $m+1$ points among $x_0,...,x_n$ and take the corresponding simplex.
-\end{block}
 
-\begin{block}{Definition}
-    A simplicial complex $K$ is a collection of simplices such that \begin{enumerate}
-        \item If $K$ contains simplex $\sigma$, then $K$ also contains every face of $\sigma$.
-        \item If two simplices of K intersect, then their intersection is a face of each of them.
-    \end{enumerate}
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Nerve}
-\begin{block}{Definition}
-    Given a covering $\mathcal{U} = \{ U_\alpha \}_{\alpha \in A}$ of a topological space $X$, the nerve of the cover $\mathcal{U}$ denoted $N(\mathcal{U})$ is the simplicial complex whose vertex set corresponds to the index set $A$ with a finite subset $\{ \alpha_1,..., \alpha_n \} \subseteq A$ that span $(n-1)$ simplex in $N(\mathcal{U})$ if and only if $U_{\alpha_1} \cap \dots \cap U_{\alpha_n} \neq \emptyset$
-\end{block}
-
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
 \begin{frame}{The Nerve Theorem}
-\begin{block}{Theorem (The Nerve Theorem)}
-    If $X$ is a topological space with a closed and convex covering $\mathcal{U}$, where each of the finite intersections of open sets are all contractable, then the nerve of the cover forms a simplicial complex that is homotopy equivalent to $X$, i.e. $X \simeq N(\mathcal{U})$.
-\end{block}
-
-\begin{block}{Note}
-    The Nerve Theorem ensures that the topological graph constructed by overlapping preimages reflects the actual shape of the data, preserving connected components and loops.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Reeb Graphs}
 \begin{block}{Definition}
-    Given a topological space $X$ and a continuous, real-valued function $f : X \to \mathbb{R}$, the Reeb Graph identifies the level set of $f$ at any value $c$ 
-
-    \[
-    f^{-1}(c) = \{x \in X : f(x) = c \}
-    \]
-
-    representing all points with the same function values.
+$C \subseteq \R^d$ is \alert{convex} if the segment between any two points of $C$ lies in $C$.
 \end{block}
-
-\begin{block}{Note}
-    A Reeb Graph is a continuous topological structure, where the Mapper algorithm is a discrete, data-driven approximation of it.
+\begin{block}{Theorem (Nerve Theorem, closed convex version)}
+If $X \subseteq \R^d$ is covered by finitely many closed convex sets $\mathcal C = \{C_1,\dots,C_n\}$, then $X \simeq |N(\mathcal C)|$.
+\src{bauerkerberrollrolle2023,borsuk1948}
 \end{block}
+\begin{itemize}
+  \item Why it works: intersections of convex sets are convex, hence empty or contractible.
+  \item Open-cover version: if $\mathcal U$ is an open cover of a paracompact $X$ and every nonempty finite intersection is contractible, then $X \simeq N(\mathcal U)$. \hfill\parencite{hatcher2001}
+  \item \alert{Warning for later:} covers in data analysis are rarely this nice, so a nerve need not have the shape of the space.
+\end{itemize}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}{Torus Example}
-    \centering
-    \includegraphics[width=0.9\linewidth]{Pictures/reeb_graph.png}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Topological Graphs}
+\begin{frame}{Counting holes: Betti numbers}
 \begin{block}{Definition}
-    Let $X$ and $X^*$ be topological spaces and $f : X \to X^*$ be a continuous map. Let $\mathcal{U} = \{ U_\alpha \}_{\alpha \in A}$ be a finite open set covering $X^*$ then consider \[
-    f^*(\mathcal{U}) = \{ f^{-1} (U_\alpha) \}_{\alpha \in A},
-    \]
-    which is the covering of $X$ where $\{ f^{-1} (U_\alpha) \}_{\alpha \in A}$ is called the pullback of $\mathcal{U}$ along $f$. Then the topological graph $G$ is defined to be the nerve or the simplicial complex along index set $A$. We can write $G$ by:
-    \[
-    G(\mathcal{U}, f) = N(f^*(\mathcal{U})) = \left\{ \sigma \subseteq A : \bigcap_{\alpha \in \sigma} f^{-1} (U_\alpha) \neq \emptyset  \right\}
-    \]
-    where $\sigma$ represents a subset of the pullback cover $f^* (U_\alpha)$.
+The $k$-th \alert{Betti number} $b_k(X)$ is the rank of the $k$-th homology group $H_k(X)$. We work with $\Z_2$ coefficients.
+\src{hatcher2001}
 \end{block}
+\begin{itemize}
+  \item $b_0$ = number of path components \parencite{hatcher2001}; $b_1$ = number of independent loops.
+  \item For a graph $G$ (a 1-dimensional complex) with $V$ vertices, $E$ edges, $C$ components, the Euler characteristic gives $V - E = b_0 - b_1$, so
+  \[ b_1(G) = E - V + C. \]
+  \item For a 2-dimensional complex, triangles can \emph{fill} loops: $b_1 = E - V + C - \rank \partial_2$, where $\partial_2$ maps each triangle to its boundary edges.
+\end{itemize}
+\vspace{4pt}
+Hollow triangle: $3 - 3 + 1 = 1$ loop. \quad Filled triangle: $1 - 1 = 0$ loops.
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}{Notes about Topological Graphs}
-\begin{block}{Note}
-    A collection of simplices $\sigma$ forms the nerve if the intersection of all preimages $f^{-1}(U_\alpha)$ for $\alpha \in \sigma$ is non-empty. In this context, the Mapper graph can be viewed as a discrete topological summary of $X$ induced by the continuous map $f$ reflecting its essential shape features.
+\begin{frame}{Persistent homology}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Vietoris--Rips complex}
+For a finite point set $P$ and scale $t$: $\mathrm{Rips}_t(P) = \{\, \emptyset \ne S \subseteq P : \diam S \le t \,\}$.
+\src{bauer2021ripser}
 \end{block}
-
-\begin{block}{Note}
-    In practice using real-valued point clouds, we must have a more statistical approach rooted in methods of dimensionality reduction, clustering, and a slew of relevant parameters.
-\end{block}
+\begin{itemize}\small
+  \item As $t$ grows we get nested complexes; persistent homology tracks each hole from the scale where it is \emph{born} to where it \emph{dies}. \hfill\parencite{edelsbrunnerletscherzomorodian2002,zomorodiancarlsson2005}
+  \item A \alert{persistence diagram} plots (birth, death); points far from the diagonal are real features, points near it are noise. \hfill\parencite{fasy2014confidence}
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.85]
+  \draw[-{Latex}] (0,0) -- (3.4,0) node[below] {\small birth};
+  \draw[-{Latex}] (0,0) -- (0,3.4) node[left] {\small death};
+  \draw[gray] (0,0) -- (3.2,3.2);
+  \foreach \p in {(0.6,0.75),(1,1.2),(1.4,1.55),(1.9,2.05),(2.3,2.5),(0.9,1.05)} \fill[gray] \p circle (1.6pt);
+  \fill[MiamiRed] (0.7,2.9) circle (2.5pt) node[right] {\small real loop};
+  \node[gray] at (2.4,1.6) {\small noise};
+\end{tikzpicture}
+\end{column}
+\end{columns}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
+\begin{frame}{Reeb graphs}
+\begin{block}{Definition (Reeb graph)}
+Let $f : X \to \R$ be continuous. Write $x \sim y$ if $f(x) = f(y)$ and $x, y$ lie in the same connected component of the level set $f^{-1}(f(x))$. The \alert{Reeb graph} is the quotient space $R_f(X) = X/\!\sim$.
+\src{carriereoudot2018,reeb1946}
+\end{block}
+\centering
+\includegraphics[width=0.44\textwidth]{figures/reeb_torus.pdf}
+\par\small Each level set of the torus collapses to one point per component: one point near the top and bottom, two points in the middle band.
+\end{frame}
+
+\begin{frame}{Reeb spaces and Mapper}
+\begin{block}{Definition (Reeb space)}
+The same construction for $f : X \to \R^d$: identify points with the same value that lie in the same path component of the preimage, $R(X,f) = X/\!\sim_f$.
+\src{munchwang2016}
+\end{block}
+\begin{block}{Definition (Mapper, topological version)}
+Let $f : X \to Z$ be continuous and $\mathcal U = \{U_\alpha\}$ a finite open cover of $Z$. Split each preimage $f^{-1}(U_\alpha)$ into its \alert{path components}; these form the \alert{pullback cover} $f^*\mathcal U$ of $X$. The \alert{Mapper} is its nerve, $M(\mathcal U, f) = N(f^*\mathcal U)$.
+\src{singh2007mapper,deymemoliwang2017}
+\end{block}
+\begin{itemize}\small
+  \item Mapper is a discrete approximation of the Reeb graph ($d=1$) and Reeb space ($d \ge 1$). \hfill\parencite{carrieremicheloudot2018,munchwang2016}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{From spaces to data}
+\begin{block}{Definitions}
+\begin{itemize}
+  \item A \alert{point cloud} is a finite set $P \subseteq \R^n$ with Euclidean distance.
+  \item In the \emph{statistical} version of Mapper, clustering plays the role of path components: each preimage $f^{-1}(U_\alpha) \cap P$ is split into \alert{clusters}. \hfill\parencite{singh2007mapper}
+  \item The \alert{Mapper graph} is the 1-skeleton of the resulting nerve: one vertex per cluster, one edge per pair of clusters that share a point.
+\end{itemize}
+\end{block}
+\vspace{4pt}
+The 1-skeleton keeps vertices and edges but \alert{drops the triangles}. Remember this: it is why the graph's loops will turn out not to be real.
+\end{frame}
+
+%================================================================
 \section{The Mapper Algorithm}
-\begin{frame}
-  \sectionpage
-\end{frame}
-
-%------------------------------------------------
-
-%------------------------------------------------
+%================================================================
 \begin{frame}{Overview}
 \centering
-    \includegraphics[width=1\linewidth]{Pictures/mapper_flow_chart.png}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\subsection{Step 1: Choosing a Filter or Lens Function}
-\begin{frame}
-  \subsectionpage
-\end{frame}
-
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Step 1}
-\begin{block}{Choosing a Filter or Lens Function}
-    Given a high dimensional dataset $X \subset \mathbb{R}^n$, we can define a filter or lens function $f : X \to \mathbb{R}^k$ to reduce the dimension of the dataset to a lower Euclidean space $\mathbb{R}^k$, where $k < n$.
-\end{block}
-
-\begin{block}{Note}
-    Selecting a dimension reduction method can vary by use cases based on the structure of the dataset. The most popular choice across TDA literature is Principal Component Analysis (PCA), and was chosen in this specific use case.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\subsubsection{Principal Component Analysis (PCA)}
-\begin{frame}
-  \subsubsectionpage
+\begin{tikzpicture}[node distance=0.55cm, box/.style={draw, rounded corners, fill=gray!10, align=center, minimum height=1.05cm, text width=2.35cm, font=\small}]
+  \node[box] (a) {point cloud\\$P \subseteq \R^n$};
+  \node[box, right=of a] (b) {\textbf{1. lens}\\$f : P \to \R^k$\\(PCA)};
+  \node[box, right=of b] (c) {\textbf{2. cover}\\overlapping\\cubes in $\R^k$};
+  \node[box, right=of c] (d) {\textbf{3. cluster}\\each preimage\\(DBSCAN)};
+  \node[box, right=of d] (e) {\textbf{4. graph}\\clusters + shared\\points};
+  \foreach \x/\y in {a/b,b/c,c/d,d/e} \draw[-{Latex}, thick] (\x) -- (\y);
+\end{tikzpicture}
+\vspace{10pt}
+\begin{itemize}
+  \item Steps 1--3 build a cover of $P$; step 4 takes its nerve. \hfill\parencite{singh2007mapper}
+  \item Clustering happens in the full space $\R^n$; the lens only decides which points are clustered together.
+\end{itemize}
 \end{frame}
 
-%------------------------------------------------
-
-
-%------------------------------------------------
-\begin{frame}{Principal Component Analysis (PCA)}
-\begin{block}{Objective}
-Principal Component Analysis (PCA) is defined as an orthogonal linear transformation to a lower-dimensional space that maximizes capturing explained variance in the project space. Where each coordinate corresponds to a principal component.
+\subsection{Step 1: the lens}
+\begin{frame}{Step 1: choosing a lens}
+\begin{block}{Lens (filter) function}
+A continuous map $f : P \to \R^k$, usually with $k$ small, used to organize the cover.
+\src{singh2007mapper}
 \end{block}
+\begin{itemize}
+  \item Among the Mapper applications reviewed by \textcite{madukpe2026review}, \alert{PCA} is the most commonly used lens. We use a 2-dimensional PCA lens.
+  \item Other lenses (velocity $\times$ vertical movement, Isomap, a density lens) are used later as a robustness check. \hfill\parencite{madukpe2026review,tenenbaum2000isomap}
+\end{itemize}
+\end{frame}
 
-\begin{block}{Setup}
-    Given a dataset with $m$ observations and $n$ features, we can construct a $m \times n$ matrix. For each feature/column, we must ensure the mean of the entries in the column is 0. Call this mean-centered matrix $\mathbf{A}$.
+\begin{frame}{PCA: goal and setup}
+\begin{block}{Goal}
+Find new uncorrelated variables, linear combinations of the old ones, that successively capture as much variance as possible.
+\src{jolliffecadima2016,pearson1901}
+\end{block}
+\begin{block}{Setup: why we center}
+Data: $m$ observations of $n$ features. Subtract each column's mean to get the centered matrix $\mathbf A \in \R^{m \times n}$.
+\begin{itemize}
+  \item Variance is measured around the mean, so centering does not change the covariance matrix or the principal components.
+  \item It makes $(m-1)\,S = \mathbf A^{\mathsf T}\mathbf A$, which turns PCA into a statement about $\mathbf A$ itself, solvable by the SVD.
+\end{itemize}
+\src{jolliffecadima2016}
 \end{block}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}{Covariance Matrix}
-\begin{block}{Covariance Matrix}
-    We can define the sample covariance matrix of $\mathbf{A}$ to be
-    \[
-    Cov(\mathbf{A}) = \frac{1}{m-1}\mathbf{A}^T \mathbf{A}
-    \]
-    The diagonal entries of $Cov(\mathbf{A})$ are the variances of the individual features. The off-diagonal entries are the covariances between pairs of features.
-\end{block}
-
-\begin{block}{Note}
-    Observe that $Cov(\mathbf{A}) \in \mathbb{R}^{n \times n}$ as is symmetric and positive semi-definite.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{The Spectral Theorem}
-\begin{block}{The Spectral Theorem for Real, Symmetric Matricies}
-    Consider a symmetric matrix $Cov(\mathbf{A}) \in \mathbb{R}^{n \times n}$. Then $Cov(\mathbf{A})$ has the following properties:
-    \begin{enumerate}
-        \item The eigenvalues of $Cov(\mathbf{A})$ are real.
-        \item $Cov(\mathbf{A})$ is diagonalizable.
-        \item There is a orthonormal basis of $\mathbb{R}^n$ consisting of eigenvectors of $Cov(\mathbf{A})$
-    \end{enumerate}
-    Therefore, $Cov(\mathbf{A})$ can be orthogonally diagonalized: $Cov(\mathbf{A}) = \mathbf{V}\mathbf{D}\mathbf{V}^T$, where $\mathbf{V} \in \mathbb{R}^{n \times n}$ is an orthonormal matrix of eigenvectors of $Cov(\mathbf{A})$, and $\mathbf{D} \in \mathbb{R}^{n \times n}$ is a real, diagonal matrix of eigenvalues of $Cov(\mathbf{A})$.
-\end{block}
-\end{frame}
-%------------------------------------------------
-%------------------------------------------------
-\begin{frame}{PCA Notes}
-\begin{block}{Observation}
-See $\lambda_{\max}$ of the $Cov(\mathbf{A})$ corresponds to the largest variance of the dataset, and the associated eigenvector is the direction of maximum variance, called the first principal component.
-\end{block}
-\begin{block}{Note}
-    In practice, PCA is never computer via explicit eigen-decomposition of $Cov(\mathbf{A})$ as it is numerically unstable for large $n$. Instead Singular Value Decomposition (SVD) is applied directly.
-\end{block}
-\end{frame}
-%------------------------------------------------
-%------------------------------------------------
-\begin{frame}{Singular Value Decomposition}
-\begin{block}{Theorem (Singular Value Decomposition)}
-Suppose $\mathbf{A} \in \mathbb{R}^{m \times n}$ has $\text{rank}(\mathbf{A}) = n$, with $m \geq n$. Then we can write \[
-\mathbf{A} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^T
-\]
-where the columns of $\mathbf{U} \in \mathbb{R}^{m \times m}$ and $\mathbf{V} \in \mathbb{R}^{n \times n}$, respectively, are orthonormal and $\mathbf{\Sigma} \in \mathbb{R}^{m \times n}$ is a diagonal matrix with entries $\sigma_i$ for $i = 1,...,n$, such that $\sigma_1 \geq \sigma_2 \geq \dots \geq \sigma_n \geq 0$. 
-\end{block}
-\begin{block}{Note}
-We call $\{ \sigma_i\}_{i=1}^n$ the singular values of $\mathbf{A}$. We also call the columns of $\mathbf{U}$ the left singular vectors of $\mathbf{A}$, which are the eigenvectors of $\mathbf{A} \mathbf{A}^T$, and similarly call the columns of $\mathbf{V}$ the right singular vectors of $\mathbf{A}$, which are the eigenvectors of $\mathbf{A}^T \mathbf{A}$.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Application of SVD}
-\begin{block}{Key Fact}
-The eigenvalues of $Cov(\mathbf{A})$ are precisely $\lambda_i = \frac{\sigma^2_i}{m-1}$.
-\end{block}
-\begin{block}{Key Idea}
-Using SVD of $\mathbf{A}$, we can obtain the maximum variance as the largest squared singular value of $\mathbf{A}$, i.e. $\sigma^2_{1}$. We call the first principal component or the direction of maximum variance as the corresponding column of $\mathbf{V}$, call this associated eigenvector $v_1$.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Partitioning}
-\begin{block}{Observation}
-Since $\mathbf{V}$ is an orthogonal matrix, then it follows that $\mathbf{A}\mathbf{V} = \mathbf{U} \mathbf{\Sigma}$.
-\end{block}
-\begin{block}{Proposition}
-With our goal being to reduce dimensions to $\mathbb{R}^k$, where $k$ is the number of principal components, we should partition $\mathbf{V}$ into \[
-\mathbf{V} = \left[  \mathbf{V}_k \ \ \mathbf{V}_\perp  \right]
-\]
-where $\mathbf{V}_k = [v_1  \dots v_k ] \in \mathbb{R}^{n \times k}$, and $v_1,...,v_k$ are the first $k$ principal directions.
-
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Projections}
-\begin{block}{Proposition}
-Define the projection map \[
-\pi_k : \mathbb{R}^n \to \mathbb{R}^k
-\]
-where for any $x \in \mathbb{R}^n$, $z_i = \pi_k(x) = \mathbf{V}_k^T x$. The vector $z_i$ contains that observation's first $k$ principal-component scores. Therefore our data matrix is constructed to be $\mathbf{Z}_k = \mathbf{A} \mathbf{V}_k \in \mathbb{R}^{m \times k}$.
-\end{block}
-\begin{block}{Observation}
-Given any $z_i \in \mathbf{Z}_k \subseteq \mathbb{R}^k$, we can find their approximation in original feature space by \[
-a^*_i = \mathbf{V}_k z_i = \mathbf{V}_k \mathbf{V}_k^T x
-\]
-which is the best rank-$k$ approximation to $\mathbf{A}$ in squared-error or Frobenius-norm terms.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Explained Variance}
+\begin{frame}{The covariance matrix}
 \begin{block}{Definition}
-Define the proportion of variance explained by component $j$ by \[
-PVE_j = \frac{\lambda_j}{\sum_{l=1}^n \lambda_l} = \frac{\sigma_j^2}{\sum_{l =1}^n \sigma_l^2}
-\]
+$S = \dfrac{1}{m-1}\,\mathbf A^{\mathsf T}\mathbf A \in \R^{n \times n}$: diagonal entries are the feature variances, off-diagonal entries the covariances.
 \end{block}
-\begin{block}{Definition}
-Define the cumulative explained variance through component $j$ by \[
-CVE_j = \frac{\sum_{l=1}^j \sigma_l^2}{\sum_{q=1}^n \sigma_q^2}
-\]
+\begin{block}{Fact: $S$ is positive semidefinite}
+For any $x \in \R^n$: \quad $x^{\mathsf T} S x = \dfrac{1}{m-1}\, x^{\mathsf T}\mathbf A^{\mathsf T}\mathbf A x = \dfrac{1}{m-1}\,\|\mathbf A x\|^2 \ \ge 0.$
 \end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Selecting k}
-\begin{block}{Reasoning}
-The methods of looking at explained variance can give thresholds for how much variance we wish to allow for in our dimensionality reduction. Graphically, you can plot $\lambda_i$ versus $i$ and look for an "elbow." We use a two-dimensional PCA lens because it balances information retention, manageable cover complexity, and visual interpretability. 
-\end{block}
-\begin{block}{Limitations}
-PCA provides a linear summary of these features. Nonlinear structure may remain, which motivates using Mapper to investigate the organization of the data beyond a purely linear model.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\subsection{Step 2: Building a Cover}
-\begin{frame}
-  \subsectionpage
+So $S$ has real, nonnegative eigenvalues and an orthonormal basis of eigenvectors. The variance of the data along a unit vector $v$ is $v^{\mathsf T} S v$, maximized by the top eigenvector.
 \end{frame}
 
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Step 2}
-\begin{block}{Building a Cover}
-The next objective is to build a cover over the image of the projection map, $\pi_k(\mathbf{A})$, with the collection $\{ U_i \}_{i \in I}$, where $I$ is a finite indexing set. The set $\{ U_i \}_{i \in I}$ is composed of overlapping cubes (products of intervals).
+\begin{frame}{Singular value decomposition}
+\begin{block}{Theorem (SVD, matrix version)}
+Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sigma \mathbf V^{\mathsf T}$, where $\mathbf U \in \R^{m \times r}$ and $\mathbf V \in \R^{n \times r}$ have orthonormal columns and $\boldsymbol\Sigma = \mathrm{diag}(\sigma_1 \ge \cdots \ge \sigma_r > 0)$.
+\src{axler2024ladr}
 \end{block}
-
-\begin{block}{Parameterization}
-In practice, values such as the number of cubes and percentage overlap between cubes are parameters given to the program. The amount of nodes and edges as well as the level of connectedness in the graph output is highly dependent on how these parameters are selected.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\subsection{Step 3: Clustering}
-\begin{frame}
-  \subsectionpage
+\begin{itemize}
+  \item The columns of $\mathbf V$ (right singular vectors) are eigenvectors of $\mathbf A^{\mathsf T}\mathbf A$, and the columns of $\mathbf U$ are eigenvectors of $\mathbf A\mathbf A^{\mathsf T}$, both for the nonzero eigenvalues $\sigma_i^2$. \hfill\parencite{jolliffecadima2016}
+  \item Hence the eigenvalues of $S$ are $\lambda_i = \sigma_i^2/(m-1)$, and the principal directions are the columns $v_i$ of $\mathbf V$. \hfill\parencite{jolliffecadima2016}
+  \item The largest variance is $\lambda_1 = \sigma_1^2/(m-1)$.
+\end{itemize}
 \end{frame}
 
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Step 3}
-\begin{block}{Clustering}
-For each open set $U_i$ in the cover $\{ U_i \}_{i \in I}$, we want to cluster the points in the preimage $\pi_k^{-1}(U_i)$ to form a set of clusters $C_{i_q}$. There various clustering algorithms that could be used, but Density-Based Spatial Clustering of Applications with Noise (DBSCAN) was ultimately selected due to its popularity across application of the Mapper algorithm.
+\begin{frame}{Projecting to $k$ dimensions}
+\begin{itemize}
+  \item Keep the first $k$ directions: $\mathbf V_k = [v_1 \cdots v_k] \in \R^{n \times k}$.
+  \item The lens is $f(x) = \mathbf V_k^{\mathsf T} x$; the score matrix is $\mathbf Z_k = \mathbf A \mathbf V_k = \mathbf U_k \boldsymbol\Sigma_k$.
+\end{itemize}
+\begin{block}{Best rank-$k$ approximation}
+The matrix $\mathbf A_k = \mathbf A\mathbf V_k\mathbf V_k^{\mathsf T} = \mathbf U_k\boldsymbol\Sigma_k\mathbf V_k^{\mathsf T}$ is the closest rank-$\le k$ matrix to $\mathbf A$:
+in the operator norm, with error $\sigma_{k+1}$ \parencite{axler2024ladr}, and in the least-squares sense \parencite{jolliffecadima2016}.
+\end{block}
+\begin{block}{Variance explained}
+$\mathrm{PVE}_j = \lambda_j / \sum_l \lambda_l = \sigma_j^2 / \sum_l \sigma_l^2$, \qquad $\mathrm{CVE}_k = \sum_{j \le k}\mathrm{PVE}_j$.
+\src{jolliffecadima2016}
 \end{block}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\subsubsection{Density-Based Spatial Clustering of Applications with Noise (DBSCAN)}
-\begin{frame}
-  \subsubsectionpage
+\begin{frame}{Why $k = 2$}
+\begin{itemize}
+  \item On our data, PC1 explains \alert{38.5\%} of the variance and PC2 \alert{21.0\%} (59.5\% together).
+  \item The cover lives in $\R^k$: with 10 intervals per axis, $k=2$ gives 100 cubes, while $k = 3$ would give 1{,}000, most nearly empty.
+  \item A 2-D lens can be drawn and read, which matters for interpreting the result.
+  \item PCA is a \alert{linear} projection, so curved structure can be flattened. That is acceptable here because clustering still happens in the full 9-dimensional space, and we re-run everything with three other lenses, including the nonlinear Isomap.
+\end{itemize}
 \end{frame}
 
-%------------------------------------------------
-
-
-%------------------------------------------------
-\begin{frame}{Density Reachable}
-\begin{block}{Definition}
-Let the minimum elements allowed in any $\varepsilon$-neighborhood be called $M$. An element $x \in X$ is directly density-reachable from an element $y \in X$ with respect to $\varepsilon$ if \begin{enumerate}
-    \item $x \in N_\varepsilon(y)$
-    \item $|N_\varepsilon(y)| \geq M$
-\end{enumerate}
-\end{block}
-\begin{block}{Definition}
-An element $x \in X$ is density-reachable from an element $y \in X$ with respect to $\varepsilon$ and $M$ if there exists a chain of elements $x_1,..,x_n$, $x = x_1$, $x_n = y$, such that for all $1 \leq i \leq n-1$, $p_{i+1}$ is directly density reachable from $p_i$.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Density Connectivity and Clusters}
-\begin{block}{Definition}
-An element $x \in X$ is density-connected to an element $y \in X$ with respect to $\varepsilon$ and $M$ if there exists a point $z \in X$ such that both $x$ and $y$ are density-reachable with respect to $\varepsilon$ and $M$.
-\end{block}
-
-\begin{block}{Definition}
-Let $X$ be a point cloud holding our data. A cluster $C$ with respect to $\varepsilon$ and $M$ is a nonempty subset of $X$ satisfying the following conditions \begin{enumerate}
-    \item For all $x,y \in X$, if $x \in C$ and $y$ is density-reachable with respect to $\varepsilon$ and $M$, then $y \in C$ (maximality)
-    \item For all $x,y \in C$, $x$ is density-connected to $y$ with respect to $\varepsilon$ and $M$.
-\end{enumerate}
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Noise and Uniqueness}
-\begin{block}{Definition}
-Let $C_1,...,C_k$ be the clusters of $X$ with respect to $\varepsilon_i$ and $M_i$, $i =1,...,k$. Then we define noise as the set of points in $X$ not belonging to any cluster, i.e. \[
-\text{Noise} = \{ x \in X : \forall \ i, x \notin C_i \}
-\]
-\end{block}
-
-\begin{block}{Lemma}
-Let $C$ be a cluster with respect to $\varepsilon$ and $M$ and let $x \in C$ with $|N_\varepsilon(x)| \geq M$. Then \[
-C = \{ y \in X : y \text{ is density reachable wrt $\varepsilon$ and $M$} \}
-\]
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{DBSCAN Algorithm}
-
-\begin{block}{DBSCAN$(\textit{SetOfPoints}, \varepsilon, M)$}
-\begin{algorithmic}[1]
-
-\State \textbf{// Initially all points are UNCLASSIFIED}
-\State $ClusterId \gets \textsc{NextId}(\textsc{NOISE})$
-
-\For{$i \gets 1$ \textbf{to} $|\textit{SetOfPoints}|$}
-    \State $Point \gets \textit{SetOfPoints}[i]$
-    \If{$Point.ClId = \textsc{UNCLASSIFIED}$}
-        \If{\Call{ExpandCluster}{$\textit{SetOfPoints}, Point, ClusterId, \varepsilon, M$}}
-            \State $ClusterId \gets \textsc{NextId}(ClusterId)$
-        \EndIf
-    \EndIf
-\EndFor
-
-\end{algorithmic}
-\end{block}
-
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\subsection{Step 4: Constructing the Mapper Topological Graph}
-\begin{frame}
-  \subsectionpage
-\end{frame}
-
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{Building the Graph}
-\begin{block}{Construction}
-Each cluster $C_{i_q}$ forms a node $N$. And for any $i \leq j \leq I$, if clusters $C_{i_q}$ and $C_{j_p}$ have a nonempty intersection, then an edge $E$ is drawn connecting the two nodes; otherwise, singleton nodes are formed. This procedure yields our topological graph $G = (N,E)$.
-\end{block}
-\end{frame}
-%------------------------------------------------
-
-%------------------------------------------------
-\subsection{KeplerMapper}
-\begin{frame}
-  \subsectionpage
-\end{frame}
-
-%------------------------------------------------
-
-%------------------------------------------------
-\begin{frame}{KeplerMapper}
-\begin{block}{KeplerMapper}
-\texttt{KeplerMapper} can be used for visualization of high-dimensional data and 3D point cloud data. \texttt{KeplerMapper} can make use of \texttt{Scikit-Learn} API compatible cluster and scaling algorithms. The package is a project found under the greater \texttt{scikit-tda} repository.
-\end{block}
-
+\subsection{Step 2: the cover}
+\begin{frame}{Step 2: building a cover}
+\begin{itemize}
+  \item Cover the image $f(P) \subseteq \R^k$ by overlapping hypercubes: each axis is cut into intervals that overlap their neighbors by a fixed percentage. \hfill\parencite{singh2007mapper,madukpe2026review}
+  \item Two parameters control the resolution: the \alert{number of intervals} and the \alert{percentage overlap}. \hfill\parencite{singh2007mapper}
+  \item The resulting graph depends on these choices, and tuning them on real data is not easy. \hfill\parencite{carrieremicheloudot2018}
+\end{itemize}
+\vspace{6pt}
 \centering
-\includegraphics[width=0.5\linewidth]{Pictures/keplermapper.png}
+\begin{tikzpicture}[scale=0.8]
+  \foreach \i in {0,...,3} { \foreach \j in {0,...,2} {
+     \draw[MiamiRed, opacity=0.7, fill=MiamiRed, fill opacity=0.06] (1.3*\i-0.15,1.1*\j-0.15) rectangle ++(1.6,1.4); } }
+  \node[right] at (5.6,1.6) {\small ours: $10 \times 10$ cubes, 30\% overlap};
+\end{tikzpicture}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}[fragile]{KeplerMapper Code Block}
-\begin{block}{Pseudo Code}
-\leavevmode
+\subsection{Step 3: clustering with DBSCAN}
+\begin{frame}{Step 3: clustering each preimage}
+\begin{itemize}
+  \item For each cube $U_i$, cluster the points of $f^{-1}(U_i)$ in the full space $\R^n$. Clusters stand in for path components. \hfill\parencite{singh2007mapper}
+  \item We use \alert{DBSCAN}, the second most common choice in reviewed Mapper applications (after hierarchical clustering). \hfill\parencite{madukpe2026review}
+  \item Why DBSCAN: it needs no preset number of clusters, finds clusters of any shape, and labels isolated points as \alert{noise}. \hfill\parencite{ester1996dbscan}
+\end{itemize}
+\vspace{6pt}
+\textbf{Setting for the next slides:} a point cloud $P$ with distance $d$, a radius $\varepsilon > 0$, and a count $M \in \N$ (called Eps and MinPts in the original paper).
+\end{frame}
 
-\begin{lstlisting}[language=Python]
-import kmapper as km
-mapper = km.KeplerMapper()
-lens = mapper.fit_transform(
-    X,
-    projection=PCA(n_components=2)
-)
-graph = mapper.map(
-    lens,
-    X,
-    cover=km.Cover(
-        n_cubes=10,
-        perc_overlap=0.3
-    ),
-    clusterer=DBSCAN()
-)
-\end{lstlisting}
+\begin{frame}{Density reachability}
+\begin{block}{Definition 1 ($\varepsilon$-neighborhood)}
+$N_\varepsilon(p) = \{\, q \in P : d(p,q) \le \varepsilon \,\}$. \quad A point $p$ is a \alert{core point} if $|N_\varepsilon(p)| \ge M$.
+\src{ester1996dbscan}
+\end{block}
+\begin{block}{Definition 2 (directly density-reachable)}
+$p$ is directly density-reachable from $q$ if $p \in N_\varepsilon(q)$ and $q$ is a core point.
+\src{ester1996dbscan}
+\end{block}
+\begin{block}{Definition 3 (density-reachable)}
+$p$ is density-reachable from $q$ if there is a chain $q = p_1, p_2, \dots, p_k = p$ with each $p_{i+1}$ directly density-reachable from $p_i$.
+\src{ester1996dbscan}
 \end{block}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
+\begin{frame}{Clusters and noise}
+\begin{block}{Definition 4 (density-connected)}
+$p$ and $q$ are density-connected if both are density-reachable from some common point $o$.
+\src{ester1996dbscan}
+\end{block}
+\begin{block}{Definition 5 (cluster)}
+A \alert{cluster} is a nonempty $C \subseteq P$ such that
+(i) if $p \in C$ and $q$ is density-reachable from $p$, then $q \in C$ (\emph{maximality}), and
+(ii) any two points of $C$ are density-connected (\emph{connectivity}).
+\src{ester1996dbscan}
+\end{block}
+\begin{block}{Definition 6 (noise)}
+\alert{Noise} is the set of points of $P$ in no cluster. It depends on the chosen $(\varepsilon, M)$.
+\src{ester1996dbscan}
+\end{block}
+\end{frame}
+
+\begin{frame}{Why the algorithm is correct}
+\begin{block}{Lemma}
+If $C$ is a cluster and $p \in C$ is a core point, then $C = \{\, o \in P : o \text{ is density-reachable from } p \,\}$.
+\src{ester1996dbscan}
+\end{block}
+\begin{itemize}
+  \item So a cluster is determined by \emph{any one} of its core points: start anywhere inside and collect everything reachable.
+  \item The paper's Definition 6 allows different $(\varepsilon_i, M_i)$ for each cluster; the algorithm, and our analysis, use \alert{one global pair}. \hfill\parencite{ester1996dbscan}
+  \item Ours: $\varepsilon = 1.0$ (in standardized units) and $M = 4$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The DBSCAN algorithm}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{algorithmic}[1]
+\small
+\State all points start \textsc{unclassified}
+\For{each point $p$}
+  \If{$p$ is \textsc{unclassified}}
+    \If{\Call{ExpandCluster}{$p$}}
+      \State start a new cluster id
+    \EndIf
+  \EndIf
+\EndFor
+\end{algorithmic}
+\vspace{2pt}
+{\scriptsize\textcolor{gray}{Main loop adapted from \textcite[p.~229]{ester1996dbscan}.}}
+\end{column}
+\begin{column}{0.5\textwidth}
+\textbf{ExpandCluster($p$):}
+\begin{itemize}\small
+  \item If $p$ is not a core point, mark it noise for now and return false.
+  \item Otherwise give every point of $N_\varepsilon(p)$ the current cluster id, and repeat from each new core point found.
+  \item By the lemma, this collects exactly the cluster of $p$.
+  \item A border point first marked noise is relabeled if a later cluster reaches it.
+\end{itemize}
+\end{column}
+\end{columns}
+\note[item]{Walk through a 2-D example: one dense blob, one sparse point. Show a core point, a border point, and the noise point.}
+\end{frame}
+
+\subsection{Step 4: the graph}
+\begin{frame}{Step 4: building the graph}
+\begin{block}{Construction}
+Each cluster is a vertex. Two clusters are joined by an edge whenever they share at least one point, which can happen because neighboring cubes overlap.
+\src{singh2007mapper}
+\end{block}
+\begin{itemize}
+  \item The clusters form a cover of (the non-noise part of) $P$, and the graph is the \alert{1-skeleton of its nerve}.
+  \item Software outputs this graph only. Three clusters with a common point would form a triangle in the nerve, but the graph keeps just the three edges.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{KeplerMapper}
+\begin{itemize}
+  \item Python implementation of Mapper; works with scikit-learn-compatible clustering and scaling algorithms. \hfill\parencite{vanveen2019keplermapper,pedregosa2011sklearn}
+  \item Developed under the scikit-tda project. \hfill\parencite{keplermapper_repo}
+\end{itemize}
+\begin{lstlisting}
+import kmapper as km
+from sklearn.cluster import DBSCAN
+from sklearn.decomposition import PCA
+
+mapper = km.KeplerMapper()
+lens = mapper.fit_transform(X, projection=PCA(n_components=2))
+graph = mapper.map(lens, X,
+                   cover=km.Cover(n_cubes=10, perc_overlap=0.3),
+                   clusterer=DBSCAN(eps=1.0, min_samples=4))
+\end{lstlisting}
+\end{frame}
+
+%================================================================
 \section{MLB Pitch-Level Data}
-\begin{frame}
-  \sectionpage
+%================================================================
+\begin{frame}{A short baseball primer}
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\textbf{What Statcast measures} \parencite{savantcsvdocs}
+\begin{itemize}\small
+  \item \alert{velocity}: mph out of the hand
+  \item \alert{movement} ($pfx_x$, $pfx_z$): horizontal and vertical movement in feet, catcher's view
+  \item \alert{spin rate}: rpm \parencite{mlbglossary_spinrate}
+  \item \alert{spin axis}: $0^\circ$--$360^\circ$; $180^\circ$ is pure backspin, $0^\circ$ pure topspin
+  \item \alert{release point} and \alert{extension} (feet)
+\end{itemize}
+\end{column}
+\begin{column}{0.45\textwidth}
+\textbf{Pitch types} \parencite{mlbglossary_pitchtypes}
+\begin{itemize}\small
+  \item fastballs: four-seam (FF), sinker (SI), cutter (FC)
+  \item breaking balls: slider (SL), sweeper (ST), curveball (CU), \ldots
+  \item offspeed: changeup (CH), splitter (FS)
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{6pt}
+{\small Data pulled with \texttt{pybaseball} 2.2.7 \parencite{ledoux_pybaseball}. Groupings into families are ours.}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}
-
+\begin{frame}{From pitches to pitch shapes}
+\begin{itemize}
+  \item 2025 regular and postseason: \alert{721{,}799 pitches}.
+  \item Average each pitcher's pitches of each type: \alert{3{,}943 pitch shapes} (archetypes), one per (pitcher, pitch type). This removes pitch-to-pitch noise and keeps each pitcher's stable profile.
+  \item 9 features: velocity, $pfx_x$, $pfx_z$, spin rate, spin axis as $(\cos, \sin)$, extension, release $x$ and $z$.
+  \item Left-handers are mirrored into the right-handed frame; the spin axis is an angle, so it is encoded as a point on the circle, not a number in $[0, 360)$.
+  \item Features are standardized; distances are Euclidean in $\R^9$.
+\end{itemize}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}
-
+\begin{frame}{The lens on real data}
+\centering
+\includegraphics[width=0.6\textwidth]{figures/lens_scatter.pdf}
+\par\small PC1 separates fastballs from breaking balls; PC2 is mostly delivery (extension, velocity, release height), and the very slow pitches sit at its bottom.
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}
-
+\begin{frame}{The Mapper graph}
+\centering
+\includegraphics[width=0.64\textwidth]{figures/mapper_graph.pdf}
+\par\small 66 clusters, 143 edges, 9 components. One giant component runs from curveballs through sliders and cutters to fastballs and changeups, ordered by velocity; very slow pitches (eephus, position players pitching) sit apart.
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}
-
+\begin{frame}{Is it real? Stability across choices}
+\begin{columns}[T]
+\begin{column}{0.56\textwidth}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+feature (share of fits) & grid + subsamples & 4 lenses \\
+\midrule
+CU$\to$FF ordering & 100\% & 100\% \\
+slow pitches isolated & 97--100\% & 94--100\% \\
+\bottomrule
+\end{tabular}
+\vspace{6pt}
+\begin{itemize}\small
+  \item 27-point grid over cubes, overlap, $\varepsilon$; 30 refits on 80\% of pitchers.
+  \item A ``slider/cutter bridge'' looked interesting but changed with the lens: dropped.
+\end{itemize}
+\end{column}
+\begin{column}{0.44\textwidth}
+\begin{block}{But: null models}
+Data with the same covariance (Gaussian), or with features shuffled within pitch type, \alert{reproduce both features}.
+\end{block}
+\small So these features describe \emph{where pitch types sit}, not hidden topology. Grid tuning is the brute-force approach; \textcite{carrieremicheloudot2018} give a principled alternative. Our null testing follows the spirit of hypothesis testing for persistent homology \parencite{blumberg2014,robinsonturner2017}.
+\end{column}
+\end{columns}
 \end{frame}
-%------------------------------------------------
 
-%------------------------------------------------
-\begin{frame}
-
+\begin{frame}{The graph has 86 loops. Are they real?}
+\centering
+\includegraphics[width=0.58\textwidth]{figures/nerve_b1.pdf}
+\par\small
+Graph: $b_1 = E - V + C = 143 - 66 + 9 = 86$. Adding the 113 triangles of the full nerve: $b_1 = 1$. Across 27 parameter choices, graph $b_1$ ranges 33--147; nerve $b_1$ stays 0--4, in the same range as the null models.
 \end{frame}
-%------------------------------------------------
+
+\begin{frame}{Why: nerves can only kill loops}
+\begin{block}{Theorem (Dey--M\'emoli--Wang)}
+If $\mathcal U$ is a path-connected cover of $X$, the nerve map induces a surjection $H_1(X) \to H_1(N(\mathcal U))$ ($\Z_2$ coefficients, $X$ compact).
+Mapper's pullback cover is path-connected by construction, so
+\[ b_1(\text{Mapper}) \le b_1(X). \]
+\src{deymemoliwang2017}
+\end{block}
+\begin{itemize}\small
+  \item Persistent homology of the 3{,}943 pitch shapes shows \alert{no persistent loops}, just like a Gaussian null (next slide). So the underlying space has $b_1 \approx 0$, and any real Mapper of it must too.
+  \item The 86 graph loops come from reading only the 1-skeleton: triangles fill them.
+  \item Honest scope: the theorem is about a space; we have a finite sample. Theorem plus consistent evidence, not a proof about the data.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Persistent homology of pitch shapes}
+\centering
+\includegraphics[width=0.66\textwidth]{figures/persistence.pdf}
+\par\small
+1{,}000 random pitch shapes vs.\ a same-covariance Gaussian, computed with Ripser \parencite{bauer2021ripser,tralie2018ripserpy}. No $H_1$ point is far from the diagonal in either. Real data has no more long-lived gaps ($H_0$) than the Gaussian, but is more concentrated.
+\end{frame}
+
+\begin{frame}{How many dimensions does pitch shape really use?}
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\includegraphics[width=\textwidth]{figures/intrinsic_dim.pdf}
+\end{column}
+\begin{column}{0.45\textwidth}
+\small
+\begin{itemize}
+  \item Estimators use nearest-neighbor distances: TwoNN \parencite{facco2017twonn} and maximum likelihood \parencite{levinabickel2004}, averaging inverses \parencite{mackay2005comments}.
+  \item Real: \alert{6.26} of 9 (TwoNN 6.76). Fair null: 7.07 (TwoNN 7.52).
+  \item Within each pitch type, real data is 0.4--1.2 dimensions lower.
+  \item The fair null keeps $(\cos, \sin)$ of the spin axis together, since they encode one angle.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Labels cut a continuum}
+\begin{itemize}
+  \item Pairs of labels that share or neighbor Mapper nodes most often: FF/SI, CH/FF, FC/FF, CU/ST, SL/ST.
+  \item About \alert{55\%} of individual 2025 pitches fall in two or more overlapping Mapper nodes.
+  \item Statcast itself relabeled some of our pitch shapes between our fit and a later re-pull (SL$\leftrightarrow$ST, SI$\leftrightarrow$FF, ST/FC).
+  \item MLB split the sweeper off from the slider in 2023 because of its distinct shape. \hfill\parencite{mlbglossary_sweeper}
+\end{itemize}
+\vspace{6pt}
+\begin{block}{And for outcomes}
+Statcast's labels explain \emph{more} outcome variance than our clusters (e.g.\ whiff rate: $\omega^2 = 2.8\%$ for labels vs.\ 1.5--1.9\% for clusters). Mapper's value here is describing shape, not predicting results.
+\end{block}
+\end{frame}
+
+\begin{frame}{Conclusions}
+\begin{block}{About pitches}
+Pitch-shape space is a \alert{connected continuum}, about 6-dimensional inside 9, with no loops and no hidden gaps beyond a Gaussian, plus a tail of very slow pitches. Pitch-type labels are cuts through it.
+\end{block}
+\begin{block}{About the method}
+\begin{itemize}
+  \item Mapper gives a readable picture; \alert{null models, homology, and dimension estimates certify it}.
+  \item Read graph loops through the full nerve: the graph is only its 1-skeleton, and by the Dey--M\'emoli--Wang theorem a Mapper cannot have more loops than the space.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Future work}
+\begin{itemize}
+  \item \textbf{A pitch-design map.} Neighboring Mapper nodes are realistic, nearby pitch shapes; a pitch-quality model such as Stuff+, which looks only at a pitch's physical characteristics, could score them. \hfill\parencite{mcgrattan2023stuffplus}
+  \item \textbf{Arm slot.} Model movement \emph{relative to} a pitcher's arm angle instead of raw movement. \hfill\parencite{savantcsvdocs}
+  \item \textbf{Replication.} Repeat on other seasons, and require a minimum number of pitches per shape.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+\printbibliography[heading=none]
+\end{frame}
+
+%================================================================
+\appendix
+\section*{Backup}
+%================================================================
+\begin{frame}{Backup: how reliable is a cluster label?}
+\begin{itemize}
+  \item Run each pitch shape back through the classifier: does it land in its own cluster?
+  \item Bigger, more crowded clusters are less self-consistent: Spearman $\rho = -0.78$ between cluster size and this round-trip accuracy (66 clusters).
+  \item Graph degree adds little beyond size (partial $\rho$ between $-0.21$ and $-0.35$, depending on two tiny clusters).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Backup: thin pitch shapes}
+\small
+\begin{tabular}{@{}rrrrcc@{}}
+\toprule
+min pitches & shapes & slow & components & slow isolated & CU$\to$FF $\rho$ \\
+\midrule
+1 (as fitted) & 3{,}940 & 131 & 9 & 97\% & 1.00 \\
+10 & 3{,}388 & 63 & 5 & 83\% & 1.00 \\
+20 & 3{,}073 & 29 & 8 & none in a node & 0.98 \\
+\bottomrule
+\end{tabular}
+\vspace{6pt}
+\begin{itemize}\small
+  \item The ordering is unaffected. Slow pitches stay off the continuum at every threshold; at $\ge 20$ pitches there are too few to form their own clusters.
+\end{itemize}
+\end{frame}
 
 \end{document}
