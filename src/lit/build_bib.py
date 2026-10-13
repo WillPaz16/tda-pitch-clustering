@@ -198,6 +198,8 @@ def main():
     for r in rows:
         kind, f = entry(r["bib_key"], r)
         f = {**f, **OVERRIDES.get(r["bib_key"], {})}
+        # text fields reach LaTeX via BibTeX: escape _ % # (verbatim fields stay raw)
+        f = {k: v if k in ("url", "doi", "eprint", "isbn") else re.sub(r"(?<!\\)([_%#])", r"\\\1", v) for k, v in f.items()}
         body = ",\n".join("  %s = {%s}" % (k, v) for k, v in f.items() if v)
         out.append("@%s{%s,\n%s\n}\n" % (kind, r["bib_key"], body))
     (LIT / "references.bib").write_text("\n".join(out))

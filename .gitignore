@@ -10,3 +10,19 @@ graphify-out/
 # Source PDFs stay local: many are publisher-copyrighted and this repo is
 # public. Citations live in docs/lit_review/ instead.
 Lit Review/
+
+# LaTeX build products (deck is built in place so BibTeX finds ../lit_review/references.bib)
+docs/presentation/*.aux
+docs/presentation/*.bbl
+docs/presentation/*.blg
+docs/presentation/*-blx.bib
+docs/presentation/*.fdb_latexmk
+docs/presentation/*.fls
+docs/presentation/*.log
+docs/presentation/*.nav
+docs/presentation/*.out
+docs/presentation/*.run.xml
+docs/presentation/*.snm
+docs/presentation/*.toc
+docs/presentation/*.vrb
+docs/presentation/*.pdf

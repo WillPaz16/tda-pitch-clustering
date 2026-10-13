@@ -105,7 +105,8 @@ def main():
                 fails.append("%s: bib_key %s not in references.bib" % (r["claim_id"], key))
 
     # 3. deck citations resolve
-    cites = {k.strip() for grp in re.findall(r"\\cite\w*\{([^}]*)\}", DECK.read_text()) for k in grp.split(",")}
+    cites = {k.strip() for grp in re.findall(r"\\(?:\w*cite\w*|src)(?:\[[^\]]*\])*\{([^}]*)\}", DECK.read_text()) for k in grp.split(",")}
+    cites = {k for k in cites if not k.startswith("#")}   # skip macro parameters (\\src{#1})
     fails += ["deck cites unknown key %s" % k for k in sorted(cites - set(bib))]
 
     print("bib entries: %d | ledger locators keyword-checked: %d | deck \\cite keys: %d" % (len(bib), n_checked, len(cites)))
