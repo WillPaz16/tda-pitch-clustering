@@ -115,25 +115,25 @@ An \alert{abstract simplicial complex} on a vertex set $V$ is a collection $S$ o
 
 \begin{frame}{Graphs are simplicial complexes}
 \begin{block}{Definition ($k$-skeleton)}
-The \alert{$k$-skeleton} $K^{(k)}$ of a simplicial complex $K$ is the subcomplex of all simplices of dimension $\le k$.
-A finite graph $G = (V, E)$ \emph{is} a simplicial complex of dimension $\le 1$: vertices are 0-simplices, edges are 1-simplices, and its realization $|G|$ is a \alert{topological graph}.
+The \alert{$k$-skeleton} $K^{(k)}$ of a simplicial complex $K$ is the subcomplex of all simplices of dimension $\le k$; the 0-skeleton is the vertex set.
+\src{edelsbrunnerharerpatel2008}
 \end{block}
-\centering
-\begin{tikzpicture}[scale=0.95, v/.style={circle, fill=black, inner sep=1.4pt}, lab/.style={font=\small}]
+By the abstract definition, a finite graph $G = (V, E)$ \emph{is} a simplicial complex of dimension $\le 1$ (vertices = 0-simplices, edges = 1-simplices); its realization $|G|$ is a \alert{topological graph}.\par
+{\centering
+\begin{tikzpicture}[scale=0.8, v/.style={circle, fill=black, inner sep=1.4pt}, lab/.style={font=\small}]
   \draw[thick] (0,0) node[v]{} node[lab,below left]{$a$} -- (1.6,0) node[v]{} node[lab,below right]{$b$} -- (0.8,1.3) node[v]{} node[lab,above]{$c$} -- cycle;
   \draw[thick] (0.8,1.3) -- (2.4,1.3) node[v]{} node[lab,right]{$d$};
-  \node[align=center, font=\small] at (1.2,-0.9) {$G$: $V = \{a,b,c,d\}$\\$E = \{ab, bc, ca, cd\}$};
-  \begin{scope}[xshift=5.6cm]
+  \node[align=center, font=\small] at (1.2,-1.15) {$G$: $V = \{a,b,c,d\}$, $E = \{ab, bc, ca, cd\}$};
+  \begin{scope}[xshift=8.2cm]
   \fill[MiamiRed!25] (0,0) -- (1.6,0) -- (0.8,1.3) -- cycle;
   \draw[thick] (0,0) node[v]{} node[lab,below left]{$a$} -- (1.6,0) node[v]{} node[lab,below right]{$b$} -- (0.8,1.3) node[v]{} node[lab,above]{$c$} -- cycle;
   \draw[thick] (0.8,1.3) -- (2.4,1.3) node[v]{} node[lab,right]{$d$};
-  \node[align=center, font=\small] at (1.2,-0.9) {$K = G \cup \{\{a,b,c\}\}$\\$K^{(1)} = G$};
+  \node[align=center, font=\small] at (1.2,-1.15) {$K = G \cup \{\{a,b,c\}\}$, \ $K^{(1)} = G$};
   \end{scope}
-\end{tikzpicture}
-\vspace{2pt}
+\end{tikzpicture}\par}
 \begin{itemize}\small
-  \item As abstract complexes: $G = \{\{a\},\{b\},\{c\},\{d\},\{a,b\},\{b,c\},\{a,c\},\{c,d\}\}$, and $K$ adds the triangle $\{a,b,c\}$.
-  \item $G$ has one loop ($abca$); in $K$ the triangle fills it. A graph can show loops its complex does not have.
+  \item As abstract complexes: $G = \{\{a\},\{b\},\{c\},\{d\},\{a,b\},\{b,c\},\{a,c\},\{c,d\}\}$; $K$ adds $\{a,b,c\}$.
+  \item $G$ has a loop ($abca$) that the triangle fills in $K$: a graph can show loops its complex lacks.
 \end{itemize}
 \end{frame}
 
@@ -173,7 +173,7 @@ Spaces $X \simeq Y$ are \alert{homotopy equivalent} if each can be continuously 
 \end{block}
 \begin{block}{Theorem (Nerve Theorem, closed convex version; cited, not proved here)}
 If $X \subseteq \R^d$ is covered by finitely many closed convex sets $\mathcal C = \{C_1,\dots,C_n\}$, then $X \simeq |N(\mathcal C)|$.
-\src{bauerkerberrollrolle2023,borsuk1948}
+\par\vspace{2pt}\hfill{\scriptsize\textcolor{gray}{\parencite[Thm.~3.9]{bauerkerberrollrolle2023}; an early closed-cover version: \parencite[Cor.~3]{borsuk1948}}}
 \end{block}
 \begin{itemize}\small
   \item Why it works: intersections of convex sets are convex, hence empty or contractible.
@@ -540,23 +540,24 @@ Betti numbers, homology & are the graph's features real? (nerve $b_1$, persisten
 \small
 \begin{tabular}{@{}lcc@{}}
 \toprule
-feature (share of fits) & grid + subsamples & 4 lenses \\
+feature (share of fits) & PCA lens & 4 lenses \\
 \midrule
 CU$\to$FF ordering & 100\% & 100\% \\
 slow pitches isolated & 97--100\% & 94--100\% \\
 \bottomrule
 \end{tabular}
-\vspace{6pt}
+\vspace{3pt}
 \begin{itemize}\small
   \item 27-point grid over cubes, overlap, $\varepsilon$; 30 refits on 80\% of pitchers.
   \item A ``slider/cutter bridge'' looked interesting but changed with the lens: dropped.
 \end{itemize}
+{\scriptsize Ordering: Spearman $\rho \ge 0.7$ between node velocity and position on the CU$\to$FF path. Slow isolated: most $<70$ mph shapes lie off the giant component (fits where such shapes are in some node).}
 \end{column}
 \begin{column}{0.44\textwidth}
 \begin{block}{But: null models}
-Data with the same covariance (Gaussian), or with features shuffled within pitch type, \alert{reproduce both features}.
+Data with the same covariance (Gaussian), or with features shuffled within pitch type, \alert{reproduce the ordering} in every fit, and slow-pitch isolation in 50--78\% of fits.
 \end{block}
-\small So these features describe \emph{where pitch types sit}, not hidden topology. Grid tuning is the brute-force approach; \textcite{carrieremicheloudot2018} give a principled alternative. Our null testing follows the spirit of hypothesis testing for persistent homology \parencite{blumberg2014,robinsonturner2017}.
+\small So the ordering describes \emph{where pitch types sit}, not hidden topology; slow-pitch isolation is only somewhat stronger than in the nulls. A principled alternative to grid tuning: \textcite{carrieremicheloudot2018}. Null testing follows hypothesis testing for persistent homology \parencite{blumberg2014,robinsonturner2017}.
 \end{column}
 \end{columns}
 \end{frame}
@@ -586,10 +587,10 @@ Mapper's pullback cover is path-connected by construction, so
 
 \begin{frame}{Labels cut a continuum}
 \begin{itemize}
-  \item Pairs of labels that share or neighbor Mapper nodes most often: FF/SI, CH/FF, FC/FF, CU/ST, SL/ST.
+  \item One pitcher\'s two labels most often share or neighbor Mapper nodes for FF/SI, CH/FF, CH/SI, FC/FF, FC/SI (raw counts, which also reflect how often pitchers throw both).
   \item About \alert{55\%} of individual 2025 pitches fall in two or more overlapping Mapper nodes.
   \item Statcast itself relabeled some of our pitch shapes between our fit and a later re-pull (SL$\leftrightarrow$ST, SI$\leftrightarrow$FF, ST/FC).
-  \item MLB split the sweeper off from the slider in 2023 because of its distinct shape. \hfill\parencite{mlbglossary_sweeper}
+  \item Statcast added the sweeper as its own pitch type in 2023 because of its distinct shape and movement. \hfill\parencite{mlbglossary_sweeper}
 \end{itemize}
 \vspace{6pt}
 \begin{block}{And for outcomes}
@@ -635,7 +636,7 @@ Pitch-shape space is a \alert{connected continuum} (about 6 of 9 dimensions; bac
 
 \begin{frame}{Future work}
 \begin{itemize}
-  \item \textbf{A pitch-design map.} We illustrated one neighborhood. Next: a systematic local cover around every pitch, scored by a Stuff+-style model and validated against outcomes over several seasons. \hfill\parencite{mcgrattan2023stuffplus}
+  \item \textbf{A pitch-design map.} We illustrated one neighborhood. Next: a systematic local cover around every pitch, scored by a Stuff+-style model \parencite{mcgrattan2023stuffplus} and validated against outcomes over several seasons.
   \item \textbf{Arm slot.} Model movement \emph{relative to} a pitcher's arm angle instead of raw movement. \hfill\parencite{savantcsvdocs}
   \item \textbf{Replication.} Repeat on other seasons, and require a minimum number of pitches per shape.
 \end{itemize}
@@ -653,7 +654,7 @@ Pitch-shape space is a \alert{connected continuum} (about 6 of 9 dimensions; bac
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
 \begin{block}{Vietoris--Rips complex}
-For a finite point set $P$ and scale $t$: $\mathrm{Rips}_t(P) = \{\, \emptyset \ne S \subseteq P : \diam S \le t \,\}$.
+For a finite metric space $(P, d)$ and scale $t \in \R$: $\mathrm{Rips}_t(P) = \{\, \emptyset \ne S \subseteq P : \diam S \le t \,\}$.
 \src{bauer2021ripser}
 \end{block}
 \begin{itemize}\small
