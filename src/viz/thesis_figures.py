@@ -10,6 +10,8 @@ slide quotes is printed here so the deck can be checked against it.
   intrinsic_dim    MLE intrinsic dimension: real vs spin-pair shuffle null
   persistence      H1 persistence diagrams: real archetypes vs Gaussian null
   reeb_torus       textbook example: height function on a torus + Reeb graph
+  pitch_design     one four-seamer's design neighborhood: shape vs model score,
+                   and model score vs actual 2025 SwStr% (illustrative)
 
 Colors follow the dataviz reference palette: 3 categorical slots (validated
 all-pairs, light mode) with direct labels, and a one-hue blue sequential ramp.
@@ -191,6 +193,33 @@ def reeb_torus():
     save(fig, "reeb_torus")
 
 
+def pitch_design():
+    d = pd.read_csv(ROOT / "data" / "pitch_design_example.csv")
+    me = d[d.index == 0].iloc[0]; nb = d.iloc[1:]
+    top = nb[nb.score >= nb.score.quantile(2 / 3)]
+    shift = top[["HB_in", "IVB_in", "mph", "axis_deg"]].median() - me[["HB_in", "IVB_in", "mph", "axis_deg"]].astype(float)
+    rho = d[["score", "swstr"]].corr(method="spearman").iloc[0, 1]
+    print("pitch_design: %s %s, n=%d, score %.1f, SwStr %.3f; %d neighbors; top third minus self: %s; Spearman(score, SwStr) %.2f"
+          % (me["name"], me.pitch_type, me.n, me.score, me.swstr, len(nb), shift.round(1).to_dict(), rho))
+    first = lambda s: s.split(", ")[1].split()[0][0] + ". " + s.split(", ")[0]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(6.8, 3.0), gridspec_kw={"wspace": 0.62})
+    sc = a1.scatter(nb.HB_in, nb.IVB_in, c=nb.score, cmap=BLUES, s=46, edgecolors=SURF, lw=1, zorder=3)
+    a1.scatter(me.HB_in, me.IVB_in, marker="*", s=200, c=SERIES[1], edgecolors=SURF, lw=1, zorder=4)
+    a1.annotate("", (me.HB_in + shift.HB_in, me.IVB_in + shift.IVB_in), (me.HB_in, me.IVB_in),
+                arrowprops=dict(arrowstyle="->", color=INK, lw=1.2), zorder=5)
+    a1.annotate(first(me["name"]), (me.HB_in, me.IVB_in), xytext=(-6, -14), textcoords="offset points", fontsize=8, color=INK, ha="right")
+    a1.set_xlabel("horizontal break (in, + = arm side)"); a1.set_ylabel("induced vertical break (in)")
+    cb = fig.colorbar(sc, ax=a1, fraction=0.05, pad=0.02); cb.set_label("model score", fontsize=8); cb.ax.tick_params(labelsize=7)
+    a1.grid(color=GRID, lw=0.6); a1.set_axisbelow(True)
+    se = np.sqrt(d.swstr * (1 - d.swstr) / d.n) * 100
+    a2.errorbar(nb.score, nb.swstr * 100, yerr=1.96 * se[1:], fmt="o", ms=5, color=SERIES[0], ecolor=GRID, elinewidth=1.5, zorder=3)
+    a2.errorbar([me.score], [me.swstr * 100], yerr=[1.96 * se[0]], fmt="*", ms=12, color=SERIES[1], ecolor=GRID, elinewidth=1.5, zorder=4)
+    a2.set_xlabel("model score (pooled, 100 = avg)"); a2.set_ylabel("actual 2025 SwStr% (95% CI)")
+    a2.text(0.03, 0.97, "Spearman $\\rho$ = %.2f" % rho, transform=a2.transAxes, fontsize=8, color=INK2, va="top")
+    a2.grid(color=GRID, lw=0.6); a2.set_axisbelow(True)
+    save(fig, "pitch_design")
+
+
 def main():
     mc = load_tda_model(ROOT / "models" / "tda_mapper_model.pkl")
     orig, cols = mc["original_data"], list(mc["stuff_columns"])
@@ -202,6 +231,7 @@ def main():
     intrinsic_dim()
     persistence(orig, cols)
     reeb_torus()
+    pitch_design()
 
 
 if __name__ == "__main__":

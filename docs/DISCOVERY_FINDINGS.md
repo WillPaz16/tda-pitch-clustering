@@ -632,3 +632,79 @@ Checked while building the deck's "why it matters" example.
 - Kept as a single illustration only: Brady Singer (2025) slider 4.9 in vs
   "sweeper" 9.0 in horizontal break (809 / 316 pitches), between MLB's
   stated averages of about 6 and 15 in.
+
+## Pitch-design neighborhoods: an illustration (2026-10-14)
+
+Script: `src/tda/pitch_design_neighborhood.py` (2025 season, 721,799
+pitches). Outputs: `data/pitch_design_neighborhoods.csv`,
+`data/archetype_model_scores_2025.csv`, `data/pitch_design_example.csv`.
+Figure: `figures/pitch_design.pdf`.
+
+**Method.**
+- **Neighborhood of a pitch:** archetypes that share a Mapper node with it
+  or sit in an adjacent node, and that come from other pitchers.
+- **Realism filter:** same delivery (release side, height and extension
+  within 0.5 ft), velocity within 1.5 mph, raw spin within 200 rpm, and
+  each movement component within 4 in.
+- **Sample sizes:** target n ≥ 300, each neighbor n ≥ 150, and at least 8
+  neighbors.
+- **Scoring:** each neighbor is scored with the leak-free CatBoost
+  xwOBA/miss/chase models, which are out-of-sample for 2025. The composite
+  is pooled across pitch types, equal weights, 100 = average. Actual 2025
+  SwStr% is the outcome check.
+- The tolerances are our choice, not an industry standard.
+
+**What went wrong first, and why the filter exists.**
+- With node + adjacent only, a soft-tosser's four-seamer had hard
+  changeups and splitters as its "better" neighbors: the same velocity,
+  but 10–15 in less ride. Nodes at this cover resolution are coarse.
+- With velocity but no spin band, the better neighbors were consistently
+  about 1 mph and about 300 rpm higher. Velocity and raw spin are largely
+  arm talent, not design.
+
+**Mapper does not do the filtering (verified).** The physical box alone
+recovers the same neighbors. The Mapper neighborhood keeps 99.2% of
+box-neighbors on average (minimum 80%), and 100% for the candidates
+below. The honest role of the topology is the licence: the space is a
+connected continuum with no holes, so a pitch's local neighborhood is
+populated and comparisons inside it are interpolation, not extrapolation.
+The neighborhood itself is a single small cover set around one point, at
+a finer resolution than the Mapper cover. Do not claim that the Mapper
+graph finds the comparison set.
+
+**Choice of example (robust over a 27-setting tolerance sweep:** velocity
+1/1.5/2 mph × spin 150/200/300 rpm × movement 3/4/5 in).
+- **Nathan Eovaldi's four-seamer** (n = 406):
+  - It qualifies at 24 settings, passes the clarity filter at 21, and is
+    the lowest-scoring pitch in its neighborhood at the median setting.
+  - Default setting:
+    - Model score 78.9. Actual SwStr% 4.9% (95% CI 2.8–7.0), the lowest
+      among its 10 neighbors (6–13%).
+    - Spearman(score, SwStr%) is 0.63 within the neighborhood (n = 11,
+      so weak evidence alone).
+    - The better third of neighbors sits at about +1.7 in IVB and −0.8 in
+      horizontal break, +0.5 mph. Across settings the median is +2.0 in
+      IVB, with a range of +1.5 to +3.2.
+  - Caveat visible in the figure: the single best neighbor (K. Harrison)
+    has *less* ride but releases about 5 in lower. "More ride" describes
+    the typical better neighbor, not every one.
+- **Alternatives, both consistent:**
+  - Miles Mikolas FF: +2.6 to +3.2 in IVB, but +0.9 mph.
+  - Michael McGreevy FF: 20 neighbors, +2.3 to +3.3 in IVB, +1.0 mph.
+
+**Model-free league check** (actual 2025 SwStr%, archetypes with n ≥ 150,
+WLS weighted by n, controlling for velocity, horizontal break, spin,
+extension and release height):
+- **Four-seamers** (420 archetypes): +0.17 percentage points (pp) of
+  SwStr% per inch of IVB (p = 0.019). Release height is −2.1 pp per ft
+  (p < 0.001).
+- **Sliders** (234 archetypes): −0.30 pp per inch of IVB, i.e. more depth
+  helps (p = 0.002).
+
+The directions agree with the neighborhood examples, but the effects are
+small. +2 in of ride is worth about +0.3–0.4 pp of SwStr%, far less than
+the 5+ pp gap between Eovaldi and his best neighbors. Most of that gap is
+something other than this one shape change: location, sequencing,
+deception, noise. **Status:** illustrative. It is verified that the
+pipeline runs and the example is robust to tolerances. It is not causal,
+and not a recommendation for a real pitcher.
