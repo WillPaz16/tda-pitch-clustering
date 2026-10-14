@@ -193,7 +193,67 @@ def reeb_torus():
     save(fig, "reeb_torus")
 
 
+def toy_mapper():
+    """Mapper by hand on a noisy circle, lens = height: the graph is a loop (the circle's Reeb graph)."""
+    from sklearn.cluster import DBSCAN
+    rng = np.random.default_rng(1)
+    t = rng.uniform(0, 2 * np.pi, 240); r = 1 + rng.normal(0, 0.04, 240)
+    P = np.c_[r * np.cos(t), r * np.sin(t)]
+    f = P[:, 1]
+    n, ov = 5, 0.3
+    w = (f.max() - f.min()) / (1 + (n - 1) * (1 - ov)); step = w * (1 - ov)
+    nodes = []                                   # (interval, member indices)
+    for i in range(n):
+        lo = f.min() + i * step
+        idx = np.flatnonzero((f >= lo) & (f <= lo + w))
+        lab = DBSCAN(eps=0.25, min_samples=3).fit_predict(P[idx])
+        nodes += [(i, idx[lab == c]) for c in sorted(set(lab) - {-1})]
+    G = nx.Graph(); G.add_nodes_from(range(len(nodes)))
+    G.add_edges_from((a, b) for a in range(len(nodes)) for b in range(a + 1, len(nodes)) if np.intersect1d(nodes[a][1], nodes[b][1]).size)
+    b1 = G.number_of_edges() - G.number_of_nodes() + nx.number_connected_components(G)
+    print("toy_mapper: %d nodes, %d edges, b1 = %d" % (G.number_of_nodes(), G.number_of_edges(), b1))
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(6.4, 3.0))
+    for i in range(n):
+        lo = f.min() + i * step
+        a1.axhspan(lo, lo + w, color=SERIES[0], alpha=0.07, lw=0)
+        a1.plot([-1.42 + 0.06 * (i % 2)] * 2, [lo, lo + w], color=SERIES[0], lw=2, solid_capstyle="butt")
+    a1.scatter(P[:, 0], P[:, 1], s=7, c=INK2, lw=0)
+    a1.set_title("$P$, lens $f(x, y) = y$, 5 intervals", fontsize=9, color=INK)
+    a1.set_aspect("equal"); a1.axis("off")
+    pos = {k: P[m].mean(axis=0) for k, (_, m) in enumerate(nodes)}
+    nx.draw_networkx_edges(G, pos, ax=a2, edge_color=INK2, width=1.5)
+    nx.draw_networkx_nodes(G, pos, ax=a2, node_color=SERIES[0], node_size=[3 * len(m) for _, m in nodes], edgecolors=SURF, linewidths=1.5)
+    a2.set_title("Mapper graph: $b_1 = %d - %d + 1 = %d$" % (G.number_of_edges(), G.number_of_nodes(), b1), fontsize=9, color=INK)
+    a2.set_aspect("equal"); a2.set_xlim(-1.5, 1.5); a2.set_ylim(-1.3, 1.3); a2.axis("off")
+    save(fig, "toy_mapper")
+
+
+def dbscan_toy():
+    """Core, border and noise points for one (eps, M)."""
+    from sklearn.cluster import DBSCAN
+    rng = np.random.default_rng(3)
+    blob = rng.normal(0, 0.28, (16, 2))
+    far = blob[np.argmax(blob[:, 0])]
+    P = np.vstack([blob, far + [0.42, 0.05], [[1.25, 0.75], [-1.05, -0.85]]])
+    eps, M = 0.5, 4
+    db = DBSCAN(eps=eps, min_samples=M).fit(P)   # sklearn counts p itself, as N_eps(p) does
+    core = np.zeros(len(P), bool); core[db.core_sample_indices_] = True
+    noise = db.labels_ == -1; border = ~core & ~noise
+    print("dbscan_toy: %d core, %d border, %d noise (eps=%.1f, M=%d)" % (core.sum(), border.sum(), noise.sum(), eps, M))
+    fig, ax = plt.subplots(figsize=(3.6, 2.2))
+    for k, ls in ((np.flatnonzero(core)[np.argmax(P[core, 0])], "-"), (np.flatnonzero(border)[0], "--")):
+        ax.add_patch(plt.Circle(P[k], eps, fill=False, color=INK2, lw=0.8, ls=ls))
+    ax.scatter(*P[core].T, s=36, c=SERIES[0], edgecolors=SURF, lw=1, zorder=3, label="core ($|N_\\varepsilon(p)| \\geq M$)")
+    ax.scatter(*P[border].T, s=36, facecolors="white", edgecolors=SERIES[0], lw=1.6, zorder=3, label="border (in a cluster, not core)")
+    ax.scatter(*P[noise].T, s=40, marker="x", c=SERIES[1], lw=1.8, zorder=3, label="noise")
+    ax.set_title("$\\varepsilon = %.1f$, $M = %d$" % (eps, M), fontsize=9, color=INK)
+    ax.set_aspect("equal"); ax.axis("off")
+    ax.legend(frameon=False, fontsize=9, loc="center left", bbox_to_anchor=(1.0, 0.5))
+    save(fig, "dbscan_toy")
+
+
 def pitch_design():
+    plt.rcParams["font.size"] = 13   # shown at reduced width on the slide
     d = pd.read_csv(ROOT / "data" / "pitch_design_example.csv")
     me = d[d.index == 0].iloc[0]; nb = d.iloc[1:]
     top = nb[nb.score >= nb.score.quantile(2 / 3)]
@@ -202,22 +262,23 @@ def pitch_design():
     print("pitch_design: %s %s, n=%d, score %.1f, SwStr %.3f; %d neighbors; top third minus self: %s; Spearman(score, SwStr) %.2f"
           % (me["name"], me.pitch_type, me.n, me.score, me.swstr, len(nb), shift.round(1).to_dict(), rho))
     first = lambda s: s.split(", ")[1].split()[0][0] + ". " + s.split(", ")[0]
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(6.8, 3.0), gridspec_kw={"wspace": 0.62})
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 3.6), gridspec_kw={"wspace": 0.5})
     sc = a1.scatter(nb.HB_in, nb.IVB_in, c=nb.score, cmap=BLUES, s=46, edgecolors=SURF, lw=1, zorder=3)
     a1.scatter(me.HB_in, me.IVB_in, marker="*", s=200, c=SERIES[1], edgecolors=SURF, lw=1, zorder=4)
     a1.annotate("", (me.HB_in + shift.HB_in, me.IVB_in + shift.IVB_in), (me.HB_in, me.IVB_in),
                 arrowprops=dict(arrowstyle="->", color=INK, lw=1.2), zorder=5)
-    a1.annotate(first(me["name"]), (me.HB_in, me.IVB_in), xytext=(-6, -14), textcoords="offset points", fontsize=8, color=INK, ha="right")
+    a1.annotate(first(me["name"]), (me.HB_in, me.IVB_in), xytext=(-6, -14), textcoords="offset points", fontsize=11, color=INK, ha="right")
     a1.set_xlabel("horizontal break (in, + = arm side)"); a1.set_ylabel("induced vertical break (in)")
-    cb = fig.colorbar(sc, ax=a1, fraction=0.05, pad=0.02); cb.set_label("model score", fontsize=8); cb.ax.tick_params(labelsize=7)
+    cb = fig.colorbar(sc, ax=a1, fraction=0.05, pad=0.02); cb.set_label("model score", fontsize=11); cb.ax.tick_params(labelsize=10)
     a1.grid(color=GRID, lw=0.6); a1.set_axisbelow(True)
     se = np.sqrt(d.swstr * (1 - d.swstr) / d.n) * 100
     a2.errorbar(nb.score, nb.swstr * 100, yerr=1.96 * se[1:], fmt="o", ms=5, color=SERIES[0], ecolor=GRID, elinewidth=1.5, zorder=3)
     a2.errorbar([me.score], [me.swstr * 100], yerr=[1.96 * se[0]], fmt="*", ms=12, color=SERIES[1], ecolor=GRID, elinewidth=1.5, zorder=4)
     a2.set_xlabel("model score (pooled, 100 = avg)"); a2.set_ylabel("actual 2025 SwStr% (95% CI)")
-    a2.text(0.03, 0.97, "Spearman $\\rho$ = %.2f" % rho, transform=a2.transAxes, fontsize=8, color=INK2, va="top")
+    a2.text(0.03, 0.97, "Spearman $\\rho$ = %.2f" % rho, transform=a2.transAxes, fontsize=11, color=INK2, va="top")
     a2.grid(color=GRID, lw=0.6); a2.set_axisbelow(True)
     save(fig, "pitch_design")
+    plt.rcParams["font.size"] = 10
 
 
 def main():
@@ -231,6 +292,8 @@ def main():
     intrinsic_dim()
     persistence(orig, cols)
     reeb_torus()
+    toy_mapper()
+    dbscan_toy()
     pitch_design()
 
 
