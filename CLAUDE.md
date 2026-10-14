@@ -20,6 +20,16 @@ abstract only; `presi.tex` — Beamer slide deck, the real content).
 - **Stuff+ is future work only**: one bullet on the pitch-design map idea
   (Mapper graph = realistic nearby shapes, Stuff+ = objective). Will wants
   to pursue it later, but it's out of scope for this thesis.
+  **Updated 2026-10-14:** Will chose to add ONE illustrative pitch-design
+  slide (Eovaldi FF, `src/tda/pitch_design_neighborhood.py`), scored by our
+  Stuff+-style models with actual SwStr% as a check. Labeled illustrative,
+  not causal. The physical box, not Mapper, picks the neighbors; the
+  continuum result is what licenses the comparison (DISCOVERY_FINDINGS.md).
+- **Deck restructured 2026-10-14 to the advisor's 15/30/15 split:**
+  topological spaces + formal homotopy moved to backup (informal ≃ kept
+  on the nerve theorem slide); added "graphs are simplicial complexes",
+  a toy Mapper on a circle, a DBSCAN core/border/noise example, and a
+  "pipeline on our data" theory→data table.
 - **Arm angle is future work, not added to the model.** Arm slot is
   largely encoded by release position already, and it's a pitcher-level
   (delivery) trait. The right use is movement *relative to* arm slot,
