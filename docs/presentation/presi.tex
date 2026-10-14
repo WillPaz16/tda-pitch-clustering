@@ -174,7 +174,7 @@ Let $\mathcal U = \{U_\alpha\}_{\alpha \in A}$ be a finite cover of a space $X$.
 \begin{block}{Definition}
 $C \subseteq \R^d$ is \alert{convex} if the segment between any two points of $C$ lies in $C$.
 \end{block}
-\begin{block}{Theorem (Nerve Theorem, closed convex version)}
+\begin{block}{Theorem (Nerve Theorem, closed convex version; cited, not proved here)}
 If $X \subseteq \R^d$ is covered by finitely many closed convex sets $\mathcal C = \{C_1,\dots,C_n\}$, then $X \simeq |N(\mathcal C)|$.
 \src{bauerkerberrollrolle2023,borsuk1948}
 \end{block}
@@ -200,31 +200,6 @@ The $k$-th \alert{Betti number} $b_k(X)$ is the rank of the $k$-th homology grou
 Hollow triangle: $3 - 3 + 1 = 1$ loop. \quad Filled triangle: $1 - 1 = 0$ loops.
 \end{frame}
 
-\begin{frame}{Persistent homology}
-\begin{columns}[T]
-\begin{column}{0.5\textwidth}
-\begin{block}{Vietoris--Rips complex}
-For a finite point set $P$ and scale $t$: $\mathrm{Rips}_t(P) = \{\, \emptyset \ne S \subseteq P : \diam S \le t \,\}$.
-\src{bauer2021ripser}
-\end{block}
-\begin{itemize}\small
-  \item As $t$ grows we get nested complexes; persistent homology tracks each hole from the scale where it is \emph{born} to where it \emph{dies}. \hfill\parencite{edelsbrunnerletscherzomorodian2002,zomorodiancarlsson2005}
-  \item A \alert{persistence diagram} plots (birth, death); points far from the diagonal are real features, points near it are noise. \hfill\parencite{fasy2014confidence}
-\end{itemize}
-\end{column}
-\begin{column}{0.5\textwidth}
-\centering
-\begin{tikzpicture}[scale=0.85]
-  \draw[-{Latex}] (0,0) -- (3.4,0) node[below] {\small birth};
-  \draw[-{Latex}] (0,0) -- (0,3.4) node[left] {\small death};
-  \draw[gray] (0,0) -- (3.2,3.2);
-  \foreach \p in {(0.6,0.75),(1,1.2),(1.4,1.55),(1.9,2.05),(2.3,2.5),(0.9,1.05)} \fill[gray] \p circle (1.6pt);
-  \fill[MiamiRed] (0.7,2.9) circle (2.5pt) node[right] {\small real loop};
-  \node[gray] at (2.4,1.6) {\small noise};
-\end{tikzpicture}
-\end{column}
-\end{columns}
-\end{frame}
 
 \begin{frame}{Reeb graphs}
 \begin{block}{Definition (Reeb graph)}
@@ -236,17 +211,13 @@ Let $f : X \to \R$ be continuous. Write $x \sim y$ if $f(x) = f(y)$ and $x, y$ l
 \par\small Each level set of the torus collapses to one point per component: one point near the top and bottom, two points in the middle band.
 \end{frame}
 
-\begin{frame}{Reeb spaces and Mapper}
-\begin{block}{Definition (Reeb space)}
-The same construction for $f : X \to \R^d$: identify points with the same value that lie in the same path component of the preimage, $R(X,f) = X/\!\sim_f$.
-\src{munchwang2016}
-\end{block}
-\begin{block}{Definition (Mapper, topological version)}
+\begin{frame}{Mapper: the topological version}
+\begin{block}{Definition (Mapper)}
 Let $f : X \to Z$ be continuous and $\mathcal U = \{U_\alpha\}$ a finite open cover of $Z$. Split each preimage $f^{-1}(U_\alpha)$ into its \alert{path components}; these form the \alert{pullback cover} $f^*\mathcal U$ of $X$. The \alert{Mapper} is its nerve, $M(\mathcal U, f) = N(f^*\mathcal U)$.
 \src{singh2007mapper,deymemoliwang2017}
 \end{block}
 \begin{itemize}\small
-  \item Mapper is a discrete approximation of the Reeb graph ($d=1$) and Reeb space ($d \ge 1$). \hfill\parencite{carrieremicheloudot2018,munchwang2016}
+  \item Cited result: for $Z = \R$, Mapper is a discrete estimator of the Reeb graph; for $Z = \R^d$ it approximates the analogous \emph{Reeb space}. \hfill\parencite{carrieremicheloudot2018,munchwang2016}
 \end{itemize}
 \end{frame}
 
@@ -532,7 +503,7 @@ graph = mapper.map(lens, X,
 
 \begin{frame}{The Mapper graph}
 \centering
-\includegraphics[width=0.64\textwidth]{figures/mapper_graph.pdf}
+\includegraphics[width=0.6\textwidth]{figures/mapper_graph.pdf}
 \par\small 66 clusters, 143 edges, 9 components. One giant component runs from curveballs through sliders and cutters to fastballs and changeups, ordered by velocity; very slow pitches (eephus, position players pitching) sit apart.
 \end{frame}
 
@@ -567,46 +538,24 @@ Data with the same covariance (Gaussian), or with features shuffled within pitch
 \centering
 \includegraphics[width=0.58\textwidth]{figures/nerve_b1.pdf}
 \par\small
-Graph: $b_1 = E - V + C = 143 - 66 + 9 = 86$. Adding the 113 triangles of the full nerve: $b_1 = 1$. Across 27 parameter choices, graph $b_1$ ranges 33--147; nerve $b_1$ stays 0--4, in the same range as the null models.
+Graph: $b_1 = E - V + C = 143 - 66 + 9 = 86$. The full nerve adds 113 triangles; $\partial_2$ is a $143 \times 113$ matrix over $\Z_2$ of rank 85, so $b_1 = 86 - 85 = 1$. Across 27 parameter choices, graph $b_1$ ranges 33--147; nerve $b_1$ stays 0--4, in the same range as the null models.
 \end{frame}
 
 \begin{frame}{Why: nerves can only kill loops}
-\begin{block}{Theorem (Dey--M\'emoli--Wang)}
+\begin{block}{Theorem (Dey--M\'emoli--Wang; cited, not proved here)}
 If $\mathcal U$ is a path-connected cover of $X$, the nerve map induces a surjection $H_1(X) \to H_1(N(\mathcal U))$ ($\Z_2$ coefficients, $X$ compact).
 Mapper's pullback cover is path-connected by construction, so
 \[ b_1(\text{Mapper}) \le b_1(X). \]
 \src{deymemoliwang2017}
 \end{block}
 \begin{itemize}\small
-  \item Persistent homology of the 3{,}943 pitch shapes shows \alert{no persistent loops}, just like a Gaussian null (next slide). So the underlying space has $b_1 \approx 0$, and any real Mapper of it must too.
+  \item Persistent homology of the 3{,}943 pitch shapes shows \alert{no persistent loops}, just like a Gaussian null (backup). So the underlying space has $b_1 \approx 0$, and any real Mapper of it must too.
   \item The 86 graph loops come from reading only the 1-skeleton: triangles fill them.
   \item Honest scope: the theorem is about a space; we have a finite sample. Theorem plus consistent evidence, not a proof about the data.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Persistent homology of pitch shapes}
-\centering
-\includegraphics[width=0.66\textwidth]{figures/persistence.pdf}
-\par\small
-1{,}000 random pitch shapes vs.\ a same-covariance Gaussian, computed with Ripser \parencite{bauer2021ripser,tralie2018ripserpy}. No $H_1$ point is far from the diagonal in either. Real data has no more long-lived gaps ($H_0$) than the Gaussian, but is more concentrated.
-\end{frame}
 
-\begin{frame}{How many dimensions does pitch shape really use?}
-\begin{columns}[T]
-\begin{column}{0.55\textwidth}
-\includegraphics[width=\textwidth]{figures/intrinsic_dim.pdf}
-\end{column}
-\begin{column}{0.45\textwidth}
-\small
-\begin{itemize}
-  \item Estimators use nearest-neighbor distances: TwoNN \parencite{facco2017twonn} and maximum likelihood \parencite{levinabickel2004}, averaging inverses \parencite{mackay2005comments}.
-  \item Real: \alert{6.26} of 9 (TwoNN 6.76). Fair null: 7.07 (TwoNN 7.52).
-  \item Within each pitch type, real data is 0.4--1.2 dimensions lower.
-  \item The fair null keeps $(\cos, \sin)$ of the spin axis together, since they encode one angle.
-\end{itemize}
-\end{column}
-\end{columns}
-\end{frame}
 
 \begin{frame}{Labels cut a continuum}
 \begin{itemize}
@@ -621,9 +570,22 @@ Statcast's labels explain \emph{more} outcome variance than our clusters (e.g.\ 
 \end{block}
 \end{frame}
 
+\begin{frame}{Why a continuum matters}
+\textbf{Interpretation, not a tested result:}
+\begin{itemize}\small
+  \item \alert{A label is a region, not a kind of pitch.} Comparisons by pitch type can mislead near boundaries, and most pitches sit near one.
+  \item \alert{Describe a pitch by where it sits}: its position in shape space and its nearest neighbors, not only its tag.
+  \item \alert{Pitch design is movement through a connected space}: with no gaps, nearby shapes are realistic targets.
+  \item \alert{For TDA practice:} check graph features against null models before reading meaning into them.
+\end{itemize}
+\begin{block}{Illustration (one pitcher, 2025)}
+Brady Singer's slider (809 pitches) breaks 4.9 in horizontally; his ``sweeper'' (316 pitches) breaks 9.0 in. The average slider breaks about 6 in and the average sweeper about 15 in \parencite{mlbglossary_sweeper}: his sweeper sits between the two, closer to a slider.
+\end{block}
+\end{frame}
+
 \begin{frame}{Conclusions}
 \begin{block}{About pitches}
-Pitch-shape space is a \alert{connected continuum}, about 6-dimensional inside 9, with no loops and no hidden gaps beyond a Gaussian, plus a tail of very slow pitches. Pitch-type labels are cuts through it.
+Pitch-shape space is a \alert{connected continuum} (about 6 of 9 dimensions; backup), with no loops and no hidden gaps beyond a Gaussian, plus a tail of very slow pitches. Pitch-type labels are cuts through it.
 \end{block}
 \begin{block}{About the method}
 \begin{itemize}
@@ -649,6 +611,53 @@ Pitch-shape space is a \alert{connected continuum}, about 6-dimensional inside 9
 \appendix
 \section*{Backup}
 %================================================================
+\begin{frame}{Persistent homology}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Vietoris--Rips complex}
+For a finite point set $P$ and scale $t$: $\mathrm{Rips}_t(P) = \{\, \emptyset \ne S \subseteq P : \diam S \le t \,\}$.
+\src{bauer2021ripser}
+\end{block}
+\begin{itemize}\small
+  \item As $t$ grows we get nested complexes; persistent homology tracks each hole from the scale where it is \emph{born} to where it \emph{dies}. \hfill\parencite{edelsbrunnerletscherzomorodian2002,zomorodiancarlsson2005}
+  \item A \alert{persistence diagram} plots (birth, death); points far from the diagonal are real features, points near it are noise. \hfill\parencite{fasy2014confidence}
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.85]
+  \draw[-{Latex}] (0,0) -- (3.4,0) node[below] {\small birth};
+  \draw[-{Latex}] (0,0) -- (0,3.4) node[left] {\small death};
+  \draw[gray] (0,0) -- (3.2,3.2);
+  \foreach \p in {(0.6,0.75),(1,1.2),(1.4,1.55),(1.9,2.05),(2.3,2.5),(0.9,1.05)} \fill[gray] \p circle (1.6pt);
+  \fill[MiamiRed] (0.7,2.9) circle (2.5pt) node[right] {\small real loop};
+  \node[gray] at (2.4,1.6) {\small noise};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+\begin{frame}{Persistent homology of pitch shapes}
+\centering
+\includegraphics[width=0.66\textwidth]{figures/persistence.pdf}
+\par\small
+1{,}000 random pitch shapes vs.\ a same-covariance Gaussian, computed with Ripser \parencite{bauer2021ripser,tralie2018ripserpy}. No $H_1$ point is far from the diagonal in either. Real data has no more long-lived gaps ($H_0$) than the Gaussian, but is more concentrated.
+\end{frame}
+\begin{frame}{How many dimensions does pitch shape really use?}
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\includegraphics[width=\textwidth]{figures/intrinsic_dim.pdf}
+\end{column}
+\begin{column}{0.45\textwidth}
+\small
+\begin{itemize}
+  \item Estimators use nearest-neighbor distances: TwoNN \parencite{facco2017twonn} and maximum likelihood \parencite{levinabickel2004}, averaging inverses \parencite{mackay2005comments}.
+  \item Real: \alert{6.26} of 9 (TwoNN 6.76). Fair null: 7.07 (TwoNN 7.52).
+  \item Within each pitch type, real data is 0.4--1.2 dimensions lower.
+  \item The fair null keeps $(\cos, \sin)$ of the spin axis together, since they encode one angle.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
 \begin{frame}{Backup: how reliable is a cluster label?}
 \begin{itemize}
   \item Run each pitch shape back through the classifier: does it land in its own cluster?

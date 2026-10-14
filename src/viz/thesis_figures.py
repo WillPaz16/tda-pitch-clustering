@@ -80,27 +80,28 @@ def lens_scatter(orig, cols, ptype):
 
 
 def mapper_graph(mc, speed, ptype):
-    g = mc["graph"]
+    """Nodes drawn at their members' mean PCA-lens position (same axes as lens_scatter)."""
+    g = mc["graph"]; orig, cols = mc["original_data"], list(mc["stuff_columns"])
+    Z = PCA(2).fit_transform(StandardScaler().fit_transform(orig[cols].values.astype(float)))
     G = nx.Graph(); G.add_nodes_from(g["nodes"]); G.add_edges_from((s, t) for s, ts in g["links"].items() for t in ts)
     comps = sorted(nx.connected_components(G), key=len, reverse=True)
     print("mapper_graph: %d nodes, %d edges, %d components (giant %d nodes)" % (G.number_of_nodes(), G.number_of_edges(), len(comps), len(comps[0])))
-    pos = nx.kamada_kawai_layout(G.subgraph(comps[0]))
-    for i, c in enumerate(comps[1:]):            # small components in a column on the right
-        for j, n in enumerate(sorted(c)):
-            pos[n] = np.array([1.45 + 0.12 * j, 0.9 - 0.25 * i])
-    v = {n: speed[g["nodes"][n]].mean() for n in G}
-    size = {n: 12 + 4 * np.sqrt(len(g["nodes"][n])) for n in G}
+    pos = {n: Z[g["nodes"][n]].mean(axis=0) for n in G}
     maj = {n: Counter(ptype[g["nodes"][n]]).most_common(1)[0][0] for n in G}
-    fig, ax = plt.subplots(figsize=(6.6, 4.0))
-    nx.draw_networkx_edges(G, pos, ax=ax, edge_color="#9b9a95", width=0.8)
-    sc = nx.draw_networkx_nodes(G, pos, ax=ax, node_color=[v[n] for n in G], cmap=BLUES, vmin=75, vmax=96,
-                                node_size=[size[n] for n in G], edgecolors=SURF, linewidths=1.5)
-    big = [n for n in comps[0] if len(g["nodes"][n]) >= 150] + [n for c in comps[1:] for n in c]
-    for n in big:
-        ax.annotate(maj[n], pos[n], xytext=(0, 7), textcoords="offset points", ha="center", fontsize=7, color=INK)
-    cb = fig.colorbar(sc, ax=ax, fraction=0.035, pad=0.01); cb.set_label("mean velocity (mph; slower clipped to 75)", color=INK2); cb.outline.set_visible(False)
-    ax.text(1.5, 1.08, "isolated\ncomponents", fontsize=8, color=INK2, ha="center", transform=ax.transData)
-    ax.axis("off")
+    fam = {n: FAMILY.get(maj[n], "Other") for n in G}
+    fig, ax = plt.subplots(figsize=(6.4, 3.9))
+    nx.draw_networkx_edges(G, pos, ax=ax, edge_color="#b9b8b2", width=0.7)
+    for f, c in list(zip(FAMILIES, SERIES)) + [("Other", OTHER)]:
+        ns = [n for n in G if fam[n] == f]
+        nx.draw_networkx_nodes(G, pos, nodelist=ns, ax=ax, node_color=c, node_size=[14 + 4 * np.sqrt(len(g["nodes"][n])) for n in ns],
+                               edgecolors=SURF, linewidths=1.2, label=f + " (majority)")
+    for n in G:
+        if len(g["nodes"][n]) >= 450 or n not in comps[0]:
+            ax.annotate(maj[n], pos[n], xytext=(0, 6), textcoords="offset points", ha="center", fontsize=7, color=INK)
+    ax.set_xlabel("PC1: fastball \u2192 breaking ball"); ax.set_ylabel("PC2: delivery")
+    ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True)
+    ax.grid(color=GRID, lw=0.6); ax.set_axisbelow(True)
+    ax.legend(frameon=False, fontsize=7.5, loc="lower right", markerscale=0.8)
     save(fig, "mapper_graph")
 
 
