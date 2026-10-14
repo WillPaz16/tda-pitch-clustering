@@ -548,7 +548,7 @@ and Levina–Bickel MLE estimators both pass sanity checks (2-D plane → 2.0,
   permute it as a unit.
 - Against that null, real archetypes are lower-dimensional overall (MLE
   6.26 vs 7.07, TwoNN 6.76 vs 7.52) and within every major pitch type, by
-  roughly 0.4–0.8 of a dimension.
+  roughly 0.4–1.2 of a dimension (MLE; sliders 1.2 - corrected 2026-10-14).
 - **Supported:** real within-type coupling of the physical features.
   **Not supported:** a "low-dimensional continuum." The space is about 6
   of 9 dimensions, only moderately constrained.
@@ -614,3 +614,21 @@ n).**
   others.
 - So "crowded = less reliable" is a statement about node *size*, not graph
   *topology*. Option 2 above has been reworded to match.
+
+## Same-pitcher label pairs: a confound (2026-10-14)
+
+Checked while building the deck's "why it matters" example.
+- `data/pitcher_repertoire_overlap.csv`: `same_cluster` correctly means the
+  two pitches share at least one Mapper node, but `cluster_a`/`cluster_b`
+  are just each pitch's alphabetically first node, not the shared one.
+  Sharing a node in an overlapping cover does not make two pitches
+  indistinguishable (the script's printout wording has been corrected).
+- On all 9 features, a pitcher's two differently labeled pitches look
+  closer than same-label pitches from different pitchers (e.g. FF/SI
+  median 1.13 vs 2.01-2.10). **That is a confound:** a pitcher's pitches
+  share his release point and extension. On pitch-flight features only
+  (velocity, movement, spin), the pattern reverses (FF/SI 1.07 vs
+  0.83-0.92; SL/ST 1.97 vs 1.05-1.69). Do not claim it.
+- Kept as a single illustration only: Brady Singer (2025) slider 4.9 in vs
+  "sweeper" 9.0 in horizontal break (809 / 316 pitches), between MLB's
+  stated averages of about 6 and 15 in.

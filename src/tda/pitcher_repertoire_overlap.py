@@ -141,7 +141,7 @@ def main():
     df = pd.DataFrame(same_or_adjacent)
     print(f"Total pitcher-pitch-pairs with two differently-labeled pitches in the same/adjacent cluster: {len(df)}")
     if len(df):
-        print(f"  of which same cluster (movement essentially indistinguishable): {df['same_cluster'].sum()}")
+        print(f"  of which share at least one Mapper node (overlapping cover; NOT the same as indistinguishable): {df['same_cluster'].sum()}")
         print(f"  of which graph-adjacent but distinct clusters (very similar, blended at the boundary): {(~df['same_cluster']).sum()}")
         print("\nPitch-type pairs involved (most common combinations):")
         pair_counts = df.apply(lambda r: tuple(sorted([r['pitch_a'], r['pitch_b']])), axis=1).value_counts()
