@@ -203,9 +203,15 @@ Hollow triangle: $3 - 3 + 1 = 1$ loop. \quad Filled triangle: $1 - 1 = 0$ loops.
 Let $f : X \to \R$ be continuous. Write $x \sim y$ if $f(x) = f(y)$ and $x, y$ lie in the same connected component of the level set $f^{-1}(f(x))$. The \alert{Reeb graph} is the quotient space $R_f(X) = X/\!\sim$.
 \src{carriereoudot2018,reeb1946}
 \end{block}
-\centering
-\includegraphics[width=0.44\textwidth]{figures/reeb_torus.pdf}
-\par\small Each level set of the torus collapses to one point per component: one point near the top and bottom, two points in the middle band.
+When $X$ is a smooth manifold and $f$ is a Morse function (more generally, of Morse type), $R_f(X)$ is a graph, technically a multigraph: a \alert{topological graph}. \hfill\parencite[p.~1334]{carriereoudot2018}
+\begin{columns}[c]
+\begin{column}{0.55\textwidth}\centering
+\includegraphics[width=0.66\textwidth]{figures/reeb_torus.pdf}
+\end{column}
+\begin{column}{0.4\textwidth}\small
+Torus, $f$ = height. Each level set collapses to one point per component: one near the top and bottom, two in the middle band. The Reeb graph is a circle with two whiskers.
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Mapper: the topological version}
@@ -588,7 +594,7 @@ Mapper's pullback cover is path-connected by construction, so
 \begin{frame}{Labels cut a continuum}
 \begin{itemize}
   \item One pitcher\'s two labels most often share or neighbor Mapper nodes for FF/SI, CH/FF, CH/SI, FC/FF, FC/SI (raw counts, which also reflect how often pitchers throw both).
-  \item About \alert{55\%} of individual 2025 pitches fall in two or more overlapping Mapper nodes.
+  \item About \alert{55\%} of individual pitches fall in two or more overlapping Mapper nodes (opening week of 2025; the same in a week of April 2026).
   \item Statcast itself relabeled some of our pitch shapes between our fit and a later re-pull (SL$\leftrightarrow$ST, SI$\leftrightarrow$FF, ST/FC).
   \item Statcast added the sweeper as its own pitch type in 2023 because of its distinct shape and movement. \hfill\parencite{mlbglossary_sweeper}
 \end{itemize}
@@ -749,7 +755,7 @@ Examples: a disk is contractible; an annulus $\simeq$ a circle; a circle is \emp
 \toprule
 min pitches & shapes & slow & components & slow isolated & CU$\to$FF $\rho$ \\
 \midrule
-1 (as fitted) & 3{,}940 & 131 & 9 & 97\% & 1.00 \\
+1 & 3{,}940 & 131 & 9 & 97\% & 1.00 \\
 10 & 3{,}388 & 63 & 5 & 83\% & 1.00 \\
 20 & 3{,}073 & 29 & 8 & none in a node & 0.98 \\
 \bottomrule
@@ -757,6 +763,7 @@ min pitches & shapes & slow & components & slow isolated & CU$\to$FF $\rho$ \\
 \vspace{6pt}
 \begin{itemize}\small
   \item The ordering is unaffected. Slow pitches stay off the continuum at every threshold; at $\ge 20$ pitches there are too few to form their own clusters.
+  \item Shapes were rebuilt from a later re-pull, so counts differ slightly from the fitted 3{,}943: Statcast relabels a few pitches between pulls.
 \end{itemize}
 \end{frame}
 
