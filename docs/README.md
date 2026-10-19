@@ -41,10 +41,9 @@ Details: [DISCOVERY_FINDINGS.md](DISCOVERY_FINDINGS.md) (findings) and
 ## How this was built (AI assistance)
 
 I developed this project with substantial help from Claude, Anthropic's AI
-assistant, used through Claude Code. Claude wrote much of the analysis code
-and documentation, ran analyses, and drafted write-ups; commits it
-contributed to are marked `Co-Authored-By: Claude`. I set the research
-questions and scope, made the methodological decisions, and reviewed the
+assistant, used through Claude Code. Claude assisted in cleaning up and optimizing analysis code
+and documentation, some commits are marked by `Co-Authored-By: Claude` when assistance was used. 
+I set the research questions and scope, made the methodological decisions, and reviewed the
 results.
 
 Because AI output can be confidently wrong, the work is built around
@@ -56,10 +55,8 @@ verification rather than trust:
 - The literature review ([docs/lit_review/](lit_review/)) only accepts a
   citation after its metadata matches a registry record (Crossref, DataCite,
   arXiv, publisher) and the claim is confirmed at an exact page of the
-  source. Independent blind re-checks then re-verify each claim, and a
-  human spot check comes before anything goes in the talk. These checks
-  caught errors in my slides and in the AI's own work, including details
-  it had filled in from memory.
+  source. All pieces of literature found was examined and confirmed as valid before
+  inclusion into the presentation.
 
 ## Setup
 
