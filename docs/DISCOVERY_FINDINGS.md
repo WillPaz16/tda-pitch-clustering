@@ -1011,3 +1011,36 @@ profile.
   role, which is why plans rank by V.
 - The labels on the path cross (FF → "SI"): the continuum at work.
 - Grip and delivery feasibility are not modelled (future work).
+
+**Planner revision and the young-arm example (2026-10-27).**
+
+*Three fixes, each found by inspecting a plan:*
+1. **Benchmarks are milestones along ONE path.** The destination is the
+   best V within 3 season budgets; each season's benchmark is the furthest
+   waypoint within k budgets. A separate best per season had pointed
+   Jump's FF toward two opposite destinations.
+2. **Value must not drop along the path** (checked in code).
+3. **Velocity and raw spin cost 3× per unit in the step metric.** They are
+   mostly arm talent; plans that leaned on +1.4 mph or +200 rpm were not
+   design plans. The season budget is recalibrated in the same weighted
+   metric from observed consecutive-season shape changes: 90th percentile
+   1.116, 75th 0.766. Hard ±0.75 mph / ±100 rpm bands instead left no
+   young case with 30+ feasible shapes.
+
+*Young-arm search* (2026, age ≤ 25, n ≥ 300):
+- 87 pitches planned; 3 clear cases. Clear = ≥ 30 feasible, ≥ 2 steps,
+  monotone V, gain robust to arm angle ±7° and the 75th-percentile budget.
+  - Prielipp SI: +4.65, but +1.1 mph.
+  - Lowder FF: +3.82, but +1.1 mph.
+  - **Jump SL** (age 23, n = 398): +2.03, +0.3 mph, typicality −1.59 SD.
+- **Jump SL plan:**
+  - **Start:** 87.2 mph, HB −5.1 in, IVB 1.8, 2338 rpm.
+  - **Season 1:** → Kikuchi SL (HB −2.3): +0.93.
+  - **Season 3:** → Bello "FC" (HB +0.1, IVB 2.3, 2327 rpm, typicality
+    −1.70): +2.03.
+  - A pure shape plan, removing glove-side sweep.
+- **Caveat:** spin axis is poorly determined for near-zero-movement
+  pitches. The last step's axis change (126° → 254°) inflates its cost.
+  Illustrative, not validated.
+- **Eovaldi FF** rerun under the weighted planner: see
+  `data/development_plan_543135_FF.csv`.
