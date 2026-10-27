@@ -780,3 +780,66 @@ through dense ridges, not separate peaks". It replaces any reading of
 - Peak 5: tentative; do not claim.
 - Not yet done: a per-pitcher analysis (Maloof's Step 6) and other
   seasons.
+
+## Label sensitivity of Stuff+ grades (2026-10-27)
+
+Script: `src/stuffplus/label_sensitivity.py`. Output:
+`data/label_sensitivity_{relative,absolute}.csv`.
+
+**Question.** Production Stuff+ grades a pitch against its own pitch-type
+label: per-label 2022–24 reference stats, then rescaled to 100 ± 15
+within the label. If labels cut through dense ridges (see "Density
+peaks" above), does a pitch near a boundary get a different grade
+depending on which side its label falls?
+
+**Method.**
+- **Unit:** 2025 pitch shapes with n ≥ 150.
+- **Boundary pitch:** among its 20 nearest shapes *from other pitchers*,
+  measured on flight features (velocity, movement, spin), at least 50%
+  carry one other label.
+- **Velocity is relative** to the pitcher's fastest shape, as in Maloof
+  et al., and as hitters experience it.
+- **Two fixes made along the way:**
+  - all 9 features with same-pitcher neighbors allowed reintroduces the
+    same-pitcher delivery confound;
+  - absolute velocity makes hard changeups neighbor other pitchers'
+    sinkers, inflating the shifts to as much as 50+ points.
+- **Grading:** each boundary pitch is graded against its own label (this
+  reproduces the production calculator exactly; asserted in code) and
+  against the alternative label. Same pitches, same model predictions.
+- **Noise:** shifts are compared with the grade's bootstrap sampling
+  error.
+
+**Result** (relative velocity, 20 neighbors, 50% share).
+- 166 of the eligible pitch shapes (11%) are boundary pitches.
+- Relabeling moves the grade by a median of **11.5 points** (≈ 0.8 SD):
+  - 60% move ≥ 10 points;
+  - 37% move ≥ 15 points (1 SD);
+  - 33% switch between above and below average (100).
+- The grade's sampling error has a median of 0.6, so 95% of shifts
+  exceed twice the noise.
+- **Main pairs:**
+  - SL→FC: +22 (and FC→SL: −22);
+  - FS→CH: +11;
+  - KC→CU: +11;
+  - CU→ST: −13;
+  - FC↔FF: ±21;
+  - SL↔ST: ≈ 0 (those two labels' reference stats nearly coincide).
+- **Examples:** Sonny Gray's FC is 134 as a cutter and 109 as a slider.
+  Misiorowski's SL is 99 as a slider and 124 as a cutter.
+- **Robust:** with 10/20/30 neighbors and 40/50/60% thresholds,
+  9–13% of shapes are boundary pitches, the median shift is
+  11.4–11.6, 33–35% cross 100, and 95–96% exceed 2 SE.
+- **With absolute velocity:** boundary pitches are 19% of shapes with any
+  other-label neighbor (the denominator differs), and the median shift is
+  13.7, driven by CH→SI (+59) and SI→CH (−51).
+
+**Interpretation.** Neither grade is "right". About one in nine
+well-sampled pitches sits where the label is a convention, and for those
+the per-label grade moves by roughly a standard deviation on the label
+choice alone. That is far larger than its sampling noise.
+
+**Status:** verified on 2025. Caveats:
+- our Stuff+ is a reimplementation, not FanGraphs';
+- the reference stats come from 2022–24 out-of-fold predictions, while
+  2025 uses the final models.
