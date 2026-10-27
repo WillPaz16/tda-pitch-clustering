@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/FmmQZSJrbuREInNZQn2V316aj98</id>
+  <title>arXiv Query: search_query=&amp;id_list=2604.17395&amp;start=0&amp;max_results=10</title>
+  <updated>2026-10-27T15:21:29Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=2604.17395" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2604.17395v1</id>
+    <title>A Null Model for Mapper Subtype Claims</title>
+    <updated>2026-04-19T11:52:15Z</updated>
+    <link href="https://arxiv.org/abs/2604.17395v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2604.17395v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The Mapper algorithm from topological data analysis constructs a graph summarizing the shape of a high-dimensional dataset, and groups of data points identified within this graph are widely interpreted as evidence of distinct subtypes. However, the covariance structure of the data alone can make such groups appear differentiated, even when no subtypes are present. Existing validation approaches do not account for this effect and thus cannot distinguish covariance artifacts from genuine subtypes. We propose a Gaussian null model that generates reference data matching the sample covariance matrix. We pair it with a test statistic that measures mean-level differentiation between communities. In an idealized setting, we prove that covariance geometry alone causes Mapper communities to differ in their average feature profiles, and we show that a simpler label-permutation baseline cannot detect this effect. Simulations confirm well-controlled Type I error under Gaussian data. We apply the framework to four published Mapper analyses spanning breast cancer gene expression, Congressional voting, NBA player performance, and lower-grade glioma genomics. In every case, once outlier singleton communities are accounted for, the observed differentiation does not exceed what the null produces at the α = 0.05 level. This result does not rule out subtypes in these datasets, but it does indicate that the observed structure is consistent with what covariance geometry alone can produce. Stronger evidence would be needed to support a subtype claim.</summary>
+    <category term="stat.ME" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.AT" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.AP" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-04-19T11:52:15Z</published>
+    <arxiv:primary_category term="stat.ME"/>
+    <author>
+      <name>Chad M. Topaz</name>
+    </author>
+  </entry>
+</feed>

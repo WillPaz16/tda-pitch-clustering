@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/MbkgK7IZk+5yidQGFwk6dHv96z0</id>
+  <title>arXiv Query: search_query=&amp;id_list=2607.23509&amp;start=0&amp;max_results=10</title>
+  <updated>2026-10-27T15:21:34Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=2607.23509" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2607.23509v1</id>
+    <title>Topological Data Analysis and Graph-Theoretic Approaches for Tennis Match Prediction</title>
+    <updated>2026-07-26T07:18:43Z</updated>
+    <link href="https://arxiv.org/abs/2607.23509v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.23509v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present two approaches for predicting tennis match outcomes using topological data analysis and graph theory on ATP singles matches from 2000-2025. The first method applies lower-star filtration to player competitive networks, extracting topological features through persistent homology using four summary methods (VAB, HNAV, HWNAV, OW-HNPV) combined with Modified Band Depth analysis. Algorithmic optimizations including ego graph approximations and triangle elimination enable analysis of about 66k matches. Our Random Forest model achieves 66.2% accuracy (AUC = 0.719) using topological, graph-theoretic, and ranking features. Feature importance analysis reveals that rankings contribute 36.3%, centralities 25.5%, and TDA features 24.0%, with topological features providing complementary signal. When rankings are unavailable, the topology-only model maintains 63.56% accuracy, demonstrating that network-derived features alone capture meaningful competitive structure. The second method uses a modified Katz similarity index with temporal edge weighting, achieving 62.48% accuracy on held-out test data. This work represents the first application of lower-star filtration to tennis prediction, provides systematic comparison of four topological summary methods in sports analytics, and demonstrates that TDA can achieve above-chance prediction using network topology alone while providing additional value when combined with traditional features.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.AT" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-26T07:18:43Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Jake Schwaderer</name>
+    </author>
+    <author>
+      <name>Alexander Bastien</name>
+    </author>
+    <author>
+      <name>Omid Khormali</name>
+    </author>
+    <author>
+      <name>Alejandro Navarrete</name>
+    </author>
+    <author>
+      <name>Mia Pesavento</name>
+    </author>
+    <author>
+      <name>Angelika Elderbrook</name>
+    </author>
+  </entry>
+</feed>
