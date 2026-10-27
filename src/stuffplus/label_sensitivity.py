@@ -26,7 +26,17 @@ Test (2025 season, pitch shapes with n >= MIN_N pitches):
   3. Compare the shift with the grade's own sampling error (bootstrap over the
      shape's pitches, reference stats held fixed).
 
-Run: python3 src/stuffplus/label_sensitivity.py statcast_2025.parquet [relative|absolute]
+Shapes are rebuilt from the season passed in (same recipe as the Mapper
+model's archetypes) and standardized with the Mapper model's scaler, so the
+same code replicates the test on any season (2026 is fully out-of-sample for
+the 2022-24 models).
+
+NOTE: this tests grading WITHIN a label (per-type scales, and any "elite among
+sliders" percentile). FanGraphs' Stuff+ is on one common scale across pitch
+types (its primer: Location+, not Stuff+, is "centered at 100 for each pitch
+type"), so its headline number would not change on relabeling.
+
+Run: python3 src/stuffplus/label_sensitivity.py statcast_<season>.parquet [relative|absolute] [season tag]
 """
 import sys
 import warnings
@@ -41,7 +51,7 @@ _ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(_ROOT / 'src' / 'tda'))
 from stuff_plus_calculator import StuffPlusCalculator
-from tda_classifier import load_tda_model
+from tda_classifier import load_tda_model, season_shapes
 
 K, BOUNDARY_SHARE, MIN_N, N_BOOT, SEED = 20, 0.5, 150, 200, 42
 FLIGHT = ['release_speed', 'pfx_x', 'pfx_z', 'release_spin_rate', 'spin_cos', 'spin_sin']
@@ -55,7 +65,7 @@ def stuff_z(m, s, w):
     return w[0] * zx + w[1] * zm + w[2] * zc
 
 
-def main(path, velo='relative'):
+def main(path, velo='relative', tag='2025'):
     calc = StuffPlusCalculator()
     df = pd.read_parquet(path).rename(columns={'pitcher': 'pitcher_id'})
     res = calc.calculate(df)
@@ -78,8 +88,8 @@ def main(path, velo='relative'):
 
     # nearest labelled shapes in the Mapper model's feature space
     mc = load_tda_model(_ROOT / 'models' / 'tda_mapper_model.pkl')
-    arch = mc['original_data']
     cols = list(mc['stuff_columns'])
+    arch, _ = season_shapes(df.rename(columns={'pitcher_id': 'pitcher'}), cols)
     X = mc['scaler'].transform(arch[cols].values.astype(float))[:, [cols.index(c) for c in FLIGHT]]
     labels = arch.index.get_level_values('pitch_type').astype(str).values
     pitcher = arch.index.get_level_values(0).values
@@ -115,11 +125,11 @@ def main(path, velo='relative'):
                    if key in pt.index and pt.loc[key, 'pitch_count_pt'] >= MIN_N and labels[i] in stats)
     names = df.drop_duplicates('pitcher_id').set_index('pitcher_id')['player_name']
     out['name'] = out['pitcher_id'].map(names)
-    out.to_csv(_ROOT / 'data' / f'label_sensitivity_{velo}.csv', index=False)
+    out.to_csv(_ROOT / 'data' / f'label_sensitivity_{tag}_{velo}.csv', index=False)
 
     b = out[out['boundary_share'] >= BOUNDARY_SHARE]
     a = b['shift'].abs()
-    print(f"[{velo} velocity] {eligible} pitch shapes with n >= {MIN_N}; own-label grades match the production calculator exactly")
+    print(f"[{tag}, {velo} velocity] {eligible} pitch shapes with n >= {MIN_N}; own-label grades match the production calculator exactly")
     print(f"boundary pitches (>= {BOUNDARY_SHARE:.0%} of {K} nearest other-pitcher shapes carry one other label): "
           f"{len(b)} ({len(b) / eligible:.0%})")
     print(f"  |grade shift|: median {a.median():.1f}, mean {a.mean():.1f}; "
@@ -138,4 +148,4 @@ def main(path, velo='relative'):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], *(sys.argv[2:3] or ['relative']))
+    main(sys.argv[1], *(sys.argv[2:4] or ['relative']))

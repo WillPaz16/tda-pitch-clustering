@@ -56,6 +56,20 @@ def prepare_pitch_features(df, feature_cols):
     return stuff_df
 
 
+def season_shapes(df, stuff_columns):
+    """Pitch shapes (archetypes) for any season, built the way the Mapper model's
+    original_data was: mirror LHP, encode spin axis on the circle, then average
+    each (pitcher, pitch_type). Returns (shapes indexed by (pitcher, pitch_type),
+    pitch counts)."""
+    raw = [c for c in stuff_columns if c not in ('spin_cos', 'spin_sin')] + ['spin_axis', 'p_throws']
+    raw = list(dict.fromkeys(raw))
+    df = df.dropna(subset=raw).reset_index(drop=True)   # statcast pulls carry duplicate index labels
+    feats = prepare_pitch_features(df, raw)
+    feats[['pitcher', 'pitch_type']] = df.loc[feats.index, ['pitcher', 'pitch_type']]
+    g = feats.dropna(subset=['pitch_type']).groupby(['pitcher', 'pitch_type'])
+    return g[list(stuff_columns)].mean(), g.size()
+
+
 def scaled_cluster_centroids(model_components, input_columns):
     """Return (scaled centroid matrix, original cluster_summary) for the model."""
     scaler = model_components['scaler']
