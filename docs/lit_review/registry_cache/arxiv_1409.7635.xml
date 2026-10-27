@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/DkR0065T4qDr6mL0r5WBB2e2HyM</id>
+  <title>arXiv Query: search_query=&amp;id_list=1409.7635&amp;start=0&amp;max_results=10</title>
+  <updated>2026-10-27T14:25:07Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=1409.7635" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1409.7635v1</id>
+    <title>An Application of Topological Data Analysis to Hockey Analytics</title>
+    <updated>2014-09-25T00:42:06Z</updated>
+    <link href="https://arxiv.org/abs/1409.7635v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1409.7635v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper applies the major computational tool from Topological Data Analysis (TDA), persistent homology, to discover patterns in the data related to professional sports teams. I will use official game data from the North-American National Hockey League (NHL) 2013-2014 season to discover the correlation between the composition of NHL teams with the currently preferred offensive performance markers. Specifically, I develop and use the program TeamPlex (based on the JavaPlex software library) to generate the persistence bar-codes. TeamPlex is applied to players as data points in a multidimensional (up to 12-D) data space where each coordinate corresponds to a selected performance marker.
+  The conclusion is that team's offensive performance (measured by the popular characteristic used in NHL called the Corsi number) correlates with two bar-code characteristics: greater \textit{sparsity} reflected in the longer bars in dimension 0 and lower \textit{tunneling} reflected in the low number/length of the 1-dimensional classes. The methodology can be used by team managers in identifying deficiencies in the present composition of the team and analyzing player trades and acquisitions. We give an example of a proposed trade which should improve the Corsi number of the team.</summary>
+    <category term="cs.OH" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2014-09-25T00:42:06Z</published>
+    <arxiv:comment>19 pages, 15 figures, 4 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.OH"/>
+    <author>
+      <name>Daniel Goldfarb</name>
+    </author>
+  </entry>
+</feed>

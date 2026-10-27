@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LIT = ROOT / "docs" / "lit_review"
 PDFS = ROOT / "Lit Review"
 DECK = ROOT / "docs" / "presentation" / "presi.tex"
+PAPER = ROOT / "docs" / "paper" / "paper.tex"
 LIG = {"\ufb00": "ff", "\ufb01": "fi", "\ufb02": "fl", "\ufb03": "ffi", "\ufb04": "ffl"}
 _pages = {}
 
@@ -81,7 +82,9 @@ def main():
                 continue
             snap = re.search(r"\(SNAPSHOT ([^)]+)\)", loc)
             if snap:   # web source: keywords must be in the saved raw page
-                text = squash(re.sub(r"<[^>]+>", " ", html.unescape((LIT / "registry_cache" / snap.group(1)).read_text())))
+                sp = LIT / "registry_cache" / snap.group(1)
+                sp = sp if sp.exists() else PDFS / snap.group(1)   # copyrighted snapshots stay local (gitignored)
+                text = squash(re.sub(r"<[^>]+>", " ", html.unescape(sp.read_text())))
                 missing = [k for k in (kws[i] if i < len(kws) else "").split(";") if k and squash(k) not in text]
                 n_checked += 1
                 if missing:
@@ -105,9 +108,10 @@ def main():
                 fails.append("%s: bib_key %s not in references.bib" % (r["claim_id"], key))
 
     # 3. deck citations resolve
-    cites = {k.strip() for grp in re.findall(r"\\(?:\w*cite\w*|src)(?:\[[^\]]*\])*\{([^}]*)\}", DECK.read_text()) for k in grp.split(",")}
+    src = DECK.read_text() + (PAPER.read_text() if PAPER.exists() else "")
+    cites = {k.strip() for grp in re.findall(r"\\(?:\w*cite\w*|src)(?:\[[^\]]*\])*\{([^}]*)\}", src) for k in grp.split(",")}
     cites = {k for k in cites if not k.startswith("#")}   # skip macro parameters (\\src{#1})
-    fails += ["deck cites unknown key %s" % k for k in sorted(cites - set(bib))]
+    fails += ["deck/paper cites unknown key %s" % k for k in sorted(cites - set(bib))]
 
     print("bib entries: %d | ledger locators keyword-checked: %d | deck \\cite keys: %d" % (len(bib), n_checked, len(cites)))
     print("\nNeeds manual check (%d):" % len(manual))
