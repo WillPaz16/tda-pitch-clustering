@@ -42,6 +42,7 @@ type"), so its headline number would not change on relabeling.
 
 Run: python3 src/stuffplus/label_sensitivity.py statcast_<season>.parquet [relative|absolute] [season tag]
 """
+import json
 import sys
 import warnings
 warnings.filterwarnings("ignore")
@@ -153,6 +154,14 @@ def main(path, velo='relative', tag='2025'):
     print(f"  crosses 100 (above-average under one label, below under the other): "
           f"{((b['grade_own'] - 100) * (b['grade_alt'] - 100) < 0).mean():.0%}")
     dp = (b['pct_alt'] - b['pct_own']).abs()
+    summary = {'season': tag, 'velocity': velo, 'k': K, 'share': BOUNDARY_SHARE, 'min_n': MIN_N,
+               'eligible': int(eligible), 'boundary': int(len(b)), 'boundary_frac': len(b) / eligible,
+               'median_abs_shift': float(a.median()), 'frac_ge_1sd': float((a >= 15).mean()),
+               'frac_gt_2se': float((a > 2 * b['se_grade']).mean()),
+               'frac_cross_100': float(((b['grade_own'] - 100) * (b['grade_alt'] - 100) < 0).mean()),
+               'median_se': float(b['se_grade'].median()), 'median_pct_change': float(dp.median()),
+               'frac_pct_ge_25': float((dp >= 25).mean())}
+    (_ROOT / 'data' / f'label_sensitivity_{tag}_{velo}_summary.json').write_text(json.dumps(summary, indent=1))
     print(f"  model-free (actual SwStr% percentile, own vs alternative label): median change {dp.median():.0f} "
           f"percentile points; >= 25 points: {(dp >= 25).mean():.0%}; "
           f"crosses the median: {((b['pct_own'] - 50) * (b['pct_alt'] - 50) < 0).mean():.0%}")

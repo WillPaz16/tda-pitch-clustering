@@ -1,0 +1,17 @@
+{
+ "season": "2025",
+ "velocity": "relative",
+ "k": 20,
+ "share": 0.5,
+ "min_n": 150,
+ "eligible": 1525,
+ "boundary": 168,
+ "boundary_frac": 0.11016393442622952,
+ "median_abs_shift": 11.529638156736013,
+ "frac_ge_1sd": 0.375,
+ "frac_gt_2se": 0.9583333333333334,
+ "frac_cross_100": 0.32142857142857145,
+ "median_se": 0.6356148597134926,
+ "median_pct_change": 17.458162945770706,
+ "frac_pct_ge_25": 0.3273809523809524
+}
