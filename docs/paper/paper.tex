@@ -10,6 +10,7 @@
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage{enumitem}
 \usepackage{graphicx}
+\usepackage{tikz}
 \usepackage{parskip}
 \usepackage{booktabs}
 \usepackage{xurl}   % lets long URLs in the bibliography break
@@ -89,18 +90,274 @@ Section~\ref{sec:limits} states limitations.
 %======================================================================
 \section{Topological background}\label{sec:topology}
 %======================================================================
-\plan{Definitions with full hypotheses and one worked example each; small results proved, large ones cited.
-Source: deck pp.\ 4--12 and backup pp.\ 52--53; citation ledger rows T01--T25.
-Order: simplices; simplicial complexes (geometric and abstract); $k$-skeleton and graphs as 1-dimensional complexes; nerve of a cover with the circle/disk examples; homotopy equivalence; nerve theorem (closed convex version, Bauer et al.\ Thm.~3.9; open-cover version, Hatcher Cor.~4G.3; Borsuk as the early closed-cover version); homology with $\Z_2$ coefficients and Betti numbers, with a proof of $b_1(G) = E - V + C$ for graphs; Reeb graphs (and when they are graphs, Carri\`ere--Oudot p.~1334) and Reeb spaces.}
+This section collects the topology used in the rest of the paper.
+Definitions are stated in full, small results are proved, and large theorems are cited rather than proved.
+Throughout, every space is a subset of some $\R^n$ with the topology induced by Euclidean distance; the general notions of topological space and subspace topology are standard \parencite{munkres2000topology}.
+
+\subsection{Homotopy}
+\begin{definition}[Homotopy {\parencite{hatcher2001}}]
+Continuous maps $f, g : X \to Y$ are \emph{homotopic}, written $f \simeq g$, if there is a continuous map $F : X \times [0,1] \to Y$ with $F(x,0) = f(x)$ and $F(x,1) = g(x)$ for all $x \in X$.
+Spaces $X$ and $Y$ are \emph{homotopy equivalent}, $X \simeq Y$, if there are continuous maps $f : X \to Y$ and $g : Y \to X$ with $g \circ f \simeq \mathrm{id}_X$ and $f \circ g \simeq \mathrm{id}_Y$.
+A space homotopy equivalent to a point is \emph{contractible}.
+\end{definition}
+For example, a disk is contractible and an annulus is homotopy equivalent to a circle, while a circle is not contractible.
+Homotopy equivalence is the sense of ``same shape'' used below: it preserves connected components and holes, but not size or distance.
+
+\subsection{Simplices and simplicial complexes}
+\begin{definition}[Simplex {\parencite{hatcher2001}}]
+Points $v_0, \dots, v_n \in \R^m$ are \emph{affinely independent} if $v_1 - v_0, \dots, v_n - v_0$ are linearly independent.
+Their convex hull
+\[
+  [v_0, \dots, v_n] = \Big\{ \textstyle\sum_{i=0}^n t_i v_i \;:\; t_i \ge 0,\ \sum_i t_i = 1 \Big\}
+\]
+is an \emph{$n$-simplex} with \emph{vertices} $v_0, \dots, v_n$.
+The simplex spanned by any nonempty subset of the vertices is a \emph{face}.
+\end{definition}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.9, v/.style={circle, fill=black, inner sep=1.4pt}]
+  \node[v] at (0,0) {}; \node at (0,-0.5) {\small 0-simplex};
+  \draw[thick] (1.5,0) node[v]{} -- (2.7,0.8) node[v]{}; \node at (2.1,-0.5) {\small 1-simplex};
+  \fill[gray!25] (4.2,0) -- (5.6,0) -- (4.9,1.1) -- cycle;
+  \draw[thick] (4.2,0) node[v]{} -- (5.6,0) node[v]{} -- (4.9,1.1) node[v]{} -- cycle; \node at (4.9,-0.5) {\small 2-simplex};
+  \fill[gray!15] (7.1,0) -- (8.6,0) -- (7.9,1.3) -- cycle; \fill[gray!30] (8.6,0) -- (8.3,0.5) -- (7.9,1.3) -- cycle;
+  \draw[thick] (7.1,0) node[v]{} -- (8.6,0) node[v]{} -- (7.9,1.3) node[v]{} -- cycle;
+  \draw[thick] (8.6,0) -- (8.3,0.5) node[v]{} -- (7.9,1.3); \draw[thick, dashed] (7.1,0) -- (8.3,0.5);
+  \node at (7.85,-0.5) {\small 3-simplex};
+\end{tikzpicture}
+\caption{Simplices of dimension 0 to 3.}\label{fig:simplices}
+\end{figure}
+
+\begin{definition}[Simplicial complex {\parencite{edelsbrunnerletscherzomorodian2002}}]
+A \emph{simplicial complex} $K$ is a finite collection of simplices such that (i) every face of a simplex of $K$ is in $K$, and (ii) any two simplices of $K$ are disjoint or intersect in a common face.
+Its \emph{vertex set} is the set of its 0-simplices.
+\end{definition}
+
+\begin{definition}[Abstract simplicial complex {\parencite{zomorodiancarlsson2005}}]
+An \emph{abstract simplicial complex} on a vertex set $V$ is a collection $S$ of finite nonempty subsets of $V$ such that $\{v\} \in S$ for every $v \in V$, and $\tau \subseteq \sigma \in S$ implies $\tau \in S$.
+A $k$-simplex is a set of $k+1$ vertices. Placing the vertices in general position gives a geometric realization $|S|$.
+\end{definition}
+The abstract version records only which vertices span simplices; it is the form in which nerves and Mapper graphs arise below.
+
+\subsection{Skeleta and graphs}
+\begin{definition}[Skeleton {\parencite{edelsbrunnerharerpatel2008}}]
+The \emph{$k$-skeleton} $K^{(k)}$ of a simplicial complex $K$ is the subcomplex of all simplices of dimension at most $k$; the 0-skeleton is the vertex set.
+\end{definition}
+By the abstract definition, a finite graph $G = (V, E)$ \emph{is} a simplicial complex of dimension at most one: its vertices are 0-simplices and its edges are 1-simplices.
+Its realization $|G|$, the graph viewed as a topological space, is a \emph{topological graph}.
+
+\begin{example}\label{ex:graph}
+Let $G$ have vertices $\{a,b,c,d\}$ and edges $\{a,b\}, \{b,c\}, \{a,c\}, \{c,d\}$, and let $K = G \cup \{\{a,b,c\}\}$ add the triangle on $a,b,c$.
+Then $K^{(1)} = G$.
+The graph $G$ has one loop, $a \to b \to c \to a$; in $K$ the triangle fills it.
+A graph can therefore show a loop that the complex it came from does not have --- the situation of Section~\ref{sec:loops}.
+\end{example}
+
+\subsection{Nerves}
+\begin{definition}[Nerve {\parencite{singh2007mapper,hatcher2001}}]
+Let $\mathcal U = \{U_\alpha\}_{\alpha \in A}$ be a finite cover of a space $X$.
+The \emph{nerve} $N(\mathcal U)$ is the abstract simplicial complex with vertex set $A$ in which a set $\{\alpha_0, \dots, \alpha_k\} \subseteq A$ spans a $k$-simplex if and only if $U_{\alpha_0} \cap \cdots \cap U_{\alpha_k} \neq \emptyset$.
+\end{definition}
+
+\begin{example}\label{ex:nerve}
+Cover a circle by three arcs, each overlapping the next, with no point in all three.
+The nerve has three vertices and three edges but no triangle: a hollow triangle, homotopy equivalent to the circle.
+Cover a disk instead by three sets that share a common point: the nerve is a filled triangle, homotopy equivalent to a point, and so to the disk (Figure~\ref{fig:nerve}).
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.8, v/.style={circle, fill=black, inner sep=1.4pt}]
+  \draw[very thick, gray] (0,0) circle (1);
+  \draw[line width=4pt, gray!80, opacity=0.6] (100:1.15) arc (100:260:1.15);
+  \draw[line width=4pt, gray!55, opacity=0.6] (220:1.3) arc (220:380:1.3);
+  \draw[line width=4pt, gray!30, opacity=0.8] (340:1.45) arc (340:500:1.45);
+  \node at (0,-1.9) {\small circle, three arcs};
+  \draw[-latex, thick] (1.9,0) -- (2.8,0);
+  \draw[thick] (3.4,-0.6) node[v]{} -- (4.8,-0.6) node[v]{} -- (4.1,0.7) node[v]{} -- cycle;
+  \node at (4.1,-1.3) {\small hollow triangle};
+  \begin{scope}[xshift=7.4cm]
+  \fill[gray!20] (0,0) circle (1);
+  \fill[gray!60, opacity=0.4] (-0.35,0.15) circle (0.75); \fill[gray!45, opacity=0.4] (0.35,0.15) circle (0.75); \fill[gray!30, opacity=0.4] (0,-0.4) circle (0.75);
+  \node at (0,-1.9) {\small disk, three sets with a common point};
+  \draw[-latex, thick] (1.4,0) -- (2.3,0);
+  \fill[gray!25] (2.9,-0.6) -- (4.3,-0.6) -- (3.6,0.7) -- cycle;
+  \draw[thick] (2.9,-0.6) node[v]{} -- (4.3,-0.6) node[v]{} -- (3.6,0.7) node[v]{} -- cycle;
+  \node at (3.6,-1.3) {\small filled triangle};
+  \end{scope}
+\end{tikzpicture}
+\caption{Two covers and their nerves (Example~\ref{ex:nerve}).}\label{fig:nerve}
+\end{figure}
+
+\subsection{The nerve theorem}
+In both examples the nerve has the shape of the space. The nerve theorem gives conditions under which this holds.
+A set $C \subseteq \R^d$ is \emph{convex} if the segment between any two points of $C$ lies in $C$.
+
+\begin{theorem}[Nerve theorem, closed convex version {\parencite[Thm.~3.9]{bauerkerberrollrolle2023}}]\label{thm:nerve}
+If $X \subseteq \R^d$ is covered by finitely many closed convex sets $\mathcal C = \{C_1, \dots, C_n\}$, then $X \simeq |N(\mathcal C)|$.
+\end{theorem}
+An early closed-cover version is due to \textcite[Cor.~3]{borsuk1948}.
+The idea behind the hypothesis is that a nonempty intersection of convex sets is convex, hence contractible, so each simplex of the nerve stands for a contractible piece of $X$.
+There is also an open-cover version: if $\mathcal U$ is an open cover of a paracompact space $X$ and every nonempty finite intersection of its sets is contractible, then $X \simeq N(\mathcal U)$ \parencite{hatcher2001}.
+
+\begin{remark}
+Covers built from data are rarely this well behaved: the sets Mapper produces are clusters, not convex sets, and their intersections need not be contractible. A Mapper graph therefore need not have the shape of the underlying space, which is why Sections~\ref{sec:certify}--\ref{sec:shape} test its features rather than read them off.
+\end{remark}
+
+\subsection{Homology and Betti numbers}
+\begin{definition}[Betti numbers {\parencite{hatcher2001}}]
+The $k$-th \emph{Betti number} $b_k(X)$ is the rank of the $k$-th homology group $H_k(X)$. We use coefficients in $\Z_2$, so each $H_k$ is a vector space and $b_k$ is its dimension.
+\end{definition}
+The number $b_0$ counts path components \parencite{hatcher2001}, and $b_1$ counts independent loops.
+For the complexes in this paper both are computable by linear algebra over $\Z_2$.
+For a simplicial complex $K$, let $C_k$ be the $\Z_2$-vector space with basis the $k$-simplices, and let $\partial_k : C_k \to C_{k-1}$ send each simplex to the sum of its $(k-1)$-dimensional faces; then $H_k(K) = \ker \partial_k / \operatorname{im} \partial_{k+1}$.
+
+\begin{proposition}\label{prop:graph-b1}
+Let $G$ be a finite graph with $V$ vertices, $E$ edges, and $C$ connected components. Then $b_1(G) = E - V + C$.
+\end{proposition}
+\begin{proof}
+The chain complex of $G$ is $0 \to C_1 \xrightarrow{\partial_1} C_0 \to 0$, with $\dim C_1 = E$ and $\dim C_0 = V$.
+Hence $b_0 = \dim (C_0 / \operatorname{im}\partial_1) = V - \rank \partial_1$ and $b_1 = \dim \ker \partial_1 = E - \rank \partial_1$ by rank--nullity.
+Subtracting, $b_1 - b_0 = E - V$, and $b_0 = C$ since the path components of a graph are its connected components.
+\end{proof}
+
+\begin{proposition}\label{prop:complex-b1}
+Let $K$ be a finite simplicial complex of dimension at most two with $V$ vertices, $E$ edges, and $C$ connected components. Then $b_1(K) = E - V + C - \rank \partial_2$.
+\end{proposition}
+\begin{proof}
+Now $H_1(K) = \ker \partial_1 / \operatorname{im} \partial_2$, so $b_1 = \dim\ker\partial_1 - \rank\partial_2$, and $\dim \ker \partial_1 = E - V + C$ by the proof of Proposition~\ref{prop:graph-b1}.
+\end{proof}
+Each triangle can fill at most one loop: a hollow triangle has $b_1 = 3 - 3 + 1 = 1$, and adding the triangle gives $\rank \partial_2 = 1$ and $b_1 = 0$.
+Proposition~\ref{prop:complex-b1} is how Section~\ref{sec:loops} computes the loops of the full nerve.
+
+\subsection{Reeb graphs and Reeb spaces}
+\begin{definition}[Reeb graph {\parencite{carriereoudot2018,reeb1946}}]
+Let $f : X \to \R$ be continuous. Write $x \sim y$ if $f(x) = f(y)$ and $x$ and $y$ lie in the same connected component of the level set $f^{-1}(f(x))$.
+The \emph{Reeb graph} of $f$ is the quotient space $R_f(X) = X/{\sim}$.
+\end{definition}
+When $X$ is a smooth manifold and $f$ is a Morse function, or more generally of Morse type, $R_f(X)$ is a graph --- technically a multigraph --- and so a topological graph \parencite[p.~1334]{carriereoudot2018}.
+For the height function on an upright torus, each level set collapses to one point per component: one point near the bottom and top, two in the middle band (Figure~\ref{fig:reeb}). The Reeb graph is a circle with two whiskers.
+Replacing $\R$ by $\R^k$ and level sets by the preimages $f^{-1}(c)$, $c \in \R^k$, gives the \emph{Reeb space} \parencite{munchwang2016,edelsbrunnerharerpatel2008}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{reeb_torus.pdf}
+\caption{The height function on a torus and its Reeb graph.}\label{fig:reeb}
+\end{figure}
 
 %======================================================================
 \section{The Mapper algorithm}\label{sec:mapper}
 %======================================================================
-\plan{Topological Mapper (nerve of the pullback cover by path components) and statistical Mapper (clusters in place of components).
-The lens: PCA via the SVD, with the reason for centering and best rank-$k$ approximation (deck pp.\ 15--20).
-The cover (intervals and overlap). DBSCAN with Ester et al.'s definitions and Lemma~2 (deck pp.\ 22--27), with the core/border/noise example figure.
-The graph as the 1-skeleton of the nerve, and the toy circle example (figure \texttt{toy\_mapper}).
-Theorem (Dey--M\'emoli--Wang): for a path-connected cover, $H_1(X) \to H_1(N(\mathcal U))$ is surjective, so $b_1(\text{Mapper}) \le b_1(X)$.}
+\subsection{Topological Mapper}
+\begin{definition}[Mapper {\parencite{singh2007mapper,deymemoliwang2017}}]
+Let $f : X \to Z$ be continuous and let $\mathcal U = \{U_\alpha\}$ be a finite open cover of $Z$.
+Split each preimage $f^{-1}(U_\alpha)$ into its path components; together they form the \emph{pullback cover} $f^*\mathcal U$ of $X$.
+The \emph{Mapper} is its nerve, $M(\mathcal U, f) = N(f^*\mathcal U)$.
+\end{definition}
+For $Z = \R$, Mapper is a discrete estimator of the Reeb graph; for $Z = \R^d$ it approximates the Reeb space \parencite{carrieremicheloudot2018,munchwang2016}.
+Its loops are controlled by those of $X$:
+
+\begin{theorem}[Dey--M\'emoli--Wang {\parencite{deymemoliwang2017}}]\label{thm:dmw}
+If $\mathcal U$ is a path-connected cover of a compact space $X$, the nerve map induces a surjection $H_1(X) \to H_1(N(\mathcal U))$, with $\Z_2$ coefficients.
+\end{theorem}
+\begin{corollary}\label{cor:mapper-b1}
+$b_1(M(\mathcal U, f)) \le b_1(X)$.
+\end{corollary}
+\begin{proof}
+The pullback cover consists of path components, so it is path-connected, and a surjective linear map cannot increase dimension.
+\end{proof}
+The corollary concerns the nerve, a simplicial complex. Software outputs only its 1-skeleton, whose loops are not bounded this way (Example~\ref{ex:graph}); Section~\ref{sec:loops} shows the difference in our data.
+
+\subsection{Statistical Mapper}
+A \emph{point cloud} is a finite set $P \subseteq \R^n$ with Euclidean distance.
+In the statistical version of Mapper, clustering plays the role of path components: each preimage $f^{-1}(U_\alpha) \cap P$ is split into clusters \parencite{singh2007mapper}.
+The algorithm has four steps:
+\begin{enumerate}
+  \item choose a \emph{lens} $f : P \to \R^k$;
+  \item cover $f(P)$ by overlapping sets;
+  \item cluster each preimage, in the full space $\R^n$;
+  \item form the \emph{Mapper graph}: one vertex per cluster, and one edge for each pair of clusters that share a point.
+\end{enumerate}
+Steps 1--3 build a cover of $P$ and step 4 takes its nerve \parencite{singh2007mapper}, keeping only the 1-skeleton.
+The lens decides which points are clustered together; the clustering itself uses all $n$ coordinates.
+
+\begin{example}\label{ex:toy}
+Take 240 noisy points on a circle, the lens $f(x,y) = y$, and five intervals with 30\% overlap.
+DBSCAN (Section~\ref{sec:dbscan}) splits the five preimages into $1, 2, 2, 2, 1$ arcs, and arcs in overlapping intervals share points.
+The graph is a single loop, $b_1 = 8 - 8 + 1 = 1$: the shape of the circle, and its Reeb graph for the height function (Figure~\ref{fig:toy}).
+\end{example}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{toy_mapper.pdf}
+\caption{Mapper on a noisy circle (Example~\ref{ex:toy}).}\label{fig:toy}
+\end{figure}
+
+\subsection{The lens: principal component analysis}
+Among the Mapper applications reviewed by \textcite{madukpe2026review}, principal component analysis (PCA) is the most commonly used lens; we use a two-dimensional PCA lens.
+PCA finds new uncorrelated variables, linear combinations of the old ones, that successively capture as much variance as possible \parencite{jolliffecadima2016,pearson1901}.
+
+Let the data be $m$ observations of $n$ features, and subtract each column's mean to obtain the centered matrix $\mathbf A \in \R^{m \times n}$.
+Centering is not a choice that changes the answer: variance is measured around the mean, so it changes neither the covariance matrix nor the principal components, and it makes $(m-1) S = \mathbf A^{\mathsf T} \mathbf A$, which turns PCA into a statement about $\mathbf A$ itself \parencite{jolliffecadima2016}.
+Here $S = \frac{1}{m-1}\mathbf A^{\mathsf T}\mathbf A$ is the covariance matrix: its diagonal entries are the feature variances and its off-diagonal entries the covariances.
+
+\begin{proposition}
+$S$ is positive semidefinite.
+\end{proposition}
+\begin{proof}
+For any $x \in \R^n$, $x^{\mathsf T} S x = \frac{1}{m-1} x^{\mathsf T}\mathbf A^{\mathsf T}\mathbf A x = \frac{1}{m-1}\|\mathbf A x\|^2 \ge 0$.
+\end{proof}
+So $S$ has real, nonnegative eigenvalues and an orthonormal basis of eigenvectors. The variance of the data along a unit vector $v$ is $v^{\mathsf T} S v$, which is maximized by a top eigenvector.
+
+\begin{theorem}[Singular value decomposition {\parencite{axler2024ladr}}]
+Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sigma \mathbf V^{\mathsf T}$, where $\mathbf U \in \R^{m \times r}$ and $\mathbf V \in \R^{n \times r}$ have orthonormal columns and $\boldsymbol\Sigma = \operatorname{diag}(\sigma_1 \ge \cdots \ge \sigma_r > 0)$.
+\end{theorem}
+The columns of $\mathbf V$ are eigenvectors of $\mathbf A^{\mathsf T}\mathbf A$, and the columns of $\mathbf U$ eigenvectors of $\mathbf A\mathbf A^{\mathsf T}$, for the nonzero eigenvalues $\sigma_i^2$; hence the eigenvalues of $S$ are $\lambda_i = \sigma_i^2/(m-1)$ and the principal directions are the columns $v_i$ of $\mathbf V$ \parencite{jolliffecadima2016}.
+Keeping the first $k$ directions, $\mathbf V_k = [v_1 \cdots v_k]$, the lens is $f(x) = \mathbf V_k^{\mathsf T} x$ and the score matrix is $\mathbf Z_k = \mathbf A \mathbf V_k = \mathbf U_k \boldsymbol\Sigma_k$.
+The matrix $\mathbf A_k = \mathbf U_k \boldsymbol\Sigma_k \mathbf V_k^{\mathsf T}$ is the closest matrix of rank at most $k$ to $\mathbf A$, both in the operator norm, with error $\sigma_{k+1}$ \parencite{axler2024ladr}, and in the least-squares sense \parencite{jolliffecadima2016}.
+The proportion of variance explained by component $j$ is $\lambda_j / \sum_l \lambda_l = \sigma_j^2 / \sum_l \sigma_l^2$ \parencite{jolliffecadima2016}.
+
+We take $k = 2$. On our data the first two components explain \PCone\% and \PCtwo\% of the variance.
+The cover lives in $\R^k$: with ten intervals per axis, $k = 2$ gives 100 cubes, while $k = 3$ would give 1{,}000, most of them nearly empty; and a two-dimensional lens can be drawn and read.
+Because PCA is linear it can flatten curved structure; this is acceptable here because clustering happens in the full space, and Section~\ref{sec:certify} repeats the stability analysis with three other lenses, including the nonlinear Isomap \parencite{tenenbaum2000isomap}.
+
+\subsection{The cover}
+The image $f(P) \subseteq \R^k$ is covered by overlapping hypercubes: each axis is cut into intervals that overlap their neighbors by a fixed percentage \parencite{singh2007mapper,madukpe2026review}.
+Two parameters set the resolution, the number of intervals and the percentage overlap \parencite{singh2007mapper}, and the resulting graph depends on them; tuning them on real data is not easy \parencite{carrieremicheloudot2018}.
+We use ten intervals per axis with 30\% overlap and test the results over a grid of alternatives (Section~\ref{sec:certify}).
+
+\subsection{Clustering: DBSCAN}\label{sec:dbscan}
+Each preimage is clustered with DBSCAN, the second most common choice in reviewed Mapper applications after hierarchical clustering \parencite{madukpe2026review}.
+It needs no preset number of clusters, finds clusters of arbitrary shape, and labels isolated points as noise \parencite{ester1996dbscan}.
+Fix a point cloud $P$ with distance $d$, a radius $\varepsilon > 0$, and a count $M \in \N$ (called Eps and MinPts by \textcite{ester1996dbscan}). The following definitions are theirs.
+
+\begin{definition}
+The \emph{$\varepsilon$-neighborhood} of $p \in P$ is $N_\varepsilon(p) = \{ q \in P : d(p,q) \le \varepsilon \}$, and $p$ is a \emph{core point} if $|N_\varepsilon(p)| \ge M$.
+A point $p$ is \emph{directly density-reachable} from $q$ if $p \in N_\varepsilon(q)$ and $q$ is a core point, and \emph{density-reachable} from $q$ if there is a chain $q = p_1, p_2, \dots, p_k = p$ in which each $p_{i+1}$ is directly density-reachable from $p_i$.
+Points $p$ and $q$ are \emph{density-connected} if both are density-reachable from some common point $o$.
+\end{definition}
+\begin{definition}
+A \emph{cluster} is a nonempty $C \subseteq P$ such that (i) if $p \in C$ and $q$ is density-reachable from $p$, then $q \in C$ (maximality), and (ii) any two points of $C$ are density-connected (connectivity).
+\emph{Noise} is the set of points of $P$ in no cluster; it depends on the chosen $(\varepsilon, M)$.
+\end{definition}
+\begin{lemma}[{\textcite{ester1996dbscan}}]
+If $C$ is a cluster and $p \in C$ is a core point, then $C = \{ o \in P : o \text{ is density-reachable from } p \}$.
+\end{lemma}
+The lemma is why the algorithm is correct: a cluster is determined by any one of its core points, so starting from an unclassified core point and collecting everything density-reachable from it recovers exactly its cluster. The algorithm loops over the points and expands a new cluster from each unclassified core point \parencite[p.~229]{ester1996dbscan}; a point that is not a core point is marked noise for now, and a border point first marked noise is relabeled if a later cluster reaches it.
+\textcite{ester1996dbscan} allow different parameters $(\varepsilon_i, M_i)$ for each cluster; the algorithm, and our analysis, use one global pair, $\varepsilon = 1.0$ in standardized units and $M = 4$.
+Figure~\ref{fig:dbscan} shows the three kinds of point.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.6\textwidth]{dbscan_toy.pdf}
+\caption{Core, border, and noise points for $\varepsilon = 0.5$, $M = 4$. Solid circle: a core point's $\varepsilon$-ball holds six points. Dashed circle: a border point's ball holds three, including a core point, so it joins the cluster. Crosses: noise, each more than $\varepsilon$ from every core point.}\label{fig:dbscan}
+\end{figure}
+
+\subsection{The graph and its implementation}
+Each cluster becomes a vertex, and two clusters are joined by an edge when they share at least one point, which happens because neighboring cubes overlap \parencite{singh2007mapper}.
+The clusters form a cover of the non-noise part of $P$, and the graph is the 1-skeleton of its nerve: three clusters with a common point span a triangle in the nerve, but the graph keeps only the three edges.
+We use KeplerMapper, a Python implementation that works with scikit-learn-compatible clustering and scaling algorithms \parencite{vanveen2019keplermapper,pedregosa2011sklearn}, developed under the scikit-tda project \parencite{keplermapper_repo}.
 
 %======================================================================
 \section{Related work}\label{sec:related}
