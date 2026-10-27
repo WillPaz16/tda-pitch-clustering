@@ -843,3 +843,29 @@ choice alone. That is far larger than its sampling noise.
 - our Stuff+ is a reimplementation, not FanGraphs';
 - the reference stats come from 2022–24 out-of-fold predictions, while
   2025 uses the final models.
+
+**2026 replication (fully out-of-sample; models trained on 2022–24).**
+The same script and settings as above (relative velocity, K = 20, 50%
+share). Shapes are rebuilt from the 2026 pull: 746,715 pitches,
+2026-03-20 to 10-26, postseason included.
+
+| | 2025 | 2026 |
+|---|---|---|
+| Boundary pitches | 168 (11%) | 157 (10%) |
+| Median grade shift on relabeling | 11.5 | 9.6 |
+| Shift ≥ 1 SD (15 points) | 38% | 34% |
+| Shift > 2 × bootstrap SE | 96% | 91% |
+| Crosses 100 | 32% | 25% |
+
+- **Same driving pairs:** SL↔FC (±26), FS→CH (+8), KC→CU (+8), FC→FF
+  (+21). SL↔ST is again ≈ 0.
+- **Absolute-velocity variant for 2026:** 13% boundary, median shift
+  12.8.
+- The 2025 numbers above are from shapes rebuilt from the current pull
+  (`season_shapes`). The original model-archetype run gave 166 boundary
+  pitches with the same median.
+- **External check:** FanGraphs is not available. pybaseball's leaderboard
+  request returned 403, and the export sits behind a membership (Will chose
+  not to pay). Planned replacement: a model-free check. Rank each
+  boundary pitch's *actual* SwStr% within its own label vs. within the
+  alternative label.
