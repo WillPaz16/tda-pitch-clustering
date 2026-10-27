@@ -975,3 +975,39 @@ pronation/supination, delivery markers) is future work: Statcast lacks
 those data. The planner uses only measured constraints: arm angle,
 release point, extension, a velocity band, raw spin capacity, and observed
 one-season change sizes as the step budget.
+
+## Development planner: cheapest realistic path with season benchmarks (2026-10-27)
+
+Script: `src/stuffplus/development_planner.py`. Outputs:
+`data/development_plan_543135_FF.csv` and
+`data/development_population_543135_FF.csv`. This replaces "drift toward
+better neighbors" (a null result) with **planning**: the cheapest path,
+through pitches that exist, to a better-playing shape for a fixed
+profile.
+
+**Pieces.**
+- **Profile held fixed:** arm angle within 5°, extension within 0.5 ft,
+  velocity within 1.5 mph, raw spin within 200 rpm. Release coordinates are
+  not also constrained: they measure the same slot, and requiring both left
+  11 shapes, so no path.
+- **Value, in SwStr units:** V = 0.257 · pm − 0.59 pp · typicality (z).
+  Both coefficients come from the pre-specified typicality model.
+- **Graph:** 8-nearest-neighbor graph in flight space; Dijkstra.
+- **Budget:** one season = the 90th percentile of observed one-season
+  changes (0.587).
+
+**Eovaldi FF** (94.1 mph, HB 13.3 in, IVB 13.1 in, 2227 rpm, axis 229°).
+41 feasible shapes.
+- **1 season:** → Lynch FF → Kikuchi FF (94.8 mph, HB 9.4, IVB 15.4,
+  axis 224°): +2.20 pp. Path cost 0.547; straight line 0.505.
+- **2 seasons:** → Houser FF → Hader "SI" (95.5 mph, HB 9.3, IVB 18.4,
+  axis 212°): +4.51 pp. No improvement after that.
+- The direction matches the earlier illustration: more ride, less run,
+  same velocity and spin. No step lowers V.
+
+**Caveats.**
+- Illustrative: the plan is not validated (that needs prospective data).
+- Hader is an LHP reliever: actual SwStr along the path is confounded by
+  role, which is why plans rank by V.
+- The labels on the path cross (FF → "SI"): the continuum at work.
+- Grip and delivery feasibility are not modelled (future work).
