@@ -25,6 +25,13 @@ abstract only; `presi.tex` — Beamer slide deck, the real content).
   Stuff+-style models with actual SwStr% as a check. Labeled illustrative,
   not causal. The physical box, not Mapper, picks the neighbors; the
   continuum result is what licenses the comparison (DISCOVERY_FINDINGS.md).
+  **Updated 2026-10-27 (scope change, Will's call):** two Stuff+ analyses
+  are now RESULTS, not future work: (1) label sensitivity of per-pitch-type
+  grades (`src/stuffplus/label_sensitivity.py`; 2025 + 2026 replication);
+  (2) the pitch-development test (`src/stuffplus/pitch_development.py`,
+  design pre-specified in its docstring and committed before running).
+  Claim scope: grading WITHIN a label (FanGraphs Stuff+ is one common
+  scale); development result is an association, not causal.
 - **Deck restructured 2026-10-14 to the advisor's 15/30/15 split:**
   topological spaces + formal homotopy moved to backup (informal ≃ kept
   on the nerve theorem slide); added "graphs are simplicial complexes",
