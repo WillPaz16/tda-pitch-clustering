@@ -830,9 +830,10 @@ depending on which side its label falls?
 - **Robust:** with 10/20/30 neighbors and 40/50/60% thresholds,
   9–13% of shapes are boundary pitches, the median shift is
   11.4–11.6, 33–35% cross 100, and 95–96% exceed 2 SE.
-- **With absolute velocity:** boundary pitches are 19% of shapes with any
-  other-label neighbor (the denominator differs), and the median shift is
-  13.7, driven by CH→SI (+59) and SI→CH (−51).
+- **With absolute velocity** (regenerated with the current script): 13%
+  of shapes are boundary pitches, with a median shift of 14.0. The larger
+  shifts come from CH↔SI, where hard changeups neighbor other pitchers'
+  sinkers. The model-free percentile shift is 20 points.
 
 **Interpretation.** Neither grade is "right". About one in nine
 well-sampled pitches sits where the label is a convention, and for those
