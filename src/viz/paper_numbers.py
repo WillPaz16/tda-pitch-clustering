@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[2]
 D = ROOT / 'data'
 N_PITCHES_2025 = 721_799    # full-season pull used for the fit (provenance check, DISCOVERY_FINDINGS.md)
 N_PITCHES_2026 = 746_715    # 2026-03-20 .. 10-26 pull used for the replication
+N_PITCHES_2024 = 745_350    # 2024-03-20 .. 11-02 pull (development tests)
+N_PITCHES_2023 = 732_562    # 2023-03-30 .. 11-01 pull (development tests)
 
 
 def fmt(x, nd=0):
@@ -91,6 +93,18 @@ def main():
     m['JumpEndSeason'] = fmt(jp.season_budget.iloc[-1])
     m['JumpSweepStart'] = fmt(abs(12 * jpop.raw_pfx_x.iloc[0]), 1)   # glove-side sweep, inches
     m['JumpSweepOne'], m['JumpSweepEnd'] = fmt(-jp.hb_in.iloc[0], 1), fmt(abs(jp.hb_in.iloc[-1]), 1)
+
+    m['NPitchesTwentyFour'], m['NPitchesTwentyThree'] = fmt(N_PITCHES_2024), fmt(N_PITCHES_2023)
+    sc = json.loads((D / 'shape_counts_2025.json').read_text())
+    m['MedianPitches'] = fmt(sc['median_pitches'])
+    m['PctLtFive'], m['PctLtTwenty'] = fmt(100 * sc['frac_lt5']), fmt(100 * sc['frac_lt20'])
+    m['NSlow'], m['SlowMedian'], m['SlowQ'] = fmt(sc['n_slow']), fmt(sc['slow_median_pitches']), fmt(sc['slow_q25_pitches'])
+    ss = pd.read_csv(D / 'sample_size_check.csv').set_index('min_n')
+    for k, word in [(1, 'One'), (10, 'Ten'), (20, 'Twenty')]:
+        r = ss.loc[k]
+        m[f'SS{word}Shapes'], m[f'SS{word}Slow'], m[f'SS{word}Comp'] = fmt(r.shapes), fmt(r.slow), fmt(r.n_components)
+        m[f'SS{word}Iso'] = 'none in a node' if pd.isna(r.slow_isolated) else fmt(100 * r.slow_isolated) + r'\%'
+        m[f'SS{word}Rho'] = fmt(r.ordering_rho, 2)
 
     out = ROOT / 'docs' / 'paper' / 'numbers.tex'
     out.parent.mkdir(parents=True, exist_ok=True)

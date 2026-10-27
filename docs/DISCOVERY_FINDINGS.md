@@ -478,6 +478,15 @@ Verified at scale.
   | 10 | 3,388 | 63 | 5 | 83% | 1.00 |
   | 20 | 3,073 | 29 | 8 | none in any node | 0.98 |
 
+  *Superseded (2026-10-27):* this table was computed ad hoc and never
+  saved. `src/tda/sample_size_check.py` recomputes it from the current
+  pull and saves `data/sample_size_check.csv`:
+  - min 1: 3,942 shapes, 8 components, 97% isolated, ρ 1.00;
+  - min 10: 3,391 shapes, 6 components, 89%, ρ 1.00;
+  - min 20: 3,073 shapes, 8 components, none in a node, ρ 0.98.
+
+  Same conclusions. The deck and paper use the saved numbers.
+
   The continuum ordering is unaffected. The slow pitches stay off the
   continuum at every threshold, but at ≥ 20 pitches they're too sparse to
   form nodes at all (DBSCAN noise). So "slow pitches sit apart from the

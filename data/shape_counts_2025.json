@@ -1,0 +1,9 @@
+{
+ "n_shapes": 3942,
+ "median_pitches": 98.0,
+ "frac_lt5": 0.08751902587519025,
+ "frac_lt20": 0.2204464738711314,
+ "n_slow": 131,
+ "slow_median_pitches": 9.0,
+ "slow_q25_pitches": 2.0
+}
