@@ -25,6 +25,10 @@ Test (2025 season, pitch shapes with n >= MIN_N pitches):
      against the alternative label. Same pitches, same model predictions.
   3. Compare the shift with the grade's own sampling error (bootstrap over the
      shape's pitches, reference stats held fixed).
+  4. Model-free check (no Stuff+ at all): the pitch's ACTUAL SwStr% percentile
+     among shapes of its own label vs. among shapes of the alternative label
+     (shapes with n >= MIN_N). Stands in for an external Stuff+ (FanGraphs
+     is members-only).
 
 Shapes are rebuilt from the season passed in (same recipe as the Mapper
 model's archetypes) and standardized with the Mapper model's scaler, so the
@@ -54,6 +58,7 @@ from stuff_plus_calculator import StuffPlusCalculator
 from tda_classifier import load_tda_model, season_shapes
 
 K, BOUNDARY_SHARE, MIN_N, N_BOOT, SEED = 20, 0.5, 150, 200, 42
+MISS = ['swinging_strike', 'swinging_strike_blocked', 'missed_bunt']
 FLIGHT = ['release_speed', 'pfx_x', 'pfx_z', 'release_spin_rate', 'spin_cos', 'spin_sin']
 
 
@@ -121,6 +126,15 @@ def main(path, velo='relative', tag='2025'):
                      'boundary_share': cnt / K, 'grade_own': own, 'grade_alt': other,
                      'shift': other - own, 'se_grade': grade(boots, labels[i]).std(ddof=1)})
     out = pd.DataFrame(rows)
+    # 4. model-free: actual SwStr% percentile within own vs alternative label
+    sw = pl.assign(miss=pl['description'].isin(MISS)).groupby(['pitcher_id', 'pitch_type']).agg(
+        swstr=('miss', 'mean'), n=('miss', 'size'))
+    sw = sw[sw['n'] >= MIN_N]
+    pool = {lab: np.sort(g['swstr'].values) for lab, g in sw.groupby(level='pitch_type')}
+    pct = lambda v, lab: 100 * np.searchsorted(pool[lab], v, side='right') / len(pool[lab]) if lab in pool else np.nan
+    out['swstr'] = [sw['swstr'].get((r.pitcher_id, r.pitch_type), np.nan) for r in out.itertuples()]
+    out['pct_own'] = [pct(v, r.pitch_type) for v, r in zip(out['swstr'], out.itertuples())]
+    out['pct_alt'] = [pct(v, r.alt_label) for v, r in zip(out['swstr'], out.itertuples())]
     eligible = sum(1 for i, key in enumerate(arch.index)
                    if key in pt.index and pt.loc[key, 'pitch_count_pt'] >= MIN_N and labels[i] in stats)
     names = df.drop_duplicates('pitcher_id').set_index('pitcher_id')['player_name']
@@ -138,6 +152,10 @@ def main(path, velo='relative', tag='2025'):
           f"shift > 2 SE: {(a > 2 * b['se_grade']).mean():.0%}")
     print(f"  crosses 100 (above-average under one label, below under the other): "
           f"{((b['grade_own'] - 100) * (b['grade_alt'] - 100) < 0).mean():.0%}")
+    dp = (b['pct_alt'] - b['pct_own']).abs()
+    print(f"  model-free (actual SwStr% percentile, own vs alternative label): median change {dp.median():.0f} "
+          f"percentile points; >= 25 points: {(dp >= 25).mean():.0%}; "
+          f"crosses the median: {((b['pct_own'] - 50) * (b['pct_alt'] - 50) < 0).mean():.0%}")
     pairs = b.apply(lambda r: f"{r['pitch_type']}->{r['alt_label']}", axis=1)
     summ = b.assign(pair=pairs).groupby('pair').agg(n=('shift', 'size'), median_shift=('shift', 'median'),
                                                     median_abs=('shift', lambda s: s.abs().median()))

@@ -866,6 +866,13 @@ share). Shapes are rebuilt from the 2026 pull: 746,715 pitches,
   pitches with the same median.
 - **External check:** FanGraphs is not available. pybaseball's leaderboard
   request returned 403, and the export sits behind a membership (Will chose
-  not to pay). Planned replacement: a model-free check. Rank each
-  boundary pitch's *actual* SwStr% within its own label vs. within the
-  alternative label.
+  not to pay).
+- **Replaced by a model-free check:** each boundary pitch's *actual* SwStr%
+  percentile within its own label vs. within the alternative label (shapes
+  with n ≥ 150).
+  - **2025:** median change 17 percentile points; 33% move ≥ 25 points;
+    29% cross the median.
+  - **2026:** median change 17 points; 36% move ≥ 25; 25% cross the
+    median.
+  - So the label dependence is not an artifact of our Stuff+ model: it
+    appears in raw outcomes.
