@@ -20,7 +20,7 @@ N_PITCHES_2026 = 746_715    # 2026-03-20 .. 10-26 pull used for the replication
 
 def fmt(x, nd=0):
     """LaTeX number: thousands separators, fixed decimals."""
-    return f"{x:,.{nd}f}".replace(',', '{,}')
+    return f"{x:,.{nd}f}".replace(',', '{,}').replace('-', '\\ensuremath{-}')   # true minus, text or math
 
 
 def main():
@@ -61,6 +61,17 @@ def main():
         m[f'LS{word}TwoSEPct'] = fmt(100 * s['frac_gt_2se'])
         m[f'LS{word}CrossPct'] = fmt(100 * s['frac_cross_100'])
         m[f'LS{word}PctChange'] = fmt(s['median_pct_change'])
+
+    pdv = pd.read_csv(D / 'pitch_development_results.csv')
+    pr = pdv[(pdv.scope == 'primary') & (pdv.outcome == 'swstr')].set_index('direction')
+    m['DevN'] = fmt(pr.loc['better', 'n'])
+    for d, word in [('better', 'Better'), ('random', 'Random'), ('worse', 'Worse')]:
+        m[f'Dev{word}Beta'] = fmt(100 * pr.loc[d, 'beta'], 2)
+        m[f'Dev{word}Lo'], m[f'Dev{word}Hi'] = fmt(100 * pr.loc[d, 'lo'], 2), fmt(100 * pr.loc[d, 'hi'], 2)
+        m[f'Dev{word}P'] = fmt(pr.loc[d, 'p'], 3)
+    ex = pdv[pdv.scope == 'exploratory_joint'].set_index('direction')
+    m['DevExRandomBeta'], m['DevExRandomP'] = fmt(100 * ex.loc['random', 'beta'], 2), fmt(ex.loc['random', 'p'], 3)
+    m['DevExBetterBeta'], m['DevExBetterP'] = fmt(100 * ex.loc['better', 'beta'], 2), fmt(ex.loc['better', 'p'], 3)
 
     out = ROOT / 'docs' / 'paper' / 'numbers.tex'
     out.parent.mkdir(parents=True, exist_ok=True)

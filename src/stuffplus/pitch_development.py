@@ -32,6 +32,10 @@ Placebos. Same model with v toward (a) a random third of the neighbours:
   expected ~0; (b) the worst third: expected beta < 0 (moving toward worse
   shapes hurts) -- if (a) or (b) look like the real effect, the "better
   neighbour" direction carries no specific information.
+EXPLORATORY (added AFTER seeing the pre-specified results, labeled as such):
+  the random-third placebo came out negative, so a joint model separates
+  "toward the neighbourhood" (prog_random) from "toward its better part
+  beyond that" (prog_better), primary pairs, SwStr% only.
 Caveat. Observational: shape changes come with injuries, role changes, coaching
   and usage changes; a positive result is an association, not an effect of
   pitch design.
@@ -162,6 +166,18 @@ def main(folder):
         for outcome in ['swstr', 'chase_pct', 'xwcon']:
             for prog in ['prog_better', 'prog_random', 'prog_worse']:
                 res.append({'scope': scope, 'outcome': outcome, 'direction': prog[5:], **fit(sub, outcome, prog)})
+    # EXPLORATORY (not pre-specified; see docstring)
+    sub = df[df['pair'].isin([f'{a}-{b}' for (a, b), k in PAIRS.items() if k == 'primary'])]
+    sub = sub.dropna(subset=['prog_better', 'prog_random', 'd_swstr', 'swstr0'])
+    for c in ['prog_better', 'prog_random']:
+        lo, hi = sub[c].quantile([0.01, 0.99])
+        sub = sub.assign(**{c: sub[c].clip(lo, hi)})
+    m = smf.wls("d_swstr ~ prog_better + prog_random + move + swstr0 + d_speed + C(pitch_type) + C(pair)",
+                data=sub, weights=sub['w']).fit(cov_type='cluster', cov_kwds={'groups': sub['pitcher']})
+    for c in ['prog_better', 'prog_random']:
+        ci = m.conf_int().loc[c]
+        res.append({'scope': 'exploratory_joint', 'outcome': 'swstr', 'direction': c[5:], 'n': int(m.nobs),
+                    'beta': m.params[c], 'lo': ci[0], 'hi': ci[1], 'p': m.pvalues[c]})
     res = pd.DataFrame(res)
     res.to_csv(_ROOT / 'data' / 'pitch_development_results.csv', index=False)
     print(res.round({'beta': 4, 'lo': 4, 'hi': 4, 'p': 4}).to_string(index=False))

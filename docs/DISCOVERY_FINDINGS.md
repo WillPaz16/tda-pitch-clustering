@@ -877,3 +877,56 @@ share). Shapes are rebuilt from the 2026 pull: 746,715 pitches,
     median.
   - So the label dependence is not an artifact of our Stuff+ model: it
     appears in raw outcomes.
+
+## Pitch-development test: pre-specified hypothesis NOT supported (2026-10-27)
+
+Script: `src/stuffplus/pitch_development.py`. The design was written into
+its docstring and committed (32e6bcb) before the analysis was run.
+Outputs: `data/pitch_development.csv`, `data/pitch_development_results.csv`.
+
+**Question.** Does moving a pitch's shape toward the better-scoring third
+of its 20 nearest other-pitcher shapes predict a next-season change in
+actual SwStr%?
+- Better-scoring = by the physics-only model.
+- Shape space: flight features, velocity relative to the pitcher's fastest
+  pitch.
+- Controls: baseline rate, absolute velocity change, size of the move,
+  pitch-type and season-pair fixed effects; standard errors clustered by
+  pitcher.
+- Primary pairs: 2024→25 and 2025→26 (1,876 pitches with ≥ 150 pitches in
+  both seasons). Secondary: 2023→24 (933).
+
+**Pre-specified results** (SwStr% change in percentage points per unit of
+progress; progress = 1 means moved all the way to the target centroid):
+
+| Direction | β | 95% CI | p |
+|---|---|---|---|
+| toward the better third (**hypothesis**) | +0.06 | −0.09 to +0.22 | 0.42 |
+| toward a random third (placebo) | −0.20 | −0.36 to −0.03 | 0.02 |
+| toward the worst third (placebo) | −0.25 | −0.44 to −0.07 | 0.006 |
+
+- Secondary pair (2023→24): everything null (all |β| ≤ 0.26 pp, all
+  p ≥ 0.25).
+- Chase% and xwOBA-on-contact show the same pattern: "better" is null,
+  and the random placebo goes in the harmful direction.
+
+**Reading.**
+- **The hypothesis is not supported, and the null is informative.** Even
+  a full move to the better-neighbor centroid is bounded at +0.22 pp
+  SwStr%. The year-over-year SD of SwStr% is 3.07 pp, and the median pitch
+  moves only 0.15 of the way.
+- **The pre-specified failure criterion is met:** the random placebo is
+  not ≈ 0.
+
+**EXPLORATORY** (added after seeing the results; not pre-specified).
+- **Joint model,** with both directions together:
+  - toward the neighborhood (random third): β = −0.26 pp, p = 0.005;
+  - toward the better part beyond that: β = +0.17 pp (CI −0.01 to +0.34),
+    p = 0.06.
+- **A hypothesis, not a finding:** becoming more like the typical nearby
+  pitch costs whiffs (*distinctiveness* matters), and the model's "better"
+  direction recovers some of that, not more.
+- **For the paper:** report the pre-specified null as the result. The
+  exploratory pattern goes in as a labeled observation for future work.
+- **Status:** observational. Pitches change shape alongside injuries, role
+  changes and coaching.
