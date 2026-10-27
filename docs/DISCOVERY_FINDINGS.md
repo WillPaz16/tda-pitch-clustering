@@ -1053,3 +1053,43 @@ profile.
   Illustrative, not validated.
 - **Eovaldi FF** rerun under the weighted planner: see
   `data/development_plan_543135_FF.csv`.
+
+## Shape results in flight space (2026-10-27)
+
+Script: `src/tda/flight_space_check.py`. Outputs:
+`data/flight_space_{mapper,persistence,idim}.csv`.
+
+**Why.** The shape results used the 9 features, which include delivery
+(release position, extension) and absolute velocity. Section 8's analyses
+use flight space (velocity relative to the pitcher's fastest shape,
+pfx_x, pfx_z, spin rate, spin cos/sin) because of the same-pitcher
+confound. This reruns the shape analyses in flight space. Settings and
+seeds are the same as the originals; PCA lens only.
+
+**Result** (3,942 shapes, 6 coordinates; PC1 63.9%, PC2 19.2%).
+
+| | 9-feature space | Flight space |
+|---|---|---|
+| Components (saved parameters) | 9 | **1** (grid: 1–2) |
+| Graph b₁ / full-nerve b₁ | 86 / 1 | 139 / **0** |
+| Nerve b₁ over the grid (nulls) | 0–4 (0–9) | 0–5 (0–2) |
+| Long-lived H0 bars, real vs Gaussian | 17 vs 17–23 | **99 vs 476–519** |
+| PH loops | none | one borderline loop (2.02 vs threshold 2.0) in 2 of 5 subsamples; the shuffle null gives more (mean 1.2, max persistence 2.69) |
+| Intrinsic dimension (MLE / TwoNN) vs fair null | 6.26 / 6.76 vs 7.07 / 7.52 (of 9) | 4.40 / 4.54 vs 4.78 / 4.97 (6 coordinates, 5 quantities) |
+| Per-type dimension vs null | lower in every type | lower in every type by MLE; TwoNN exception: CU |
+| Velocity ordering (ρ ≥ 0.7) | 100% (nulls 100%) | 100% (nulls 100%) |
+| **Slow-pitch isolation** | 94–100% of fits | **0% of fits** |
+
+**Reading.**
+- **Connectedness, no loops, no extra gaps, and dimension below the fair
+  null all hold in flight space.** Connectedness is even stronger (one
+  component).
+- **Slow-pitch isolation does NOT survive.** It came from absolute
+  velocity and delivery. Relative to the pitcher's own fastest pitch, a
+  position player's ~60 mph pitch is an ordinary-shaped "fastball", and
+  eephus pitches join the continuum.
+- **Wording change:** "plus a tail of very slow pitches" must be qualified
+  as a feature of absolute speed and delivery. It is not part of the
+  shape of pitch flight.
+- **Status:** verified on 2025, PCA lens. The lens study, the 2026 season
+  and density peaks in full flight space were not rerun.
