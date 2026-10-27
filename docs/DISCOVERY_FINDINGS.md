@@ -930,3 +930,48 @@ progress; progress = 1 means moved all the way to the target centroid):
   exploratory pattern goes in as a labeled observation for future work.
 - **Status:** observational. Pitches change shape alongside injuries, role
   changes and coaching.
+
+## Typicality: crowded shapes get fewer whiffs than physics predicts (2026-10-27)
+
+Script: `src/stuffplus/typicality.py`. The design was pre-specified and
+committed (6b991d1) before the run. Outputs: `data/typicality.csv`,
+`data/typicality_results.csv`.
+
+**Method.**
+- **Typicality:** −log of the mean distance to a shape's 20 nearest
+  other-pitcher shapes in flight space (velocity relative to the pitcher's
+  fastest pitch), z-scored within season.
+- **Model:** actual outcome ~ typicality + the physics-only model's
+  predicted outcome + pitch-type and season fixed effects. Weights n;
+  standard errors clustered by pitcher.
+
+**Result.**
+
+| Scope | Outcome | β per SD of typicality | 95% CI | p |
+|---|---|---|---|---|
+| **primary 2025–26** (3,114 shapes; control out-of-sample) | **SwStr%** | **−0.59 pp** | −0.81 to −0.37 | < 0.0001 |
+| primary, K = 10 / 30 | SwStr% | −0.60 / −0.58 pp | | < 0.0001 |
+| primary | xwOBA on contact | +0.0056 | +0.0023 to +0.0089 | 0.0008 |
+| primary | chase% | −0.21 pp | | 0.36 |
+| secondary 2023–24 (control in-sample) | SwStr% | −0.18 pp | −0.38 to +0.03 | 0.09 |
+
+**Reading.**
+- **The pre-specified hypothesis is supported.** At equal model-predicted
+  physics, more typical shapes get fewer swinging strikes and harder
+  contact. The result is robust to K.
+- **Weaker in 2023–24, as expected:** the control model was trained on
+  those seasons and absorbs part of any effect.
+- **Caveats** (stated in advance):
+  - typicality may partly proxy for physics the model misses (nonlinear
+    misfit);
+  - location and sequencing are unobserved;
+  - observational.
+- **Use:** this is evidence for a "distinctiveness" term in the
+  development planner's value function. It confirms the exploratory
+  pattern from the pitch-development test.
+
+**Scope decision (Will, 2026-10-27).** Biomechanical feasibility (grip,
+pronation/supination, delivery markers) is future work: Statcast lacks
+those data. The planner uses only measured constraints: arm angle,
+release point, extension, a velocity band, raw spin capacity, and observed
+one-season change sizes as the step budget.
