@@ -1,0 +1,17 @@
+{
+ "season": "2026",
+ "velocity": "relative",
+ "k": 20,
+ "share": 0.5,
+ "min_n": 150,
+ "eligible": 1590,
+ "boundary": 157,
+ "boundary_frac": 0.09874213836477988,
+ "median_abs_shift": 9.59381781769666,
+ "frac_ge_1sd": 0.34394904458598724,
+ "frac_gt_2se": 0.910828025477707,
+ "frac_cross_100": 0.25477707006369427,
+ "median_se": 0.6581933309660641,
+ "median_pct_change": 16.99485199485199,
+ "frac_pct_ge_25": 0.35668789808917195
+}
