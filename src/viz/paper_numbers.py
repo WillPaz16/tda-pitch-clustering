@@ -157,7 +157,7 @@ def main():
     m['ReliabilityRho'] = fmt(spearmanr(gr.train_n, gr.roundtrip_accuracy).correlation, 2)
 
     # flight-space robustness check (src/tda/flight_space_check.py)
-    fm = pd.read_csv(D / 'flight_space_mapper.csv')
+    fm = pd.read_csv(D / 'flight_space_2025_pca_mapper.csv')
     fb = fm[(fm.kind == 'grid') & (fm.n_cubes == 10) & (fm.perc_overlap == 0.3) & (fm.eps == 1.0)].iloc[0]
     fg = fm[fm.kind == 'grid']; fn = fm[fm.kind.str.startswith('null')]
     m['FlComp'], m['FlGraphBone'], m['FlNerveBone'] = fmt(fb.n_components), fmt(fb.graph_b1), fmt(fb.nerve_b1)
@@ -165,11 +165,11 @@ def main():
     m['FlGridNerveMin'], m['FlGridNerveMax'] = fmt(fg.nerve_b1.min()), fmt(fg.nerve_b1.max())
     m['FlNullNerveMin'], m['FlNullNerveMax'] = fmt(fn.nerve_b1.min()), fmt(fn.nerve_b1.max())
     m['FlSlowIso'] = fmt(100 * np.mean(fm[fm.kind.isin(['grid', 'subsample'])].slow_isolated.dropna() >= 0.5))
-    fp = pd.read_csv(D / 'flight_space_persistence.csv')
+    fp = pd.read_csv(D / 'flight_space_2025_persistence.csv')
     m['FlLongBars'] = fmt(fp[fp.kind == 'real'].h0_long_bars.iloc[0])
     fpg = fp[fp.kind == 'null_gauss']
     m['FlGaussLongBarsLo'], m['FlGaussLongBarsHi'] = fmt(fpg.h0_long_bars.min()), fmt(fpg.h0_long_bars.max())
-    fd = pd.read_csv(D / 'flight_space_idim.csv').groupby(['scope', 'kind'])[['mle', 'twonn']].mean()
+    fd = pd.read_csv(D / 'flight_space_2025_idim.csv').groupby(['scope', 'kind'])[['mle', 'twonn']].mean()
     m['FlDimMLE'], m['FlDimNullMLE'] = fmt(fd.loc[('all', 'real'), 'mle'], 2), fmt(fd.loc[('all', 'null_shuffle_spinpair'), 'mle'], 2)
 
     out = ROOT / 'docs' / 'paper' / 'numbers.tex'
