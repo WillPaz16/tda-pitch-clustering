@@ -213,23 +213,17 @@ The number $b_0$ counts path components \parencite{hatcher2001}, and $b_1$ count
 For the complexes in this paper both are computable by linear algebra over $\Z_2$.
 For a simplicial complex $K$, let $C_k$ be the $\Z_2$-vector space with basis the $k$-simplices, and let $\partial_k : C_k \to C_{k-1}$ send each simplex to the sum of its $(k-1)$-dimensional faces; then $H_k(K) = \ker \partial_k / \operatorname{im} \partial_{k+1}$.
 
-\begin{proposition}\label{prop:graph-b1}
-Let $G$ be a finite graph with $V$ vertices, $E$ edges, and $C$ connected components. Then $b_1(G) = E - V + C$.
-\end{proposition}
-\begin{proof}
-The chain complex of $G$ is $0 \to C_1 \xrightarrow{\partial_1} C_0 \to 0$, with $\dim C_1 = E$ and $\dim C_0 = V$.
-Hence $b_0 = \dim (C_0 / \operatorname{im}\partial_1) = V - \rank \partial_1$ and $b_1 = \dim \ker \partial_1 = E - \rank \partial_1$ by rank--nullity.
-Subtracting, $b_1 - b_0 = E - V$, and $b_0 = C$ since the path components of a graph are its connected components.
-\end{proof}
-
-\begin{proposition}\label{prop:complex-b1}
-Let $K$ be a finite simplicial complex of dimension at most two with $V$ vertices, $E$ edges, and $C$ connected components. Then $b_1(K) = E - V + C - \rank \partial_2$.
-\end{proposition}
-\begin{proof}
-Now $H_1(K) = \ker \partial_1 / \operatorname{im} \partial_2$, so $b_1 = \dim\ker\partial_1 - \rank\partial_2$, and $\dim \ker \partial_1 = E - V + C$ by the proof of Proposition~\ref{prop:graph-b1}.
-\end{proof}
-Each triangle can fill at most one loop: a hollow triangle has $b_1 = 3 - 3 + 1 = 1$, and adding the triangle gives $\rank \partial_2 = 1$ and $b_1 = 0$.
-Proposition~\ref{prop:complex-b1} is how Section~\ref{sec:loops} computes the loops of the full nerve.
+For a finite graph $G$ with $V$ vertices, $E$ edges, and $C$ connected components, the Euler characteristic gives $V - E = b_0 - b_1$ with $b_0 = C$, so
+\begin{equation}\label{eq:graph-b1}
+  b_1(G) = E - V + C.
+\end{equation}
+In a complex of dimension two, triangles can fill loops, and
+\begin{equation}\label{eq:complex-b1}
+  b_1(K) = E - V + C - \rank \partial_2,
+\end{equation}
+where $\partial_2$ maps each triangle to its three edges.
+A hollow triangle has $b_1 = 3 - 3 + 1 = 1$; filling it gives $\rank \partial_2 = 1$ and $b_1 = 0$.
+Equation~\eqref{eq:complex-b1} is how Section~\ref{sec:loops} computes the loops of the full nerve.
 
 \subsection{Reeb graphs and Reeb spaces}
 \begin{definition}[Reeb graph {\parencite{carriereoudot2018,reeb1946}}]
@@ -261,13 +255,11 @@ Its loops are controlled by those of $X$:
 \begin{theorem}[Dey--M\'emoli--Wang {\parencite{deymemoliwang2017}}]\label{thm:dmw}
 If $\mathcal U$ is a path-connected cover of a compact space $X$, the nerve map induces a surjection $H_1(X) \to H_1(N(\mathcal U))$, with $\Z_2$ coefficients.
 \end{theorem}
-\begin{corollary}\label{cor:mapper-b1}
-$b_1(M(\mathcal U, f)) \le b_1(X)$.
-\end{corollary}
-\begin{proof}
-The pullback cover consists of path components, so it is path-connected, and a surjective linear map cannot increase dimension.
-\end{proof}
-The corollary concerns the nerve, a simplicial complex. Software outputs only its 1-skeleton, whose loops are not bounded this way (Example~\ref{ex:graph}); Section~\ref{sec:loops} shows the difference in our data.
+Mapper's pullback cover consists of path components, so it is path-connected, and therefore
+\begin{equation}\label{eq:mapper-b1}
+  b_1(M(\mathcal U, f)) \le b_1(X).
+\end{equation}
+This bound concerns the nerve, a simplicial complex. Software outputs only its 1-skeleton, whose loops are not bounded this way (Example~\ref{ex:graph}); Section~\ref{sec:loops} shows the difference in our data.
 
 \subsection{Statistical Mapper}
 A \emph{point cloud} is a finite set $P \subseteq \R^n$ with Euclidean distance.
@@ -302,13 +294,7 @@ Let the data be $m$ observations of $n$ features, and subtract each column's mea
 Centering is not a choice that changes the answer: variance is measured around the mean, so it changes neither the covariance matrix nor the principal components, and it makes $(m-1) S = \mathbf A^{\mathsf T} \mathbf A$, which turns PCA into a statement about $\mathbf A$ itself \parencite{jolliffecadima2016}.
 Here $S = \frac{1}{m-1}\mathbf A^{\mathsf T}\mathbf A$ is the covariance matrix: its diagonal entries are the feature variances and its off-diagonal entries the covariances.
 
-\begin{proposition}
-$S$ is positive semidefinite.
-\end{proposition}
-\begin{proof}
-For any $x \in \R^n$, $x^{\mathsf T} S x = \frac{1}{m-1} x^{\mathsf T}\mathbf A^{\mathsf T}\mathbf A x = \frac{1}{m-1}\|\mathbf A x\|^2 \ge 0$.
-\end{proof}
-So $S$ has real, nonnegative eigenvalues and an orthonormal basis of eigenvectors. The variance of the data along a unit vector $v$ is $v^{\mathsf T} S v$, which is maximized by a top eigenvector.
+$S$ is positive semidefinite, since $x^{\mathsf T} S x = \frac{1}{m-1}\|\mathbf A x\|^2 \ge 0$ for every $x \in \R^n$, so it has real, nonnegative eigenvalues and an orthonormal basis of eigenvectors. The variance of the data along a unit vector $v$ is $v^{\mathsf T} S v$, which is maximized by a top eigenvector.
 
 \begin{theorem}[Singular value decomposition {\parencite{axler2024ladr}}]
 Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sigma \mathbf V^{\mathsf T}$, where $\mathbf U \in \R^{m \times r}$ and $\mathbf V \in \R^{n \times r}$ have orthonormal columns and $\boldsymbol\Sigma = \operatorname{diag}(\sigma_1 \ge \cdots \ge \sigma_r > 0)$.
