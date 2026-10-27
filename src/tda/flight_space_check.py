@@ -12,10 +12,12 @@ the same settings and seeds, PCA lens only (a check of the feature-space
 choice, not a full replication of the lens study). The density peaks were
 already computed in a flight subspace (dSpeed, HB, IVB) and are not rerun.
 
-Outputs: data/flight_space_mapper.csv, data/flight_space_persistence.csv,
-data/flight_space_idim.csv.
+Outputs: data/flight_space_<season>_<lens>_mapper.csv, and (PCA run only,
+since they do not depend on the lens) data/flight_space_<season>_persistence.csv
+and data/flight_space_<season>_idim.csv.
 
-Run: python3 src/tda/flight_space_check.py statcast_2025.parquet
+Run: python3 src/tda/flight_space_check.py statcast_<season>.parquet [lens] [season]
+     lens in pca (default), baseball (relative velocity x IVB), isomap, density
 """
 import sys
 import warnings
@@ -51,7 +53,7 @@ def flight_shapes(path):
     return shapes[FLIGHT].values.astype(float), sp.values, ptype, pitcher
 
 
-def main(path):
+def main(path, lens_name='pca', tag='2025'):
     rng = np.random.default_rng(SEED)
     X_raw, speed, ptype, pitcher = flight_shapes(path)
     scaler = StandardScaler().fit(X_raw)
@@ -64,7 +66,7 @@ def main(path):
     rows = []
     def run(kind, Xr, sp, pt, params):
         Xs = StandardScaler().fit_transform(Xr)
-        lens = make_lens(Xs, 'pca')
+        lens = make_lens(Xs, lens_name)
         for p in params:
             G, nodes = fit_graph(Xs, lens, **p)
             gb1, nb1 = betti1(nodes)
@@ -84,7 +86,10 @@ def main(path):
         Xsh = shuffle_within_type_null(X_raw, ptype, rng, spin_pair)
         run('null_shuffle', Xsh, speed, ptype, [BASE])
     mres = pd.DataFrame(rows)
-    mres.to_csv(_ROOT / 'data' / 'flight_space_mapper.csv', index=False)
+    mres.to_csv(_ROOT / 'data' / f'flight_space_{tag}_{lens_name}_mapper.csv', index=False)
+    summary(mres, None, None)
+    if lens_name != 'pca':
+        return
 
     # persistent homology
     unit = np.median(h0_deaths(X))
@@ -93,7 +98,7 @@ def main(path):
         prow.append(summarize('null_gauss', scaler.transform(gaussian_null(X_raw, rng)), unit, rng))
         prow.append(summarize('null_shuffle', scaler.transform(shuffle_within_type_null(X_raw, ptype, rng, spin_pair)), unit, rng))
     pres = pd.DataFrame(prow)
-    pres.to_csv(_ROOT / 'data' / 'flight_space_persistence.csv', index=False)
+    pres.to_csv(_ROOT / 'data' / f'flight_space_{tag}_persistence.csv', index=False)
 
     # intrinsic dimension (fair null = spin-pair shuffle)
     types = [t for t, c in zip(*np.unique(ptype, return_counts=True)) if c >= MIN_TYPE_N]
@@ -108,9 +113,13 @@ def main(path):
                 Xt = StandardScaler().fit_transform(Xs[ptype == t])
                 drow.append(dict(scope=t, kind=kind, twonn=twonn(Xt), mle=levina_bickel(Xt)))
     dres = pd.DataFrame(drow)
-    dres.to_csv(_ROOT / 'data' / 'flight_space_idim.csv', index=False)
+    dres.to_csv(_ROOT / 'data' / f'flight_space_{tag}_idim.csv', index=False)
+    summary(None, pres, dres)
 
-    # summary
+
+def summary(mres, pres, dres):
+    if mres is None:
+        return summary_ph(pres, dres)
     order = lambda g: 100 * np.mean(g['ordering_rho'].dropna() >= 0.7)
     slow = lambda g: 100 * np.mean(g['slow_isolated'].dropna() >= 0.5)
     base = mres[(mres.kind == 'grid') & (mres.n_cubes == BASE['n_cubes']) & (mres.perc_overlap == BASE['perc_overlap']) & (mres.eps == BASE['eps'])].iloc[0]
@@ -119,6 +128,9 @@ def main(path):
     for k, g in mres.groupby('kind'):
         print(f"  {k:13s} fits {len(g):3d}: ordering>=0.7 {order(g):5.1f}%  slow isolated(>=half) {slow(g):5.1f}%  "
               f"components {g.n_components.min()}-{g.n_components.max()}  graph b1 {g.graph_b1.min()}-{g.graph_b1.max()}  nerve b1 {g.nerve_b1.min()}-{g.nerve_b1.max()}")
+
+
+def summary_ph(pres, dres):
     print("\nPersistent homology (units = real median H0 death):")
     print(pres.groupby('kind', sort=False)[['h0_median', 'h0_long_bars', 'h1_long_loops_mean', 'h1_max_persistence']].agg(['mean', 'min', 'max']).round(2).to_string())
     print("\nIntrinsic dimension (ambient 6 coordinates, 5 quantities):")
@@ -127,4 +139,4 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], *sys.argv[2:4])
