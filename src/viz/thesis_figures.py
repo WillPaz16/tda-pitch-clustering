@@ -281,6 +281,40 @@ def pitch_design():
     plt.rcParams["font.size"] = 10
 
 
+def development_path(pitcher=695611, ptype="SL"):
+    """The planner's path for one pitch: feasible shapes, route, season milestones, value."""
+    plt.rcParams["font.size"] = 13   # shown at reduced width on the slide
+    pop = pd.read_csv(ROOT / "data" / f"development_population_{pitcher}_{ptype}.csv")
+    plan = pd.read_csv(ROOT / "data" / f"development_plan_{pitcher}_{ptype}.csv")
+    hb, ivb, v = -12 * pop.raw_pfx_x, 12 * pop.raw_pfx_z, 100 * pop.V
+    first = lambda s: s.split(", ")[1].split()[0][0] + ". " + s.split(", ")[0]
+    xs = [hb[0]] + list(plan.hb_in); ys = [ivb[0]] + list(plan.ivb_in); vs = [v[0]] + list(100 * plan.V)
+    tags = ["now"] + ["season %d\nlike %s %s" % (k, first(n), t) for k, n, t in zip(plan.season_budget, plan.name, plan.pitch_type)]
+    print("development_path: %s %s; %d feasible shapes; values %s; gains %s" % (
+        pitcher, ptype, len(pop) - 1, [round(x, 2) for x in vs], [round(x - vs[0], 2) for x in vs[1:]]))
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(10.4, 3.9), gridspec_kw={"width_ratios": [1.5, 1], "wspace": 0.55})
+    sc = a1.scatter(hb[1:], ivb[1:], c=v[1:], cmap=BLUES, s=40, edgecolors=SURF, lw=0.8, zorder=2)
+    for (x0, y0), (x1, y1) in zip(zip(xs, ys), zip(xs[1:], ys[1:])):
+        a1.annotate("", (x1, y1), (x0, y0), arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.6), zorder=4)
+    a1.scatter(xs[0], ys[0], marker="*", s=320, c=SERIES[1], edgecolors=SURF, lw=1, zorder=5)
+    a1.scatter(xs[1:], ys[1:], s=90, facecolors="white", edgecolors=INK, lw=1.6, zorder=5)
+    for (x, y), tag, (dx, dy, va) in zip(zip(xs, ys), tags, ((-18, -12, "top"), (4, -14, "top"), (6, 12, "bottom"))):
+        a1.annotate(tag, (x, y), xytext=(dx, dy), textcoords="offset points", ha="center", va=va, fontsize=11, color=INK)
+    a1.set_xlim(min(xs) - 6, max(xs) + 6); a1.set_ylim(min(ys) - 6, max(ys) + 6)   # zoom on the path's neighbourhood
+    cb = fig.colorbar(sc, ax=a1, fraction=0.045, pad=0.02); cb.set_label("value (pp SwStr)", fontsize=11); cb.ax.tick_params(labelsize=10)
+    a1.set_xlabel("horizontal break (in, + = arm side)"); a1.set_ylabel("induced vertical break (in)")
+    a1.grid(color=GRID, lw=0.6); a1.set_axisbelow(True)
+    labels = ["now"] + ["season %d" % k for k in plan.season_budget]
+    a2.plot(range(len(vs)), vs, color=SERIES[0], lw=2, marker="o", ms=8, zorder=3)
+    for i, val in enumerate(vs[1:], 1):
+        a2.annotate("%+.2f" % (val - vs[0]), (i, val), xytext=(0, 9), textcoords="offset points", ha="center", fontsize=11, color=INK)
+    a2.set_xticks(range(len(vs))); a2.set_xticklabels(labels)
+    a2.set_ylabel("value (pp SwStr)"); a2.set_xlim(-0.4, len(vs) - 0.6); a2.set_ylim(min(vs) - 0.6, max(vs) + 0.9)
+    a2.grid(axis="y", color=GRID, lw=0.6); a2.set_axisbelow(True)
+    save(fig, "development_path")
+    plt.rcParams["font.size"] = 10
+
+
 def main():
     mc = load_tda_model(ROOT / "models" / "tda_mapper_model.pkl")
     orig, cols = mc["original_data"], list(mc["stuff_columns"])
@@ -295,6 +329,7 @@ def main():
     toy_mapper()
     dbscan_toy()
     pitch_design()
+    development_path()
 
 
 if __name__ == "__main__":

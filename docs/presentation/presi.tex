@@ -617,16 +617,18 @@ Brady Singer's slider (809 pitches) breaks 4.9 in horizontally; his ``sweeper'' 
 \end{block}
 \end{frame}
 
-\begin{frame}{A pitch-design neighborhood (illustration)}
+\begin{frame}{A development plan (illustration)}
 \centering
-\includegraphics[width=0.72\textwidth]{figures/pitch_design.pdf}
+\includegraphics[width=0.7\textwidth]{figures/development_path.pdf}
 \begin{itemize}\footnotesize
-  \item \textcolor{orange}{$\bigstar$} Nathan Eovaldi's 2025 four-seamer. Dots: other pitchers' pitches in the same or adjacent Mapper nodes with the same delivery, velocity, spin rate, and movement within 4 in. Score: a Stuff+-style model, physical characteristics only \parencite{mcgrattan2023stuffplus}, trained on 2022--24.
-  \item His pitch is last in both model score and actual swinging-strike rate (4.9\%). Most better neighbors have $\approx 2$ in more \alert{induced vertical break} at the same velocity: a realistic direction, since other pitchers already throw it.
+  \item \textcolor{orange}{$\bigstar$} Gage Jump's slider (age 23, 2026). Dots: other pitchers' pitches with the same arm slot and extension, similar velocity and spin. Each step on the path is a pitch someone already throws.
+  \item Value = a physics-only Stuff+-style score plus a distinctiveness term: in a pre-registered test, more typical shapes got fewer whiffs (out-of-sample, 2025--26).
+  \item Velocity and spin are held as arm talent, so the plan moves through shape: glove-side sweep 5 in $\to$ 2 in (season 1, $+0.9$) $\to$ 0 in (season 3, $+2.0$ points of swinging strikes).
 \end{itemize}
 \vspace{-2pt}
-{\scriptsize\textcolor{gray}{Illustrative, not causal, not advice to a real pitcher. Checks in backup.}}
+{\scriptsize\textcolor{gray}{Illustrative: built from tested pieces; the plan itself is not validated.}}
 \end{frame}
+
 
 \begin{frame}{Conclusions}
 \begin{block}{About pitches}
@@ -703,6 +705,17 @@ For a finite metric space $(P, d)$ and scale $t \in \R$: $\mathrm{Rips}_t(P) = \
 \end{column}
 \end{columns}
 \end{frame}
+\begin{frame}{Backup: an earlier illustration (Eovaldi, 2025)}
+\centering
+\includegraphics[width=0.72\textwidth]{figures/pitch_design.pdf}
+\begin{itemize}\footnotesize
+  \item \textcolor{orange}{$\bigstar$} Nathan Eovaldi's 2025 four-seamer. Dots: other pitchers' pitches in the same or adjacent Mapper nodes with the same delivery, velocity, spin rate, and movement within 4 in. Score: a Stuff+-style model, physical characteristics only \parencite{mcgrattan2023stuffplus}, trained on 2022--24.
+  \item His pitch is last in both model score and actual swinging-strike rate (4.9\%). Most better neighbors have $\approx 2$ in more \alert{induced vertical break} at the same velocity: a realistic direction, since other pitchers already throw it.
+\end{itemize}
+\vspace{-2pt}
+{\scriptsize\textcolor{gray}{Illustrative, not causal, not advice to a real pitcher. Checks in backup.}}
+\end{frame}
+
 \begin{frame}{Backup: checks on the pitch-design example}
 \begin{itemize}\small
   \item \alert{Mapper is not the filter.} The physical limits alone pick the same 10 neighbors (on average 99\% of them lie in the Mapper neighborhood). The topology's role is the continuum result: nearby shapes exist, so comparing to them is interpolation, not extrapolation.
