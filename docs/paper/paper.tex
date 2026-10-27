@@ -462,53 +462,179 @@ We repeat the analysis in one dimension, for the pitch shapes along the first pr
 %======================================================================
 \section{The shape of pitch space}\label{sec:shape}
 %======================================================================
-\plan{Lens figure (PC1 \PCone\%, PC2 \PCtwo\%); Mapper graph (\NNodes{} nodes, \NEdges{} edges, \NComponents{} components); stability table; nulls reproduce the velocity ordering in every fit and slow-pitch isolation in 50--78\% of fits.}
+The first two principal components explain \PCone\% and \PCtwo\% of the variance.
+The first separates fastballs from breaking balls; the second is mostly delivery --- extension, velocity, and release height --- with the very slow pitches at its bottom (Figure~\ref{fig:lens}).
+The Mapper graph (Figure~\ref{fig:graph}) has \NNodes{} nodes, \NEdges{} edges, and \NComponents{} components.
+One giant component runs from curveballs through sliders and cutters to fastballs and changeups, ordered by velocity; very slow pitches --- eephus pitches and position players pitching --- sit apart.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{lens_scatter.pdf}
+\caption{The 2025 pitch shapes in the PCA lens, by pitch family.}\label{fig:lens}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{mapper_graph.pdf}
+\caption{The Mapper graph, nodes colored by mean velocity.}\label{fig:graph}
+\end{figure}
+
+Both features are stable (Table~\ref{tab:stability}).
+The velocity ordering holds in \StabOrderMin\% of fits under every lens, and slow-pitch isolation in \StabSlowPCALo--\StabSlowPCAHi\% of fits with the PCA lens and \StabSlowLo--\StabSlowHi\% across lenses.
+But the null models reproduce them: the ordering appears in \NullOrderMin\% of null fits, and slow-pitch isolation in \NullSlowLo--\NullSlowHi\%.
+The ordering therefore describes where pitch types sit --- a fact about the covariance --- rather than hidden topology, and slow-pitch isolation is only somewhat stronger than the nulls produce.
+A third feature, a ``bridge'' of sliders and cutters with the highest betweenness centrality, looked interesting in the PCA graph but changed with the lens and was reproduced by the nulls; we do not report it as a finding.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Feature (share of fits) & Real data & Null models \\
+\midrule
+Velocity ordering ($\rho \ge 0.7$) & \StabOrderMin\% (every lens) & \NullOrderMin\% \\
+Slow shapes isolated & \StabSlowLo--\StabSlowHi\% & \NullSlowLo--\NullSlowHi\% \\
+\bottomrule
+\end{tabular}
+\caption{Stability across the parameter grid, subsamples of pitchers, and four lenses, against the Gaussian and within-type-shuffle nulls.}\label{tab:stability}
+\end{table}
 
 \subsection{Loops are artifacts of the 1-skeleton}\label{sec:loops}
-\plan{Graph $b_1 = E - V + C = \GraphBone$; full nerve $b_1 = \NerveBone$ ($\rank_{\Z_2}\partial_2$); across the grid, graph $b_1$ \GridGraphBoneMin--\GridGraphBoneMax{} vs.\ nerve \GridNerveBoneMin--\GridNerveBoneMax, in the range of the nulls. Persistent homology: no persistent $H_1$. Figure \texttt{nerve\_b1}.}
+By~\eqref{eq:graph-b1} the graph has $b_1 = \NEdges - \NNodes + \NComponents = \GraphBone$ loops.
+The full nerve adds a triangle for every three clusters with a common point; its boundary map $\partial_2$ has rank \NerveRank{} over $\Z_2$, so by~\eqref{eq:complex-b1} the nerve has $b_1 = \GraphBone - \NerveRank = \NerveBone$.
+Across the 27 parameter choices the graph has between \GridGraphBoneMin{} and \GridGraphBoneMax{} loops while the nerve has between \GridNerveBoneMin{} and \GridNerveBoneMax, in the range of the nulls (Gaussian: graph \GaussGraphBoneMin--\GaussGraphBoneMax, nerve \GaussNerveBoneMin--\GaussNerveBoneMax; within-type shuffle: graph \ShuffleGraphBoneMin--\ShuffleGraphBoneMax, nerve \ShuffleNerveBoneMin--\ShuffleNerveBoneMax).
+Persistent homology of the shapes finds no persistent loops (Figure~\ref{fig:persistence}), so the underlying space has $b_1 \approx 0$, and by~\eqref{eq:mapper-b1} so must any Mapper of it.
+The graph's loops come from reading only the 1-skeleton (Example~\ref{ex:graph}): the triangles fill them.
+The theorem is about a space and we have a sample, so this is a theorem together with consistent evidence, not a proof about the data.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{nerve_b1.pdf}
+\caption{First Betti number of the Mapper graph and of the full nerve, for real fits and null models.}\label{fig:nerveb1}
+\end{figure}
 
 \subsection{Connected, about six-dimensional, and multimodal}
-\plan{Intrinsic dimension \DimMLE{} (TwoNN \DimTwoNN) vs.\ fair null \DimNullMLE.
-Density peaks: three robust (fastball; breaking ball, relative persistence \PeakBB; changeup, \PeakCH), a small stable curveball bump, a fragile sweeper bump; locations within a few inches of Maloof et al.'s college peaks. Labels beyond the three classes sit on ridges.
-Source: DISCOVERY\_FINDINGS ``Density peaks''.}
+The space has no more gaps than a Gaussian with the same covariance: on 1{,}000-shape subsamples the real data have \PHRealLongBars{} long-lived $H_0$ bars against \PHGaussLongBarsLo--\PHGaussLongBarsHi{} for the Gaussian, and they are more concentrated (median $H_0$ death \PHRealHzeroMedian{} against \PHGaussHzeroMedian).
+The intrinsic dimension is \DimMLE{} of \NFeatures{} by maximum likelihood (TwoNN: \DimTwoNN), against \DimNullMLE{} (\DimNullTwoNN) for the fair null, and \DimTypeGapLo--\DimTypeGapHi{} lower than the null within each pitch type.
+
+The density, however, is not unimodal.
+At the pitch level, the persistence of superlevel sets finds three robust peaks --- fastball, breaking ball, and changeup, with the breaking-ball and changeup peaks at relative persistence \PeakBB{} and \PeakCH{} --- each beating every covariance-matched null replicate ($p = \PeakP$, the smallest value 50 replicates allow).
+They appear at every smoothing level and in every half of the data, at locations close to those \textcite{maloof2026classify} report for college pitches.
+A much smaller curveball-like peak (\PeakCurve) is also stable; a sweeper-like bump (\PeakSweep) disappears under heavier smoothing and in one half of the data, and we do not claim it.
+Along the first principal component of the pitch shapes, \PCPeaks{} peaks --- a fastball side and a breaking-ball side --- are significant at every bandwidth from \PCBandLo{} to \PCBandHi.
+
+Pitch-shape space is therefore connected, with no loops and no gaps beyond a Gaussian, of dimension about six, and multimodal: three dense regions, and finer pitch types on the ridges between and within them rather than on peaks of their own.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{persistence.pdf}
+\caption{Persistence diagrams of 1{,}000 pitch shapes and of a same-covariance Gaussian.}\label{fig:persistence}
+\end{figure}
+
+\subsection{Labels and the continuum}
+About \MultiTwentyFive\% of individual pitches fall in two or more overlapping Mapper nodes (opening week of 2025; \MultiTwentySix\% in a week of April 2026), so a single cluster label discards real ambiguity.
+For outcomes, Statcast's labels explain more variance than our clusters: for whiffs, $\omega^2 = \OmegaWhiffLabels\%$ for labels against \OmegaWhiffCentroid\% and \OmegaWhiffMapper\% for two cluster assignments, and for ground balls \OmegaGBLabels\% against \OmegaGBCentroid\% and \OmegaGBMapper\%.
+Mapper's value here is in describing shape, not in predicting results.
+Clusters are also not equally reliable: bigger, more crowded clusters are less self-consistent (Spearman $\rho = \ReliabilityRho$ between cluster size and the share of a cluster's own shapes that are classified back into it).
 
 %======================================================================
 \section{Consequences for evaluation and development}\label{sec:consequences}
 %======================================================================
+A pitch-quality model scores a pitch from its physical characteristics; FanGraphs' Stuff+, for example, looks only at the physical characteristics of a pitch \parencite{mcgrattan2023stuffplus}.
+We use our own Stuff+-style models: gradient-boosted decision trees in CatBoost \parencite{dorogush2018catboost} predicting contact quality (xwOBA), swinging strikes, and chases from release speed, release position, movement, spin rate, spin axis, and extension, trained on \StuffTrainN{} pitches from 2022--24 with five-fold out-of-fold predictions.
+They grade a pitch against its own pitch type: each component is standardized against the type's reference distribution, combined with equal weights, and rescaled to 100 $\pm$ 15 within the type.
+The 2025 and 2026 seasons are out of sample.
+
 \subsection{Grading within a label is fragile near boundaries}
-\plan{Boundary pitches (nearest other-pitcher shapes in flight space, velocity relative to the pitcher's fastest pitch): \LSTwentyFiveBoundary{} of \LSTwentyFiveEligible{} (\LSTwentyFiveBoundaryPct\%) in 2025; \LSTwentySixBoundary{} of \LSTwentySixEligible{} in 2026.
-Median grade shift \LSTwentyFiveShift{} (2026: \LSTwentySixShift); $\ge$ 1 SD for \LSTwentyFiveOneSDPct\% (\LSTwentySixOneSDPct\%); shift $>$ 2 SE for \LSTwentyFiveTwoSEPct\% (\LSTwentySixTwoSEPct\%); crosses average for \LSTwentyFiveCrossPct\% (\LSTwentySixCrossPct\%).
-Model-free: actual SwStr\% percentile moves a median \LSTwentyFivePctChange{} points (2026: \LSTwentySixPctChange).
-Scope: grading \emph{within} a label; FanGraphs' Stuff+ is on one common scale \parencite{mcgrattan2023stuffplus}.
-Two confounds fixed and reported: same-pitcher delivery; absolute velocity.}
+If pitch types are regions of a continuous space, a pitch near the edge of its region can be graded very differently depending on which side its label falls.
+We call a pitch shape (at least 150 pitches) a \emph{boundary pitch} if at least half of its 20 nearest shapes from other pitchers --- in velocity relative to the pitcher's fastest pitch, movement, and spin --- carry one other label, and grade it twice, once against each label.
+In 2025, \LSTwentyFiveBoundary{} of \LSTwentyFiveEligible{} shapes (\LSTwentyFiveBoundaryPct\%) are boundary pitches.
+Relabeling moves their grade by a median of \LSTwentyFiveShift{} points; \LSTwentyFiveOneSDPct\% move by at least one standard deviation, \LSTwentyFiveCrossPct\% switch between above and below average, and \LSTwentyFiveTwoSEPct\% of the shifts exceed twice the grade's own sampling error.
+Out of sample in 2026 the effect replicates: \LSTwentySixBoundary{} of \LSTwentySixEligible{} boundary pitches, a median shift of \LSTwentySixShift, and \LSTwentySixTwoSEPct\% beyond twice the sampling error.
+It is not an artifact of our model: ranking a boundary pitch's \emph{actual} swinging-strike rate among its own label's pitches rather than its neighbor's moves its percentile by a median of \LSTwentyFivePctChange{} points in 2025 and \LSTwentySixPctChange{} in 2026.
+The main pairs are slider and cutter, splitter and changeup, knuckle curve and curveball, and cutter and four-seam.
+Two artifacts were removed on the way: allowing a pitcher's own pitches as neighbors makes them look close through their shared delivery, and absolute velocity makes hard changeups neighbor other pitchers' sinkers.
+The claim concerns grading \emph{within} a label --- per-type scales, and any ``elite among sliders'' comparison; FanGraphs' Stuff+ itself is on one common scale.
 
 \subsection{Moving toward better neighbors}
-\plan{Pre-specified design (committed before running): progress toward the better-scoring third of a pitch's 20 nearest other-pitcher shapes vs.\ change in actual SwStr\%, chase\%, xwOBA on contact; placebos toward a random and the worst third; primary pairs 2024$\to$2025 and 2025$\to$2026 (\DevN{} pitches). Result: hypothesis not supported, $\beta = \DevBetterBeta$ pp per full move (CI \DevBetterLo{} to \DevBetterHi, $p = \DevBetterP$); placebos random \DevRandomBeta{} ($p = \DevRandomP$) and worst \DevWorseBeta{} ($p = \DevWorseP$), so the pre-specified failure criterion is met. Exploratory joint model (labeled as such): toward the neighborhood \DevExRandomBeta{} ($p = \DevExRandomP$), toward its better part beyond that \DevExBetterBeta{} ($p = \DevExBetterP$) --- a distinctiveness hypothesis for future work.}
+A natural development idea follows from the continuum: move a pitch toward the better-scoring shapes near it.
+We tested this before looking at the outcome, with a design committed in advance.
+For each pitch thrown at least 150 times in two consecutive seasons, we measured how far its shape moved toward the better-scoring third of its 20 nearest other-pitcher shapes, and regressed the next-season change in actual swinging-strike rate on that progress, controlling for the starting rate, the change in velocity, the size of the move, and pitch type and season.
+Over \DevN{} pitches in the primary season pairs (2024--25 and 2025--26), the hypothesis is not supported: a full move toward the better neighbors goes with \DevBetterBeta{} percentage points of swinging strikes (95\% CI \DevBetterLo{} to \DevBetterHi, $p = \DevBetterP$).
+The pre-specified placebos fail as well: moving toward a random third of the neighbors goes with \DevRandomBeta{} points ($p = \DevRandomP$) and toward the worst third with \DevWorseBeta{} ($p = \DevWorseP$).
+An exploratory model with both directions suggests that becoming more like nearby pitches costs whiffs (\DevExRandomBeta{} points, $p = \DevExRandomP$), while the better direction recovers part of that (\DevExBetterBeta, $p = \DevExBetterP$).
+These are naturally occurring changes, driven by coaching, injury, and age rather than by any plan, so the result says that drifting toward better-scoring neighbors does not by itself predict improvement --- not that neighborhood-based development cannot work.
 
 \subsection{Distinctiveness}
-\plan{Pre-specified typicality test (\texttt{src/stuffplus/typicality.py}): typicality = $-\log$ mean distance to the 20 nearest other-pitcher shapes; actual SwStr\% on typicality, controlling for the physics-only model's prediction. Primary 2025--26 (control out-of-sample): $\beta = \TypBeta$ pp per SD (CI \TypLo{} to \TypHi), robust to $K$; harder contact too; secondary 2023--24 weaker ($\TypSecBeta$, $p = \TypSecP$), as expected with an in-sample control. Caveat: typicality may proxy model misfit.}
+The exploratory pattern suggests that typical shapes underperform their physics, and we tested that directly, again with the design committed in advance.
+A shape's \emph{typicality} is minus the log of its mean distance to its 20 nearest other-pitcher shapes, standardized within season; we regressed actual swinging-strike rate on typicality, controlling for the physics-only model's prediction.
+Out of sample (2025--26, \TypN{} shapes), one standard deviation more typical means \TypBeta{} percentage points of swinging strikes (95\% CI \TypLo{} to \TypHi), with harder contact as well, and the result does not depend on the number of neighbors.
+In 2023--24, where the control model was trained, the effect is weaker (\TypSecBeta, $p = \TypSecP$), as expected when the control is fit to the same outcomes.
+Typicality may partly stand in for physics the model misses; location and sequencing are not observed.
 
 \subsection{A development planner}
-\plan{Profile held fixed (arm angle, extension; velocity and spin bands). Value $V = \gamma\,\hat p_{\text{miss}} + \beta\,\text{typ}$, both coefficients from the pre-specified typicality model. Steps on a $k$-nearest-neighbor graph of real shapes; velocity and spin weighted as arm talent; season budget from observed one-season changes; destination = best value within three seasons; benchmarks = milestones along that one path; value checked monotone.
-Young-arm search (2026, age $\le 25$): \YoungPlanned{} pitches planned, \YoungClear{} clear cases; illustrated by Gage Jump's slider (age \JumpAge, \JumpN{} pitches): glove-side sweep \JumpSweepStart{} $\to$ \JumpSweepOne{} in (season 1, $+\JumpGainOne$ pp) $\to$ \JumpSweepEnd{} in (season \JumpEndSeason, $+\JumpGainEnd$ pp), a pure shape plan. Figure \texttt{development\_path}. Illustrative, not validated; the earlier Eovaldi neighborhood (figure \texttt{pitch\_design}) moves to an appendix or is dropped.
-Connection to the topology: connectedness guarantees a path exists; shortest paths on a nearest-neighbor graph are how Isomap approximates geodesic distances \parencite{sklearn_userguide_manifold}, a method due to \textcite{tenenbaum2000isomap}.}
+These results suggest treating development as planning rather than drift: find the cheapest realistic route from a pitch's current shape to a shape that plays better for that pitcher.
+\begin{itemize}
+  \item \emph{Profile.} The pitcher's arm slot (Statcast arm angle within $5^\circ$) and extension (within 0.5 feet) are held fixed, and velocity and spin rate are kept within 1.5 mph and 200 rpm. Grip and delivery mechanics are not modeled; that would need data Statcast does not have.
+  \item \emph{Value.} $V = \gamma\, \hat p + \beta\, \text{typicality}$, in swinging-strike units, with $\hat p$ the physics-only model's prediction and $\gamma, \beta$ taken from the typicality model.
+  \item \emph{Steps.} Every waypoint is a pitch shape some other pitcher throws: shortest paths on an 8-nearest-neighbor graph in the flight space, as Isomap approximates geodesic distances \parencite{sklearn_userguide_manifold}. Changes in velocity and spin rate, largely arm talent, cost three times as much as changes in movement and spin axis. Connectedness guarantees that paths exist.
+  \item \emph{Benchmarks.} A season's budget is the 90th percentile of observed one-season shape changes; the destination is the best value reachable within three seasons, and the benchmarks are the milestones along that one path, with value required not to drop.
+\end{itemize}
+Searching all pitches thrown at least 300 times in 2026 by pitchers aged 25 or younger, \YoungPlanned{} could be planned and \YoungClear{} pass every check (at least 30 feasible shapes, at least two steps, value rising along the path, and gains robust to looser arm-angle matching and a smaller budget).
+Gage Jump's slider (age \JumpAge, \JumpN{} pitches) illustrates the planner (Figure~\ref{fig:plan}): holding velocity and spin, the plan removes glove-side sweep, from \JumpSweepStart{} inches to \JumpSweepOne{} after one season ($+\JumpGainOne$ points) and \JumpSweepEnd{} by season \JumpEndSeason{} ($+\JumpGainEnd$), toward a shape another pitcher's cutter already has --- crossing a label boundary along the way.
+The plan is built from tested pieces, but the plan itself is not validated; that requires following pitchers who use it.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{development_path.pdf}
+\caption{A development plan for Gage Jump's slider: the feasible shapes, the planned path with season milestones, and value along the path.}\label{fig:plan}
+\end{figure}
 
 %======================================================================
 \section{Limitations}\label{sec:limits}
 %======================================================================
-\plan{One fitting season (2026 replication for the evaluation result only); no minimum pitch count in the fit; persistent homology and intrinsic dimension not rerun with a minimum count; no formal confidence band on persistence diagrams; Mapper parameters by grid, not a principled method; our Stuff+-style model is a reimplementation; development result observational.}
+\begin{itemize}
+  \item The shape results use one season; only the evaluation results are replicated out of sample.
+  \item The fit applies no minimum pitch count; the Mapper features survive minimums of 10 and 20 (Table~\ref{tab:thin}), but persistent homology and intrinsic dimension were not rerun with a minimum.
+  \item Persistence diagrams are compared with null models rather than given formal confidence sets.
+  \item Mapper's parameters were chosen by a grid, not by a principled method such as that of \textcite{carrieremicheloudot2018}.
+  \item The Stuff+-style models are our reimplementation, not a published model.
+  \item The development tests are observational, and the planner is illustrative: it is not validated on pitchers who follow it.
+\end{itemize}
 
 %======================================================================
 \section{Conclusion}\label{sec:conclusion}
 %======================================================================
-\plan{Mapper gives the picture; homology, nulls, dimension, and density certify it. Pitch labels are conventions on a connected, three-peaked space, which matters for how pitches are graded and compared. Future work: movement relative to arm slot; other seasons and levels; principled parameter choice.}
+Mapper gives a readable picture of pitch-shape space; homology, null models, dimension estimates, and density peaks certify which parts of the picture are real.
+The space is connected, with no loops and no gaps beyond a Gaussian, about six-dimensional, and has three dense regions; finer pitch labels are conventions on the ridges.
+That matters in practice: grading a pitch within its label is fragile for pitches near a boundary, typical shapes get fewer whiffs than their physics predicts, and development is better framed as a planned path through the connected space than as drift toward better pitches.
+Natural next steps are movement measured relative to arm slot, other seasons and levels, a principled choice of Mapper's parameters, and a prospective test of the planner with pitchers who use it.
 
 \appendix
 \section{Parameters and reproducibility}
-\plan{All parameters; code at \url{https://github.com/WillPaz16/tda-pitch-clustering}; every number generated by \texttt{src/viz/paper\_numbers.py}; seeds.}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{ll}
+\toprule
+Component & Setting \\
+\midrule
+Lens & PCA, 2 components (alternatives: velocity $\times$ IVB, Isomap, density) \\
+Cover & 10 intervals per axis, 30\% overlap (grid: 8/10/12, 20/30/40\%) \\
+Clustering & DBSCAN, $\varepsilon = 1.0$, $M = 4$ (grid: $\varepsilon$ = 0.8/1.0/1.2) \\
+Stability & 30 refits on 80\% of pitchers without replacement \\
+Null models & Gaussian; within-type shuffle; spin-pair shuffle \\
+Persistent homology & Vietoris--Rips, five 1{,}000-shape subsamples \\
+Intrinsic dimension & MLE with 10 neighbors; TwoNN \\
+Density peaks & $50^3$ grid, $\sigma = 1$ cell, 50 Gaussian replicates \\
+\bottomrule
+\end{tabular}
+\caption{Parameters.}
+\end{table}
+Code and data products are at \url{https://github.com/WillPaz16/tda-pitch-clustering}. Every number in this paper is generated from saved outputs by \texttt{src/viz/paper\_numbers.py}, and every figure by \texttt{src/viz/thesis\_figures.py}.
 
 \section{Use of AI assistance}
-\plan{Adapt the README disclosure: what Claude did, what was verified and how (citation ledger, blind checks, page-image reads), and what the author checked.}
+This project was developed with substantial help from Claude, Anthropic's AI assistant, used through Claude Code, which assisted with analysis code, documentation, the literature search, and drafting.
+The author set the research questions and scope, made the methodological decisions, and reviewed the results.
+Because AI output can be confidently wrong, the work was built around verification: every structural claim is tested against null models and across parameters, subsamples, and lenses before it counts as a finding, and several early findings were dropped this way; two hypotheses were tested with designs committed before the analysis was run; and a citation is used only after its bibliographic data match a registry record and the claim is confirmed at a specific page of the source, with an independent check and the author's review.
 
 \printbibliography
 

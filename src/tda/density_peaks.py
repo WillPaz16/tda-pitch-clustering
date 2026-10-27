@@ -168,7 +168,9 @@ def main(path):
         print(f"   peak {k + 1}: persistence {pr:.3f} (p = {pv:.3f}) at (HB, IVB, dSpeed) = {loc}")
     pd.DataFrame({'persistence_rel': real, 'p_value': pval}).to_csv(_ROOT / 'data' / 'density_peaks.csv', index=False)
     print("B. archetype level, PC1 of the Mapper lens:")
-    print(archetype_pc1().to_string(index=False))
+    pc1 = archetype_pc1()
+    pc1.to_csv(_ROOT / 'data' / 'density_peaks_pc1.csv', index=False)
+    print(pc1.to_string(index=False))
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ axler2024ladr,Axler2024_LADR4e.pdf,doi:10.1007/978-3-031-41026-0,"published, 4th
 fasy2014confidence,Confidence sets for persistence diagrams.pdf,doi:10.1214/14-AOS1252,"published (Ann. Statist. 42(6):2301-2339, 2014)",Crossref; PDF title page,IN_HAND,"Published version (Will, 2026-09-28) replaces the arXiv copy"
 robinsonturner2017,Hypothesis testing for topological data analysis.pdf,doi:10.1007/s41468-017-0008-7,published (JACT 2017),Crossref; PDF title page,IN_HAND,"Published version (Will, 2026-09-28) replaces the arXiv copy"
 bauer2021ripser,Ripser efficient computation of Vietoris-Rips persistence barcodes.pdf,doi:10.1007/s41468-021-00071-5,"published (JACT 5:391-423, 2021)",Crossref; PDF title page,IN_HAND,"Published version (Will, 2026-09-28) replaces the arXiv copy"
-dorogush2018catboost,CatBoost.pdf,arXiv:1810.11363,preprint,OpenAlex,IN_HAND,Future work only
+dorogush2018catboost,CatBoost.pdf,arXiv:1810.11363,preprint,OpenAlex,IN_HAND,"Library citation for our Stuff+-style models (now results, scope change 2026-10-27); arXiv ID re-confirmed by title search 2026-10-27"
 mohnhaupt2023,Mohnhaupt_Bsc.pdf,ETH Zurich BSc thesis 2023,thesis,none,IN_HAND,Secondary pointer only
 ,DBSCAN.pdf,,,,SUPERSEDED,Use ester1996dbscan (AAAI copy)
 ,mapperOverview.pdf,,,,SUPERSEDED,Preprint of madukpe2026review

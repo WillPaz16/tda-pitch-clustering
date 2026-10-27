@@ -10,6 +10,8 @@ import pickle
 from pathlib import Path
 
 import networkx as nx
+import numpy as np
+from scipy.stats import spearmanr
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -42,6 +44,9 @@ def main():
     nh = pd.read_csv(D / 'nerve_homology.csv')
     sm = nh[nh.kind == 'saved_model'].iloc[0]
     m['GraphBone'], m['NerveBone'] = fmt(sm.graph_b1), fmt(sm.nerve_b1)
+    m['NerveRank'] = fmt(sm.graph_b1 - sm.nerve_b1)   # rank of the boundary map, by equation (2)
+    meta = json.loads((ROOT / 'models' / 'xwoba_model_metadata.json').read_text())
+    m['StuffTrainN'] = fmt(meta['n_train_samples'])
     grid = nh[nh.kind == 'grid']
     m['GridGraphBoneMin'], m['GridGraphBoneMax'] = fmt(grid.graph_b1.min()), fmt(grid.graph_b1.max())
     m['GridNerveBoneMin'], m['GridNerveBoneMax'] = fmt(grid.nerve_b1.min()), fmt(grid.nerve_b1.max())
@@ -105,6 +110,51 @@ def main():
         m[f'SS{word}Shapes'], m[f'SS{word}Slow'], m[f'SS{word}Comp'] = fmt(r.shapes), fmt(r.slow), fmt(r.n_components)
         m[f'SS{word}Iso'] = 'none in a node' if pd.isna(r.slow_isolated) else fmt(100 * r.slow_isolated) + r'\%'
         m[f'SS{word}Rho'] = fmt(r.ordering_rho, 2)
+
+    # Section 7: stability and nulls (data/mapper_stability.csv)
+    st = pd.read_csv(D / 'mapper_stability.csv')
+    order = lambda g: 100 * np.mean(g['ordering_rho'].dropna() >= 0.7)
+    slow = lambda g: 100 * np.mean(g['slow_isolated'].dropna() >= 0.5)
+    real = st[st.kind.isin(['grid', 'subsample'])].groupby(['lens', 'kind'])
+    nul = st[st.kind.str.startswith('null')].groupby(['lens', 'kind'])
+    m['StabOrderMin'] = fmt(real.apply(order).min())
+    pca = st[(st.lens == 'pca') & st.kind.isin(['grid', 'subsample'])].groupby('kind').apply(slow)
+    m['StabSlowPCALo'], m['StabSlowPCAHi'] = fmt(pca.min()), fmt(pca.max())
+    m['StabSlowLo'], m['StabSlowHi'] = fmt(real.apply(slow).min()), fmt(real.apply(slow).max())
+    m['NullOrderMin'] = fmt(nul.apply(order).min())
+    m['NullSlowLo'], m['NullSlowHi'] = fmt(nul.apply(slow).min()), fmt(nul.apply(slow).max())
+    for kind, word in [('null_gauss', 'Gauss'), ('null_shuffle', 'Shuffle')]:
+        g = nh[nh.kind == kind]
+        m[f'{word}GraphBoneMin'], m[f'{word}GraphBoneMax'] = fmt(g.graph_b1.min()), fmt(g.graph_b1.max())
+        m[f'{word}NerveBoneMin'], m[f'{word}NerveBoneMax'] = fmt(g.nerve_b1.min()), fmt(g.nerve_b1.max())
+    # persistent homology (data/persistence_check.csv)
+    ph = pd.read_csv(D / 'persistence_check.csv')
+    rr, gg, ss = ph[ph.kind == 'real'].iloc[0], ph[ph.kind == 'null_gauss'], ph[ph.kind == 'null_shuffle']
+    m['PHRealLoops'] = fmt(rr.h1_long_loops_mean)
+    m['PHRealLongBars'] = fmt(rr.h0_long_bars)
+    m['PHGaussLongBarsLo'], m['PHGaussLongBarsHi'] = fmt(gg.h0_long_bars.min()), fmt(gg.h0_long_bars.max())
+    m['PHShuffleLongBarsLo'], m['PHShuffleLongBarsHi'] = fmt(ss.h0_long_bars.min()), fmt(ss.h0_long_bars.max())
+    m['PHRealHzeroMedian'], m['PHGaussHzeroMedian'] = fmt(rr.h0_median, 2), fmt(gg.h0_median.mean(), 2)
+    # intrinsic dimension per type
+    m['DimNullTwoNN'] = fmt(idim.loc[('all', 'null_shuffle_spinpair'), 'twonn'], 2)
+    gap = (idim.xs('null_shuffle_spinpair', level='kind')['mle'] - idim.xs('real', level='kind')['mle']).drop('all')
+    m['DimTypeGapLo'], m['DimTypeGapHi'] = fmt(gap.min(), 1), fmt(gap.max(), 1)
+    # density peaks
+    m['PeakCurve'], m['PeakSweep'] = fmt(dp[3], 3), fmt(dp[4], 3)
+    m['PeakP'] = fmt(pd.read_csv(D / 'density_peaks.csv')['p_value'].iloc[1], 2)
+    pc = pd.read_csv(D / 'density_peaks_pc1.csv')
+    pcs = pc[pc.bandwidth >= 0.15]
+    m['PCPeaks'] = fmt(pcs.peaks_sig.min())
+    m['PCBandLo'], m['PCBandHi'] = fmt(pcs.bandwidth.min(), 2), fmt(pcs.bandwidth.max(), 2)
+    # labels and outcomes
+    mm = [pd.read_csv(D / f, usecols=['n_memberships']) for f in ('pitch_stuffplus_clusters.csv', 'classified_pitches_2026-04-01_2026-04-07.csv')]
+    m['MultiTwentyFive'], m['MultiTwentySix'] = fmt(100 * (mm[0].n_memberships >= 2).mean()), fmt(100 * (mm[1].n_memberships >= 2).mean())
+    an = pd.read_csv(D / 'pitch_level_anova_results.csv')
+    an = an[an.level == 'pitch'].pivot(index='metric', columns='labeling', values='omega2')
+    m['OmegaWhiffLabels'], m['OmegaWhiffCentroid'], m['OmegaWhiffMapper'] = (fmt(100 * an.loc['whiff', c], 1) for c in ['pitch_type', 'centroid_primary', 'mapper_primary'])
+    m['OmegaGBLabels'], m['OmegaGBCentroid'], m['OmegaGBMapper'] = (fmt(100 * an.loc['gb', c], 1) for c in ['pitch_type', 'centroid_primary', 'mapper_primary'])
+    gr = pd.read_csv(D / 'graph_reliability_correlation.csv')
+    m['ReliabilityRho'] = fmt(spearmanr(gr.train_n, gr.roundtrip_accuracy).correlation, 2)
 
     out = ROOT / 'docs' / 'paper' / 'numbers.tex'
     out.parent.mkdir(parents=True, exist_ok=True)
