@@ -1093,3 +1093,29 @@ seeds are the same as the originals; PCA lens only.
   shape of pitch flight.
 - **Status:** verified on 2025, PCA lens. The lens study, the 2026 season
   and density peaks in full flight space were not rerun.
+
+**Replication across lenses and seasons (2026-10-27).** The flight-space
+check ran for 2025 and 2026 under all four lenses (PCA, relative velocity
+× IVB, Isomap, density). Outputs:
+`data/flight_space_<season>_<lens>_mapper.csv`, plus
+`data/flight_space_2026_{persistence,idim}.csv`.
+
+- **Slow-pitch isolation:** 0% of real fits in all 8 runs. It is a
+  feature of absolute speed and delivery, not of flight shape.
+- **Loops:**
+  - full-nerve b₁ ≤ 6 in real fits across all runs (nulls ≤ 4);
+  - graph b₁ 32–222, except under the 1-D density lens, whose graphs
+    have b₁ = 0.
+- **Connectedness:**
+  - 1 component at the saved parameters in 6 of 8 runs;
+  - 2026 velocity × IVB: 2 components, giant 0.91;
+  - 2026 density (13 nodes): 4 components;
+  - grid ranges overlap the nulls'.
+- **Velocity ordering:** ρ ≥ 0.7 in 81–100% of real fits; the nulls
+  reproduce it, as before.
+- **2026 persistent homology:** 107 long H0 bars vs Gaussian 534–575; 0
+  real loops (the borderline 2025 loop does not recur).
+- **2026 intrinsic dimension:** 4.45 / 4.70 vs fair null 4.80 / 4.99;
+  lower in every type by MLE.
+- **Status:** verified at scale, 2 seasons × 4 lenses. Density peaks were
+  not rerun (already in a flight subspace).
