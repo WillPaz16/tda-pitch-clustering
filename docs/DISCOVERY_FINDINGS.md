@@ -708,3 +708,75 @@ something other than this one shape change: location, sequencing,
 deception, noise. **Status:** illustrative. It is verified that the
 pipeline runs and the example is robust to tolerances. It is not causal,
 and not a recommendation for a real pitcher.
+
+## Density peaks: connected, but multimodal (2026-10-27)
+
+Script: `src/tda/density_peaks.py` (self-test: three separated blobs give
+3 peaks; one Gaussian gives 1). Output: `data/density_peaks.csv`.
+
+**Why.** Our Rips persistent homology and Mapper detect *gaps*. "One
+connected continuum" says nothing about how many dense regions it has.
+Maloof, Haumacher & Bonicki (2026, *SABR Tooth Tigers*, not
+peer-reviewed) count *modes* instead. Their method: H0 persistence of
+superlevel sets of a smoothed density. Their data: 4.47M NCAA D1
+TrackMan pitches in (ΔSpeed, HB, IVB). They found three peaks, for
+fastball, breaking ball and changeup. Topaz (2026) also notes that a
+covariance-matched Gaussian null cannot see mean-shift mixtures absorbed
+by the covariance. So our nulls reproducing the Mapper ordering does
+*not* imply one mode.
+
+**Recipe:** theirs, applied to MLB 2025.
+- 718,974 pitches.
+- ΔSpeed = release speed − the pitcher's 95th-percentile speed in that
+  game.
+- HB and IVB in inches; left-handers mirrored; + HB = arm side.
+- A 50³ voxel grid, smoothed with σ = 1 voxel.
+- Null: 50 covariance-matched Gaussian replicates.
+
+| Peak | Persistence (relative) | (HB, IVB, ΔSpeed) | Reading | Maloof et al. (D1) |
+|---|---|---|---|---|
+| 1 | 1.000 | (7.5, 16.5, −0.7) | fastball | (11.5, 17.5, −0.7) |
+| 2 | 0.166 | (−3.5, 2.5, −8.5) | breaking ball | (−4.5, 1.5, −9.7) |
+| 3 | 0.080 | (15.5, 3.5, −7.3) | changeup | (16.5, 7.5, −7.9) |
+| 4 | 0.013 | (−8.5, −12.5, −13.9) | curveball-like | not reported |
+| 5 | 0.012 | (−14.5, 0.5, −12.1) | sweeper-like | not reported |
+
+**Null and robustness.**
+- The null's largest secondary peak has a median of 0.0015 and a maximum
+  of 0.0107. Peaks 1–5 all beat all 50 replicates (p = 0.02, the floor
+  for B = 50).
+- Robustness (smoothing σ = 1, 1.5, 2; three random half-samples):
+  - Peaks 1–3 appear in every variant, with stable persistence and
+    location.
+  - Peak 4 appears in every variant (0.012–0.015).
+  - Peak 5 is fragile: present at σ = 1 and 1.5 and in 2 of 3 halves;
+    gone at σ = 2 and in one half.
+- **A caveat on the null:** a single Gaussian is unimodal, so it rejects
+  *any* real second mode. The p-values say "more than one mode", not
+  "this small peak is real". Robustness carries the small peaks.
+
+**Archetype level** (3,943 pitch shapes along PC1 of the Mapper lens):
+two significant peaks, at PC1 ≈ −1.5 (fastball side) and ≈ 2.9 (breaking
+ball side). Relative persistence is 0.16–0.19 and p = 0.02 at KDE
+bandwidths 0.15–0.30. The changeup peak does not separate along PC1,
+which is a fastball↔breaking-ball axis.
+
+**What this means for the claim.** Pitch-shape space is **connected (no
+gaps beyond a Gaussian) but multimodal**:
+- three robust dense regions (fastball, breaking ball, changeup);
+- a small but stable curveball bump;
+- no peaks for the finer labels (four-seam vs. sinker vs. cutter; slider
+  vs. sweeper), apart from a fragile sweeper-like bump.
+
+This independently reproduces Maloof et al.'s Level 1 result at the MLB
+level, and their peak locations agree to within a few inches. The
+refined statement: "labels beyond the three broad classes are cuts
+through dense ridges, not separate peaks". It replaces any reading of
+"continuum" as "unimodal".
+
+**Status:**
+- Peaks 1–3: verified at scale, with robustness.
+- Peak 4: stable.
+- Peak 5: tentative; do not claim.
+- Not yet done: a per-pitcher analysis (Maloof's Step 6) and other
+  seasons.
