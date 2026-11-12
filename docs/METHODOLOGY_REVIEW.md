@@ -38,7 +38,7 @@ across clusters, "consistency" = does a pitcher land in the same cluster.
 None of that requires a *graph* — a partition would do.
 
 The one place the graph structure is actually load-bearing is
-`src/validation/graph_consistency_analysis.py`'s distance-penalized
+`src/archive/validation/graph_consistency_analysis.py`'s distance-penalized
 consistency score (penalizing landing in a *nearby* cluster less than a
 *distant* one) — that is a genuinely topological use of the construction
 and is probably the strongest existing idea in the repo.
@@ -63,7 +63,7 @@ the "discovery" work to do next.
    columns, sliced positionally rather than by name (works today only
    because `spin_axis_clock` happens to be appended last). Consequence:
    every downstream nearest-centroid classifier
-   (`src/tda/classify_pitches_to_csv.py`,
+   (`src/archive/tda/classify_pitches_to_csv.py`,
    `src/tda/assign_pitch_stuffplus_clusters.py`) operates in a different
    scaled feature space than the one that actually produced the
    clustering. It's an approximation of the original Mapper output, not a
@@ -89,7 +89,7 @@ the "discovery" work to do next.
    precise.~~
 
    Checked directly (2026-08-17) before fixing — see
-   `src/tda/spin_axis_circularity_check.py` (kept as a record of the
+   `src/archive/tda/spin_axis_circularity_check.py` (kept as a record of the
    pre-fix state, run against the old model). Found: only 20 of 3,932
    training archetypes (0.5%) sat within 20° of the 0/360 wraparound, and
    no cluster centroid was meaningfully distorted by it in the old
@@ -131,7 +131,7 @@ the "discovery" work to do next.
    rather than letting the audience assume otherwise.
 
    **Checked directly (2026-08-18)** — see
-   `src/tda/multi_membership_check.py`. Quantified how much genuine
+   `src/archive/tda/multi_membership_check.py`. Quantified how much genuine
    ambiguity the single-label choice discards: for every training
    archetype, computed the margin between its distance to the nearest
    and second-nearest cluster centroid, normalized by the typical
@@ -193,7 +193,7 @@ the "discovery" work to do next.
    partially validating a model against its own training signal.
 
    **Checked directly (2026-08-17)** — see
-   `src/validation/stuff_plus_leakage_check.py`. Used a natural
+   `src/archive/validation/stuff_plus_leakage_check.py`. Used a natural
    experiment already available in the repo:
    `data/pitch_stuffplus_clusters.csv` was built from **2025** Statcast
    data, which the 2022–2024-trained xwOBA/miss/chase models never saw.
@@ -323,7 +323,7 @@ the "discovery" work to do next.
    2023 outcomes onto the lexically "latest" classified file (April 2026),
    which was labeled by the pre-refit model. The old ANOVA conclusions are
    therefore **unverified**, not confirmed. Rebuilt as
-   `src/validation/pitch_level_outcome_anova.py` (per-pitch outcomes from a
+   `src/archive/validation/pitch_level_outcome_anova.py` (per-pitch outcomes from a
    single pull, both labelings, pitch- and pitcher-level tests, eta²);
    results below.
 
@@ -380,7 +380,7 @@ the "discovery" work to do next.
    mislabeled.
 
    **Checked directly (2026-08-17)** — see
-   `src/validation/strike_zone_check.py`, run against one real day of
+   `src/archive/validation/strike_zone_check.py`, run against one real day of
    Statcast data (2025-09-15, 2,729 pitches). At the aggregate level the
    effect is small: 17.41% chase rate under the fixed zone vs. 18.32%
    under the real per-batter zone, under a 1 percentage point gap. But

@@ -13,6 +13,9 @@ Text is compared after folding ligatures and dropping spaces and hyphens,
 since PDF extraction routinely splits or joins words. Exits 1 on failure.
 
 Usage: python3 src/lit/verify_citations.py   (needs pypdf)
+
+Paper (docs/paper/paper_final.tex): tooling, not an analysis. Checks the citation ledger
+(docs/lit_review/citation_ledger.csv) behind the paper's references.
 """
 import csv
 import html

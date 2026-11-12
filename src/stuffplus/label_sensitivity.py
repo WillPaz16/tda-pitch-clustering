@@ -41,6 +41,10 @@ types (its primer: Location+, not Stuff+, is "centered at 100 for each pitch
 type"), so its headline number would not change on relabeling.
 
 Run: python3 src/stuffplus/label_sensitivity.py statcast_<season>.parquet [relative|absolute] [season tag]
+
+Paper (docs/paper/paper_final.tex): Grading within a Label Is Fragile near Boundaries
+(sec:labelfragile), 2025 and 2026.
+Outputs: data/label_sensitivity_<season>_<relative|absolute>*.
 """
 import json
 import sys

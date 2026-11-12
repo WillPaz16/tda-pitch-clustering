@@ -18,6 +18,11 @@ and data/flight_space_<season>_idim.csv.
 
 Run: python3 src/tda/flight_space_check.py statcast_<season>.parquet [lens] [season]
      lens in pca (default), baseball (relative velocity x IVB), isomap, density
+
+Paper (docs/paper/paper_final.tex): flight space is defined in Data Collection and
+Processing (sec:data); the check is reported in The Shape of Pitch Space
+(sec:shape), Table tab:flight, for 2025 and 2026.
+Outputs: data/flight_space_<season>_*.csv.
 """
 import sys
 import warnings

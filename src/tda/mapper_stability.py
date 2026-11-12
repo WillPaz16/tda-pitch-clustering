@@ -22,6 +22,12 @@ Node IDs change between fits, so every tracked feature is defined by content:
                    shortest path from the most-CU node to the most-FF node
 
 Null archetypes get pitch-type labels from their nearest real archetype.
+
+Paper (docs/paper/paper_final.tex): Testing the Mapper Picture (sec:certify), subsections
+Stability and Null Models; results in The Shape of Pitch Space (sec:shape),
+Table tab:stability. Also library code: the null models used by
+nerve_homology, persistence_check, intrinsic_dimension, flight_space_check,
+sample_size_check, and circle_example. Output: data/mapper_stability.csv.
 """
 import warnings
 warnings.filterwarnings("ignore")

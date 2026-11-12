@@ -68,8 +68,10 @@ python -m pip install -r requirements.txt
 
 - `src/tda/` — TDA/Mapper clustering pipeline (core methodology)
 - `src/stuffplus/` — Stuff+ / xwOBA CatBoost modeling
-- `src/validation/` — pitcher consistency, outcome ANOVA, predictive comparisons
-- `src/data_fetch/` — Statcast/Savant data pulling and integration
+- `src/viz/` — `paper_numbers.py` (every number in the paper) and `thesis_figures.py`
+- `src/lit/` — bibliography and citation-ledger tooling
+- `src/archive/` — earlier exploration not used in the paper or deck (validation checks, data fetching, older TDA analyses); see its README
+- Each script's docstring ends with a `Paper (docs/paper/paper_final.tex):` line naming the section, table, or figure it backs, by LaTeX label
 - `notebooks/` — model-building notebooks (TDA Mapper fit, Pro Stuff+, College Stuff+)
 - `models/`, `data/`, `results/` — trained model artifacts, CSV/JSON data, and figures/visualizations
 - `docs/` — this file, methodology notes, and the presentation source
@@ -78,6 +80,6 @@ python -m pip install -r requirements.txt
 
 1. `notebooks/TDA_Pitch_Clustering.ipynb` — fits the Mapper model on a season of Statcast data, saves `models/tda_mapper_model.pkl`.
 2. `notebooks/ProStuff+.ipynb` / `CollegeStuff+.ipynb` — train the xwOBA/miss/chase CatBoost models and compute pitcher-level Stuff+.
-3. `src/tda/classify_pitches_to_csv.py` or `src/tda/assign_pitch_stuffplus_clusters.py` — assign new pitches to existing clusters (and Stuff+, in the latter) via nearest-centroid distance. See [CLASSIFY_PITCHES_README.md](CLASSIFY_PITCHES_README.md).
-4. `src/validation/pitch_level_outcome_anova.py` — outcome ANOVA of the clusters against a pitch-type baseline; other `src/validation/*.py` scripts cover consistency and predictive checks.
+3. `src/archive/tda/classify_pitches_to_csv.py` or `src/tda/assign_pitch_stuffplus_clusters.py` — assign new pitches to existing clusters (and Stuff+, in the latter) via nearest-centroid distance. See [CLASSIFY_PITCHES_README.md](CLASSIFY_PITCHES_README.md).
+4. `src/archive/validation/pitch_level_outcome_anova.py` — outcome ANOVA of the clusters against a pitch-type baseline; other `src/validation/*.py` scripts cover consistency and predictive checks.
 5. `src/tda/mapper_stability.py`, `persistence_check.py`, `intrinsic_dimension.py` — shape analyses against null models (see [DISCOVERY_FINDINGS.md](DISCOVERY_FINDINGS.md)).

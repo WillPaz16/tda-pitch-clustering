@@ -44,6 +44,9 @@ loosened to 7 degrees and with the budget cut to the 75th percentile.
 
 Run: python3 src/stuffplus/development_planner.py statcast_<season>.parquet [pitcher_id pitch_type [season]]
      python3 src/stuffplus/development_planner.py statcast_<season>.parquet --young <season>
+
+Paper (docs/paper/paper_final.tex): not used (future work). Deck: backup slide and
+figure development_path.
 """
 import sys
 import warnings

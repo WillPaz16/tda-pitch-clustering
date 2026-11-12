@@ -32,6 +32,9 @@ Caveats. Observational; typicality may partly proxy for physics the model
   model sees.
 
 Run: python3 src/stuffplus/typicality.py <dir with statcast_<year>.parquet>
+
+Paper (docs/paper/paper_final.tex): not used (future work). Deck: backup slides on the
+pitch-development tests (Test 2, typicality).
 """
 import sys
 import warnings

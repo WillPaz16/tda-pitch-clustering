@@ -7,7 +7,7 @@ first real attempt to answer that, using the actual fitted graph in
 `models/tda_mapper_model.pkl` rather than the recomputed similarity graph
 `src/tda/tda_graph_visualization.py` builds for visualization.
 
-Reproducible via `src/tda/graph_topology_analysis.py`.
+Reproducible via `src/archive/tda/graph_topology_analysis.py`.
 
 > **Model note (2026-09-24):** sections below dated 2026-08-17 were
 > computed on the pre-refit 57-node model. The model was refit 2026-08-18
@@ -189,7 +189,7 @@ ambiguous: it could mean genuine boundary blending in a real continuum
 actually belong near their assigned centroid at all (more concerning).
 Rather than assume which, checked directly, against the full population
 of ground-truth misroutes across the whole graph (4,315 misroutes, not a
-sample), reproducible via `src/tda/crowded_continuum_analysis.py`:
+sample), reproducible via `src/archive/tda/crowded_continuum_analysis.py`:
 
 - **93.8% of misroutes land on a graph-adjacent cluster** — an edge
   actually exists between the origin and the reassigned cluster in the
@@ -212,7 +212,7 @@ region being genuinely continuous, not a modeling failure.
 
 **Follow-up: the "attractor node" observation above was checked
 systematically and does not hold up as originally described.**
-Reproducible via `src/tda/attractor_node_analysis.py`. Betweenness
+Reproducible via `src/archive/tda/attractor_node_analysis.py`. Betweenness
 centrality (the standard network measure of how often a node lies on
 shortest paths between other node pairs — the actual definition of a
 graph "crossroads") is **exactly zero** for all three candidate nodes
@@ -754,12 +754,21 @@ by the covariance. So our nulls reproducing the Mapper ordering does
 - The null's largest secondary peak has a median of 0.0015 and a maximum
   of 0.0107. Peaks 1–5 all beat all 50 replicates (p = 0.02, the floor
   for B = 50).
-- Robustness (smoothing σ = 1, 1.5, 2; three random half-samples):
-  - Peaks 1–3 appear in every variant, with stable persistence and
-    location.
-  - Peak 4 appears in every variant (0.012–0.015).
-  - Peak 5 is fragile: present at σ = 1 and 1.5 and in 2 of 3 halves;
-    gone at σ = 2 and in one half.
+- Robustness (smoothing σ = 1, 1.5, 2; three random half-samples).
+  **Superseded 2026-11-11** by the committed, reproducible run
+  (`density_peaks.py <pull> --robustness` →
+  `data/density_peaks_robustness.csv`; each variant tested against its
+  own 20-replicate Gaussian null; a peak is "present" within 3 grid cells
+  of its baseline location). The original run's code and halves were
+  never saved, and its "peak 5 gone in one half" does not reproduce.
+  - Peaks 1–3 are present and significant in every variant, with stable
+    persistence and location.
+  - Peak 4 (curveball-like) keeps its size at every smoothing level
+    (0.013, 0.013, 0.012) and is present in all three halves
+    (0.012–0.014), but in no half does it beat the half-size null.
+  - Peak 5 (sweeper-like) fades with smoothing (0.012, 0.007, 0.003;
+    6th-ranked at σ = 2) and is present in all three halves
+    (0.010–0.014), significant in none.
 - **A caveat on the null:** a single Gaussian is unimodal, so it rejects
   *any* real second mode. The p-values say "more than one mode", not
   "this small peak is real". Robustness carries the small peaks.

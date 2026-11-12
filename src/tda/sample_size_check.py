@@ -14,6 +14,10 @@ counts can differ by a few from the saved model's 3,943 (Statcast relabels
 pitches between pulls).
 
 Run: python3 src/tda/sample_size_check.py statcast_2025.parquet
+
+Paper (docs/paper/paper_final.tex): pitch-count figures in Data Collection and Processing
+(sec:data); Minimum Pitch Counts (app:thin), Table tab:thin.
+Outputs: data/shape_counts_2025.json, data/sample_size_check.csv.
 """
 import json
 import sys

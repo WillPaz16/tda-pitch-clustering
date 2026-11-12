@@ -1,0 +1,4 @@
+Page text captured 2026-11-06 from https://www.mlb.com/glossary/statcast/extension (built-in browser, get_page_text).
+Title: Extension (EXT) | Glossary | MLB.com
+
+The point at which a pitcher releases the ball is actually a few feet closer to home plate than the pitching rubber itself. Extension quantifies exactly how much closer a pitcher's release point is to home plate.

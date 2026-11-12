@@ -4,6 +4,11 @@ docs/paper/numbers.tex as LaTeX macros. The paper never types a result by
 hand, so text and data cannot drift apart (as "55%" and "3,940" did in the
 deck). Re-run after any analysis changes:
   python3 src/viz/paper_numbers.py
+
+Paper (docs/paper/paper_final.tex): writes docs/paper/numbers.tex, every number the paper
+quotes. A few blocks (development tests, typicality, multi-membership, outcome
+ANOVA, reliability) produce macros paper_final.tex does not use; they are kept
+for the deck and earlier drafts.
 """
 import json
 import pickle
@@ -17,7 +22,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 D = ROOT / 'data'
 N_PITCHES_2025 = 721_799    # full-season pull used for the fit (provenance check, DISCOVERY_FINDINGS.md)
-N_PITCHES_2026 = 746_715    # 2026-03-20 .. 10-26 pull used for the replication
+N_PITCHES_2026 = 727_721    # 2026-03-20 .. 10-26 pull, spring training (game_type S, 18,994 pitches) removed; regular season + postseason
 N_PITCHES_2024 = 745_350    # 2024-03-20 .. 11-02 pull (development tests)
 N_PITCHES_2023 = 732_562    # 2023-03-30 .. 11-01 pull (development tests)
 
@@ -183,6 +188,32 @@ def main():
     m['FlSixGaussLo'], m['FlSixGaussHi'] = fmt(g6.h0_long_bars.min()), fmt(g6.h0_long_bars.max())
     fd6 = pd.read_csv(D / 'flight_space_2026_idim.csv').groupby(['scope', 'kind'])['mle'].mean()
     m['FlSixDim'], m['FlSixDimNull'] = fmt(fd6[('all', 'real')], 2), fmt(fd6[('all', 'null_shuffle_spinpair')], 2)
+    # 2026 flight-space Mapper (PCA lens) and largest-loop persistence, for the feature-space table
+    fm6 = pd.read_csv(D / 'flight_space_2026_pca_mapper.csv')
+    fb6 = fm6[(fm6.kind == 'grid') & (fm6.n_cubes == 10) & (fm6.perc_overlap == 0.3) & (fm6.eps == 1.0)].iloc[0]
+    fg6, fn6 = fm6[fm6.kind == 'grid'], fm6[fm6.kind.str.startswith('null')]
+    m['FlSixComp'], m['FlSixGridCompMax'] = fmt(fb6.n_components), fmt(fg6.n_components.max())
+    m['FlSixGridNerveMin'], m['FlSixGridNerveMax'] = fmt(fg6.nerve_b1.min()), fmt(fg6.nerve_b1.max())
+    m['FlSixNullNerveMin'], m['FlSixNullNerveMax'] = fmt(fn6.nerve_b1.min()), fmt(fn6.nerve_b1.max())
+    m['FlSixSlowIso'] = fmt(100 * np.mean(fm6[fm6.kind.isin(['grid', 'subsample'])].slow_isolated.dropna() >= 0.5))
+    nn = nh[nh.kind.isin(['null_gauss', 'null_shuffle'])]
+    m['NullNerveBoneMin'], m['NullNerveBoneMax'] = fmt(nn.nerve_b1.min()), fmt(nn.nerve_b1.max())
+    # boundary-pitch label pairs, 2025
+    lb = pd.read_csv(D / 'label_sensitivity_2025_relative.csv')
+    lb = lb[lb.boundary_share >= 0.5]
+    pairs = lb.apply(lambda r: ''.join(sorted([r.pitch_type, r.alt_label])), axis=1).value_counts()
+    for pr in ('FCSL', 'CHFS', 'CUKC', 'SLST'):
+        m[f'LSPair{pr}'] = fmt(pairs[pr])
+    assert list(pairs.index[:4]) == ['FCSL', 'CHFS', 'CUKC', 'SLST'], "boundary-pair order changed; update the paper text"
+    # the paper's running example (src/tda/circle_example.py)
+    ce = pd.read_csv(D / 'circle_example.csv')
+    cn = ce[ce.kind == 'null_gauss']
+    m['CircNullGraphBoneMax'] = fmt(cn.graph_b1.max())
+    m['CircNullCompLo'], m['CircNullCompHi'] = fmt(cn.n_components.min()), fmt(cn.n_components.max())
+    for word, p in [('PH', ph), ('Fl', fp), ('FlSix', fp6)]:
+        g = p[p.kind == 'null_gauss'].h1_max_persistence
+        m[f'{word}MaxPers'] = fmt(p[p.kind == 'real'].h1_max_persistence.iloc[0], 2)
+        m[f'{word}GaussMaxPersLo'], m[f'{word}GaussMaxPersHi'] = fmt(g.min(), 2), fmt(g.max(), 2)
 
     out = ROOT / 'docs' / 'paper' / 'numbers.tex'
     out.parent.mkdir(parents=True, exist_ok=True)

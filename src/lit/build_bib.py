@@ -8,6 +8,9 @@ rebuilt offline. Entries with no registry (books without DOI, lecture notes,
 a thesis, KDD-96) are in MANUAL with a note on where each field was read.
 
 Usage: python3 src/lit/build_bib.py [--refresh]
+
+Paper (docs/paper/paper_final.tex): tooling, not an analysis. Builds the bibliography
+(docs/lit_review/references.bib).
 """
 import csv
 import html

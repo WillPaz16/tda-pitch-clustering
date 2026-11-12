@@ -38,3 +38,7 @@ docs/paper/*.log
 docs/paper/*.out
 docs/paper/*.run.xml
 docs/paper/*.pdf
+
+# Editor build artifacts (VS Code LaTeX Workshop SyncTeX)
+*.synctex.gz
+*.synctex(busy)

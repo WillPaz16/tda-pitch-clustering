@@ -2,6 +2,9 @@
 Stuff+ Calculator
 Loads trained models and standardization metadata, applies to new statcast data
 to calculate pitcher-level Stuff+ metrics.
+
+Paper (docs/paper/paper_final.tex): library code. Scores pitches with the Stuff+-style
+models behind Grading within a Label (sec:labelfragile), via label_sensitivity.py.
 """
 
 import os

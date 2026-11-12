@@ -16,6 +16,10 @@ mixture (features shuffled within pitch type) does not?
 All datasets use the real data's StandardScaler, and lifetimes are reported
 in units of the real data's median H0 death, so scales are comparable.
 A noisy circle is run first as a sanity check (expect exactly one long H1 bar).
+
+Paper (docs/paper/paper_final.tex): Persistent Homology (sec:certify); Gaps, Dimension,
+and Dense Regions (sec:shape), Figure fig:persistence.
+Output: data/persistence_check.csv.
 """
 import warnings
 warnings.filterwarnings("ignore")

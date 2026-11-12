@@ -14,6 +14,9 @@ Estimators (standard, nearest-neighbor based):
 Reported overall and within each pitch type with >= 200 archetypes, for real
 data and each null. Sanity-checked first on a 2-D plane embedded in 9-D
 (expect ~2) and a 9-D Gaussian (expect ~9).
+
+Paper (docs/paper/paper_final.tex): Intrinsic Dimension (sec:certify); Gaps, Dimension,
+and Dense Regions (sec:shape). Output: data/intrinsic_dimension.csv.
 """
 import warnings
 warnings.filterwarnings("ignore")

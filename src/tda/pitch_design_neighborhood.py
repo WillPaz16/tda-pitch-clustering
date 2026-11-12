@@ -28,6 +28,9 @@ ILLUSTRATIVE, NOT CAUSAL: a better-scoring neighbor shows a shape that exists
 near this one, not that this pitcher can throw it or that it would play the
 same in their arsenal (tunneling, sequencing, location are all outside the
 model). Run: python3 src/tda/pitch_design_neighborhood.py [statcast.parquet]
+
+Paper (docs/paper/paper_final.tex): not used. Deck: the illustrative pitch-design slide
+(figure pitch_design).
 """
 
 import sys

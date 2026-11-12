@@ -1,0 +1,6 @@
+Page text captured 2026-11-09 from https://www.mlb.com/glossary/statcast (built-in browser, get_page_text).
+Title: Statcast | Glossary | MLB.com
+
+Statcast was installed in all 30 MLB ballparks in 2015 after a partial trial run in 2014.
+
+From 2015-19, Statcast consisted of a combination of camera and radar systems. That changed in 2020, with the arrival of Hawk-Eye.

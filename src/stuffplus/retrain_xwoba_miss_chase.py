@@ -25,6 +25,10 @@ uses the held-out fold as the eval set -- a mild, standard simplification
 (deciding *when* to stop is not the same leak as using held-out labels to
 correct predictions); upgrade path is a nested split if that distinction
 ever matters.
+
+Paper (docs/paper/paper_final.tex): trains the Stuff+-style models used in Consequences
+for Pitch Evaluation (sec:consequences); the training-set size is quoted in
+Data Collection and Processing (sec:data). Outputs: models/*.cbm, *_metadata.json.
 """
 import warnings
 warnings.filterwarnings("ignore")

@@ -21,6 +21,9 @@ Note: pitcher identity is reported as Statcast/MLBAM pitcher_id, not name --
 name resolution via pybaseball.playerid_reverse_lookup() was unavailable in
 this environment (a Chadwick register parsing error, not a code issue with
 this script). IDs can be cross-referenced manually on Baseball Savant.
+
+Paper (docs/paper/paper_final.tex): not used. Library code for
+pitch_design_neighborhood.py (deck).
 """
 
 import warnings

@@ -11,27 +11,27 @@ This script classifies individual pitches from Statcast data into TDA-discovered
 
 ### Default Run (Sept 15, 2025)
 ```bash
-python src/tda/classify_pitches_to_csv.py
+python src/archive/tda/classify_pitches_to_csv.py
 ```
 
 ### Classify Specific Date
 ```bash
-python src/tda/classify_pitches_to_csv.py 2025-09-20 2025-09-20
+python src/archive/tda/classify_pitches_to_csv.py 2025-09-20 2025-09-20
 ```
 
 ### Classify Date Range
 ```bash
-python src/tda/classify_pitches_to_csv.py 2025-09-10 2025-09-20
+python src/archive/tda/classify_pitches_to_csv.py 2025-09-10 2025-09-20
 ```
 
 ### Specify Output File
 ```bash
-python src/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15 -o my_pitches.csv
+python src/archive/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15 -o my_pitches.csv
 ```
 
 ### Use Custom Model Path
 ```bash
-python src/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15 -m /path/to/tda_mapper_model.pkl
+python src/archive/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15 -m /path/to/tda_mapper_model.pkl
 ```
 
 ## Output CSV Columns
@@ -80,7 +80,7 @@ The output CSV contains the following columns for each pitch:
 
 ### Run for single day:
 ```bash
-$ python src/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15
+$ python src/archive/tda/classify_pitches_to_csv.py 2025-09-15 2025-09-15
 Loading model from /path/to/models/tda_mapper_model.pkl...
 Model loaded successfully
 

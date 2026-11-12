@@ -15,6 +15,10 @@ slide quotes is printed here so the deck can be checked against it.
 
 Colors follow the dataviz reference palette: 3 categorical slots (validated
 all-pairs, light mode) with direct labels, and a one-hue blue sequential ramp.
+
+Paper (docs/paper/paper_final.tex): reeb_torus, toy_mapper, dbscan_toy, rips_toy,
+lens_scatter, mapper_graph, nerve_b1, persistence. Deck only: intrinsic_dim,
+pitch_design, development_path.
 """
 import sys
 from collections import Counter
@@ -152,7 +156,7 @@ def persistence(orig, cols):
     real = sc.transform(X_raw)[idx]
     gauss = sc.transform(gaussian_null(X_raw, rng))[idx]
     fig, axes = plt.subplots(1, 2, figsize=(6.2, 3.0), sharex=True, sharey=True)
-    for ax, (lab, Y) in zip(axes, (("Real archetypes", real), ("Gaussian null", gauss))):
+    for ax, (lab, Y) in zip(axes, (("Pitch shapes", real), ("Gaussian null", gauss))):
         dg = ripser(Y, maxdim=1)["dgms"]
         h0 = dg[0][np.isfinite(dg[0][:, 1])]
         ax.scatter(h0[:, 0], h0[:, 1], s=8, c=SERIES[0], lw=0, label="$H_0$ (components)")
@@ -243,13 +247,49 @@ def dbscan_toy():
     fig, ax = plt.subplots(figsize=(3.6, 2.2))
     for k, ls in ((np.flatnonzero(core)[np.argmax(P[core, 0])], "-"), (np.flatnonzero(border)[0], "--")):
         ax.add_patch(plt.Circle(P[k], eps, fill=False, color=INK2, lw=0.8, ls=ls))
-    ax.scatter(*P[core].T, s=36, c=SERIES[0], edgecolors=SURF, lw=1, zorder=3, label="core ($|N_\\varepsilon(p)| \\geq M$)")
+    ax.scatter(*P[core].T, s=36, c=SERIES[0], edgecolors=SURF, lw=1, zorder=3, label="core ($N_\\varepsilon(p)$ holds $\\geq M$ points)")
     ax.scatter(*P[border].T, s=36, facecolors="white", edgecolors=SERIES[0], lw=1.6, zorder=3, label="border (in a cluster, not core)")
     ax.scatter(*P[noise].T, s=40, marker="x", c=SERIES[1], lw=1.8, zorder=3, label="noise")
     ax.set_title("$\\varepsilon = %.1f$, $M = %d$" % (eps, M), fontsize=9, color=INK)
     ax.set_aspect("equal"); ax.axis("off")
     ax.legend(frameon=False, fontsize=9, loc="center left", bbox_to_anchor=(1.0, 0.5))
     save(fig, "dbscan_toy")
+
+
+def rips_toy():
+    """A persistent loop: Rips complexes of a noisy circle at three scales, and the H1 diagram."""
+    from itertools import combinations
+    from scipy.spatial.distance import pdist, squareform
+    rng = np.random.default_rng(1)
+    t = rng.uniform(0, 2 * np.pi, 40)
+    P = np.c_[np.cos(t), np.sin(t)] + rng.normal(0, 0.06, (40, 2))
+    D = squareform(pdist(P))
+    dgm = ripser(P, maxdim=1)["dgms"][1]
+    b, d = dgm[np.argmax(dgm[:, 1] - dgm[:, 0])]
+    print("rips_toy: largest H1 bar born %.2f, dies %.2f; next persistence %.2f" % (b, d, np.sort(dgm[:, 1] - dgm[:, 0])[-2]))
+    # the third scale sits past d so the drawn triangles also cover the center (a loop can die before they do)
+    scales = ((0.6 * b, "before the loop closes"), ((b + d) / 2, "loop alive"), (1.2 * d, "loop filled"))
+    fig, axes = plt.subplots(1, 4, figsize=(8.4, 2.1), gridspec_kw=dict(width_ratios=[1, 1, 1, 1.05], wspace=0.55))
+    for ax, (s, name) in zip(axes, scales):
+        for tri in combinations(range(len(P)), 3):
+            if max(D[tri[0], tri[1]], D[tri[0], tri[2]], D[tri[1], tri[2]]) <= s:
+                ax.fill(*P[list(tri)].T, color="#cde2fb", lw=0, zorder=1)
+        for i, j in zip(*np.where(np.triu(D <= s, 1))):
+            ax.plot(*P[[i, j]].T, color=SERIES[0], lw=0.3, alpha=0.25, zorder=2)
+        ax.scatter(*P.T, s=8, c=INK, zorder=3)
+        ax.set_title("$t = %.2f$: %s" % (s, name), fontsize=8.5, color=INK)
+        ax.set_aspect("equal"); ax.axis("off")
+    ax = axes[3]
+    top = 1.1 * d
+    ax.plot([0, top], [0, top], color=OTHER, lw=1)
+    ax.scatter(*dgm.T, s=14, c=INK2, zorder=3)
+    ax.scatter([b], [d], s=44, c=SERIES[1], edgecolors=SURF, lw=1, zorder=4)
+    ax.annotate("persistent loop", (b, d), xytext=(0.05, d - 0.3), fontsize=7.5, color=INK)
+    ax.annotate("noise: near\nthe diagonal", (0.2, 0.2), xytext=(0.62, 0.12), fontsize=7.5, color=INK2)
+    ax.set_xlim(0, top); ax.set_ylim(0, top); ax.set_aspect("equal")
+    ax.set_xlabel("birth $b$", fontsize=8.5); ax.set_ylabel("death $d$", fontsize=8.5)
+    ax.tick_params(labelsize=7.5)
+    save(fig, "rips_toy")
 
 
 def pitch_design():
@@ -328,6 +368,7 @@ def main():
     reeb_torus()
     toy_mapper()
     dbscan_toy()
+    rips_toy()
     pitch_design()
     development_path()
 

@@ -25,6 +25,9 @@ live_speed_error), plus train_n as a candidate mediating variable.
 
 Analysis/reporting script, not part of the production pipeline. See
 docs/DISCOVERY_FINDINGS.md for the write-up.
+
+Paper (docs/paper/paper_final.tex): not used. Deck: backup slide on how reliable
+a cluster label is.
 """
 
 import warnings

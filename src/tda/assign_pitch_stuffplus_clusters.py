@@ -5,6 +5,9 @@ Combines:
 - Per-pitch predictions from StuffPlusCalculator
 - Optimized Stuff+ weights (xwOBA=0.72, miss=0.11, chase=0.17)
 - TDA cluster assignments via nearest centroid to cluster features
+
+Paper (docs/paper/paper_final.tex): not used. Writes data/pitch_stuffplus_clusters.csv,
+which graph_reliability_correlation.py (deck backup) reads.
 """
 
 import warnings

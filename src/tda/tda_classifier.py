@@ -4,6 +4,9 @@ Shared TDA model loading and nearest-centroid pitch classification logic.
 Used by classify_pitches_to_csv.py and assign_pitch_stuffplus_clusters.py,
 which both classify individual pitches against the fitted Mapper cluster
 centroids and previously duplicated this logic independently.
+
+Paper (docs/paper/paper_final.tex): library code. load_tda_model() loads models/tda_mapper_model.pkl
+(fitted in notebooks/TDA_Pitch_Clustering.ipynb) for every script behind the paper.
 """
 
 import pickle

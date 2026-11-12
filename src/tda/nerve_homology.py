@@ -13,6 +13,10 @@ path-connected pullback cover, H1(X) -> H1(N(f*U)) is a surjection, so
 b1(Mapper nerve) <= b1(X).
 
 Runs on the parameter grid and on null models from mapper_stability.py.
+
+Paper (docs/paper/paper_final.tex): Loops of the Full Nerve (sec:certify); Loops Are
+Artifacts of the 1-Skeleton (sec:loops), Figure fig:nerveb1.
+Output: data/nerve_homology.csv.
 """
 import warnings
 warnings.filterwarnings("ignore")

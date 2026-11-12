@@ -13,6 +13,23 @@ Thesis defense/talk is a few months out (as of 2026-08-17). Presentation
 source lives in `docs/presentation/` (`main.tex` — paper skeleton with
 abstract only; `presi.tex` — Beamer slide deck, the real content).
 
+## Scope FROZEN (2026-11-06, Will's call)
+
+No new analyses or computations unless the advisor asks for one; remaining
+work is writing and verification only (Will's read-through, ledger page
+checks, Acknowledgments). The thesis has three parts:
+1. **Shape result:** pitch-shape space is one connected continuum apart from
+   the very slowest pitches; no loops or gaps beyond a same-covariance
+   Gaussian; low intrinsic dimension; three dense regions at the pitch level.
+2. **Method result:** Mapper gives the picture; nerve homology, persistence
+   and null models check it (86 graph loops -> nerve b1 = 1).
+3. **One consequence:** grading within a label is fragile near boundaries
+   (label sensitivity, 2025 + 2026).
+Development tests and the planner moved back to **future work** (deck:
+backup only), reversing the 2026-10-27 promotion. Flight space is a
+robustness check (one paragraph + table). Cut: outcomes/omega^2 and cluster
+reliability appendix, circle persistence/dimension rows.
+
 ## Scope decisions (2026-09-24)
 
 - Thesis claim is about the **shape** of pitch-shape space (see
@@ -184,7 +201,7 @@ Rough target for an hour-long talk (fine to run over/under):
 - [ ] Rebalance timing to roughly 15/30/15 minutes per the advisor's split
 - [x] Do the "discovery" pass on the actual Mapper graph output — done,
       see [docs/DISCOVERY_FINDINGS.md](docs/DISCOVERY_FINDINGS.md) and
-      `src/tda/graph_topology_analysis.py`. Found a real, robust
+      `src/archive/tda/graph_topology_analysis.py`. Found a real, robust
       connectivity finding (a giant component + isolated velocity-outlier
       sub-components, stable across nerve min_intersection thresholds)
       — but the Stuff+ cross-check surfaced a bigger, more urgent issue:
@@ -224,7 +241,7 @@ Rough target for an hour-long talk (fine to run over/under):
       graph degree/component-size predict *where* to trust downstream
       classification, for two distinct, explainable, quantified reasons.
 - [x] Verified the "attractor node" observation from the crowded-continuum
-      check — see `src/tda/attractor_node_analysis.py` and
+      check — see `src/archive/tda/attractor_node_analysis.py` and
       DISCOVERY_FINDINGS.md. **It did not hold up**: betweenness
       centrality is zero for all 3 candidate nodes, same as most other
       degree-3 nodes; the original pattern was an artifact of a small,
@@ -291,7 +308,7 @@ Rough target for an hour-long talk (fine to run over/under):
       that this retrain incidentally resolved (aligned with production's
       actual behavior, verified by running it).
 - [x] Checked the hard nearest-centroid vs. multi-membership hole — see
-      `src/tda/multi_membership_check.py` and METHODOLOGY_REVIEW.md item
+      `src/archive/tda/multi_membership_check.py` and METHODOLOGY_REVIEW.md item
       3. Quantified how much ambiguity the single-label choice discards:
       64.6% of training archetypes have a top-2 nearest-cluster margin
       under 5% of the typical inter-centroid spacing, 89.4% under 10%.

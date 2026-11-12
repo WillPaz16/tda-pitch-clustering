@@ -24,7 +24,12 @@ Monte Carlo p-value (1 + #null replicates whose largest secondary peak is at
 least as persistent) / (B + 1); it counts if p < 0.05.
 
 Run: python3 src/tda/density_peaks.py statcast_2025.parquet
+     python3 src/tda/density_peaks.py statcast_2025.parquet --robustness
      python3 src/tda/density_peaks.py --selftest
+
+Paper (docs/paper/paper_final.tex): Density Peaks (sec:peaks); Gaps, Dimension, and Dense
+Regions (sec:shape). Outputs: data/density_peaks.csv, density_peaks_pc1.csv,
+density_peaks_robustness.csv.
 """
 import sys
 from pathlib import Path
@@ -82,9 +87,9 @@ def superlevel_persistence(field, floor=FLOOR):
     return np.array(pers)
 
 
-def voxel_density(X):
+def voxel_density(X, sigma=SIGMA):
     H, _ = np.histogramdd(X, bins=EDGES)
-    return gaussian_filter(H, SIGMA)
+    return gaussian_filter(H, sigma)
 
 
 def peak_test(X, rng, n_null=N_NULL, density=voxel_density):
@@ -154,6 +159,43 @@ def selftest():
     print("selftest ok: 3 blobs -> 3 peaks, 1 Gaussian -> 1 peak")
 
 
+def robustness(X, n_base=5, n_null=20, tol=3, n_halves=3):
+    """Do the baseline peaks (sigma = 1, all pitches) survive heavier smoothing
+    (sigma = 1.5, 2) and random halves of the pitches (sigma = 1)?  A baseline
+    peak is present in a variant if the variant has a peak within tol grid
+    cells of it on every axis; it is significant if that peak also has
+    p < ALPHA against the variant's own covariance-matched Gaussian null
+    (n_null replicates)."""
+    rng = np.random.default_rng(SEED)
+    mids = [(e[:-1] + e[1:]) / 2 for e in EDGES]
+    step = np.array([m[1] - m[0] for m in mids])
+    field = voxel_density(X)
+    base = np.array(peak_locations(field, superlevel_persistence(field), mids, k=n_base))
+    halves = [X[rng.permutation(len(X))[:len(X) // 2]] for _ in range(n_halves)]
+    variants = [(f'sigma={s}', s, X) for s in (1.0, 1.5, 2.0)] + \
+               [(f'half{i + 1}', SIGMA, H) for i, H in enumerate(halves)]
+    rows = []
+    for name, s, Xv in variants:
+        dens = lambda Z: voxel_density(Z, s)
+        real, pval, _ = peak_test(Xv, rng, n_null=n_null, density=dens)
+        f = dens(Xv)
+        k = int((pval < ALPHA).sum())                       # peaks are sorted by persistence, so p rises with rank
+        locs = np.array(peak_locations(f, superlevel_persistence(f), mids, k=min(40, len(real))))
+        for b, loc in enumerate(base):
+            near = np.flatnonzero((np.abs(locs - loc) <= tol * step).all(axis=1))
+            j = near[0] if len(near) else None
+            rows.append(dict(variant=name, peak=b + 1, base_loc=tuple(float(v) for v in loc),
+                             present=j is not None, significant=j is not None and pval[j] < ALPHA,
+                             rank=j + 1 if j is not None else np.nan,
+                             persistence_rel=round(float(real[j]), 4) if j is not None else np.nan,
+                             loc=tuple(float(v) for v in locs[j]) if j is not None else None))
+        print(f"{name}: {k} significant peaks", flush=True)
+    out = pd.DataFrame(rows)
+    out.to_csv(_ROOT / 'data' / 'density_peaks_robustness.csv', index=False)
+    print(out.pivot(index='peak', columns='variant', values='persistence_rel').to_string())
+    print(out.pivot(index='peak', columns='variant', values='significant').to_string())
+
+
 def main(path):
     X = pitch_level(pd.read_parquet(path))
     real, pval, null_sec = peak_test(X, np.random.default_rng(SEED))
@@ -176,5 +218,7 @@ def main(path):
 if __name__ == "__main__":
     if sys.argv[1:] == ['--selftest']:
         selftest()
+    elif sys.argv[2:] == ['--robustness']:
+        robustness(pitch_level(pd.read_parquet(sys.argv[1])))
     else:
         main(sys.argv[1])

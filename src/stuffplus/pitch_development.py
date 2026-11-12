@@ -41,6 +41,9 @@ Caveat. Observational: shape changes come with injuries, role changes, coaching
   pitch design.
 
 Run: python3 src/stuffplus/pitch_development.py <dir with statcast_<year>.parquet>
+
+Paper (docs/paper/paper_final.tex): not used (future work). Deck: backup slides on the
+pitch-development tests (Test 1).
 """
 import sys
 import warnings
