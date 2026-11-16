@@ -16,10 +16,13 @@ slide quotes is printed here so the deck can be checked against it.
 Colors follow the dataviz reference palette: 3 categorical slots (validated
 all-pairs, light mode) with direct labels, and a one-hue blue sequential ramp.
 
-Paper (docs/paper/paper_final.tex): reeb_torus, toy_mapper, dbscan_toy, rips_toy,
-lens_scatter, mapper_graph, nerve_b1, persistence. Deck only: intrinsic_dim,
-pitch_design, development_path.
+Paper (docs/paper/paper_final.tex): toy_mapper, dbscan_toy, rips_toy, lens_scatter,
+mapper_graph, nerve_b1, persistence, boundary_neighborhood (needs the season's
+pitch data: python3 src/viz/thesis_figures.py statcast_2025.parquet). Deck only:
+reeb_torus (the paper's Reeb section was cut 2026-11-14), intrinsic_dim,
+pitch_design, development_path. Not used: label_shift (replaced in the paper).
 """
+import json
 import sys
 from collections import Counter
 from pathlib import Path
@@ -47,7 +50,7 @@ OTHER = "#b9b8b2"
 BLUES = LinearSegmentedColormap.from_list("blues", ["#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"])
 FAMILY = {**dict.fromkeys(["FF", "SI", "FC"], "Fastballs"),
           **dict.fromkeys(["SL", "ST", "SV", "CU", "KC", "CS"], "Breaking balls"),
-          **dict.fromkeys(["CH", "FS", "FO", "SC"], "Offspeed")}
+          **dict.fromkeys(["CH", "FS", "FO"], "Offspeed")}   # screwball (SC) stays "Other", as in the paper (Section 2)
 FAMILIES = ["Fastballs", "Breaking balls", "Offspeed"]
 
 plt.rcParams.update({"font.family": "sans-serif", "font.size": 10, "axes.edgecolor": INK2, "axes.labelcolor": INK,
@@ -155,18 +158,24 @@ def persistence(orig, cols):
     idx = rng.choice(len(X_raw), 1000, replace=False)
     real = sc.transform(X_raw)[idx]
     gauss = sc.transform(gaussian_null(X_raw, rng))[idx]
+    # the paper's unit u: median H0 death of ALL real shapes (as in src/tda/persistence_check.py)
+    d0 = ripser(sc.transform(X_raw), maxdim=0)["dgms"][0][:, 1]
+    u = np.median(d0[np.isfinite(d0)])
     fig, axes = plt.subplots(1, 2, figsize=(6.2, 3.0), sharex=True, sharey=True)
+    hi = 6.5
     for ax, (lab, Y) in zip(axes, (("Pitch shapes", real), ("Gaussian null", gauss))):
-        dg = ripser(Y, maxdim=1)["dgms"]
+        dg = [g / u for g in ripser(Y, maxdim=1)["dgms"]]
         h0 = dg[0][np.isfinite(dg[0][:, 1])]
         ax.scatter(h0[:, 0], h0[:, 1], s=8, c=SERIES[0], lw=0, label="$H_0$ (components)")
         ax.scatter(dg[1][:, 0], dg[1][:, 1], s=10, c=SERIES[1], lw=0, label="$H_1$ (loops)")
-        hi = 4.3
         ax.plot([0, hi], [0, hi], color=INK2, lw=0.8)
-        ax.set_title(lab, fontsize=10, color=INK); ax.set_xlabel("birth")
+        ax.plot([0, hi - 2], [2, hi], color=INK2, lw=0.8, ls="--")   # persistence = 2u, the loop cutoff
+        ax.set_xlim(0, hi); ax.set_ylim(0, hi)
+        ax.set_title(lab, fontsize=10, color=INK); ax.set_xlabel("birth (multiples of $u$)")
         ax.grid(color=GRID, lw=0.6); ax.set_axisbelow(True)
-        print("persistence: %-16s max H1 persistence %.3f over %d classes" % (lab, (dg[1][:, 1] - dg[1][:, 0]).max(), len(dg[1])))
-    axes[0].set_ylabel("death"); axes[0].legend(frameon=False, fontsize=8, loc="lower right")
+        print("persistence: %-16s max H1 persistence %.2f u over %d classes (u = %.3f)" % (lab, (dg[1][:, 1] - dg[1][:, 0]).max(), len(dg[1]), u))
+    axes[0].text(0.3, 2.35, "persistence $= 2u$", fontsize=7.5, color=INK2, rotation=45, rotation_mode="anchor")
+    axes[0].set_ylabel("death (multiples of $u$)"); axes[0].legend(frameon=False, fontsize=8, loc="lower right")
     save(fig, "persistence")
 
 
@@ -266,16 +275,21 @@ def rips_toy():
     D = squareform(pdist(P))
     dgm = ripser(P, maxdim=1)["dgms"][1]
     b, d = dgm[np.argmax(dgm[:, 1] - dgm[:, 0])]
-    print("rips_toy: largest H1 bar born %.2f, dies %.2f; next persistence %.2f" % (b, d, np.sort(dgm[:, 1] - dgm[:, 0])[-2]))
+    nxt = np.sort(dgm[:, 1] - dgm[:, 0])[-2]
+    print("rips_toy: largest H1 bar born %.2f, dies %.2f; next persistence %.2f" % (b, d, nxt))
+    (ROOT / "data" / "rips_toy.json").write_text(json.dumps(dict(
+        birth=float(b), death=float(d), persistence=float(d - b), next_persistence=float(nxt))))   # quoted in the paper via paper_numbers.py
     # the third scale sits past d so the drawn triangles also cover the center (a loop can die before they do)
     scales = ((0.6 * b, "before the loop closes"), ((b + d) / 2, "loop alive"), (1.2 * d, "loop filled"))
     fig, axes = plt.subplots(1, 4, figsize=(8.4, 2.1), gridspec_kw=dict(width_ratios=[1, 1, 1, 1.05], wspace=0.55))
     for ax, (s, name) in zip(axes, scales):
+        # edges underneath, filled 2-simplices on top in one solid color, so the
+        # filled region (ring, then disk) reads clearly and edges show only where unfilled
+        for i, j in zip(*np.where(np.triu(D <= s, 1))):
+            ax.plot(*P[[i, j]].T, color=SERIES[0], lw=0.5, alpha=0.6, zorder=1)
         for tri in combinations(range(len(P)), 3):
             if max(D[tri[0], tri[1]], D[tri[0], tri[2]], D[tri[1], tri[2]]) <= s:
-                ax.fill(*P[list(tri)].T, color="#cde2fb", lw=0, zorder=1)
-        for i, j in zip(*np.where(np.triu(D <= s, 1))):
-            ax.plot(*P[[i, j]].T, color=SERIES[0], lw=0.3, alpha=0.25, zorder=2)
+                ax.fill(*P[list(tri)].T, color="#86b6ef", lw=0, zorder=2)
         ax.scatter(*P.T, s=8, c=INK, zorder=3)
         ax.set_title("$t = %.2f$: %s" % (s, name), fontsize=8.5, color=INK)
         ax.set_aspect("equal"); ax.axis("off")
@@ -285,11 +299,41 @@ def rips_toy():
     ax.scatter(*dgm.T, s=14, c=INK2, zorder=3)
     ax.scatter([b], [d], s=44, c=SERIES[1], edgecolors=SURF, lw=1, zorder=4)
     ax.annotate("persistent loop", (b, d), xytext=(0.05, d - 0.3), fontsize=7.5, color=INK)
-    ax.annotate("noise: near\nthe diagonal", (0.2, 0.2), xytext=(0.62, 0.12), fontsize=7.5, color=INK2)
+    nb, nd = dgm[np.argsort(dgm[:, 1] - dgm[:, 0])[-2]]
+    ax.annotate("noise: near\nthe diagonal", (nb, nd), xytext=(0.62, 0.12), fontsize=7.5, color=INK2,
+                arrowprops=dict(arrowstyle="-", color=INK2, lw=0.6))
     ax.set_xlim(0, top); ax.set_ylim(0, top); ax.set_aspect("equal")
+    ax.set_xticks([0, 0.5, 1, 1.5]); ax.set_yticks([0, 0.5, 1, 1.5])
     ax.set_xlabel("birth $b$", fontsize=8.5); ax.set_ylabel("death $d$", fontsize=8.5)
     ax.tick_params(labelsize=7.5)
     save(fig, "rips_toy")
+
+
+def label_shift():
+    """Boundary pitches (2025): grade under their own label vs. under the neighboring label.
+    The highlighted point is the paper's worked example (same rule as paper_numbers.py)."""
+    d = pd.read_csv(ROOT / "data" / "label_sensitivity_2025_relative.csv")
+    b = d[d.boundary_share >= 0.5]
+    cross = b[(b.grade_own - 100) * (b.grade_alt - 100) < 0]
+    ex = cross.loc[(cross["shift"].abs() - b["shift"].abs().median()).abs().idxmin()]
+    lo, hi = 45, 165
+    fig, ax = plt.subplots(figsize=(3.6, 3.4))
+    ax.plot([lo, hi], [lo, hi], color=INK2, lw=0.8, zorder=1)
+    ax.axhline(100, color=INK2, lw=0.6, ls="--", zorder=1); ax.axvline(100, color=INK2, lw=0.6, ls="--", zorder=1)
+    ax.scatter(b.grade_own, b.grade_alt, s=14, c=SERIES[0], edgecolors=SURF, lw=0.5, zorder=2)
+    kj = b[(b.name == "Jansen, Kenley") & (b.pitch_type == "FC")].iloc[0]   # named in Section 8.2
+    for r, lab, xy in [(ex, "knuckle curve (Fig. 11)", (112, 150)), (kj, "Jansen's cutter", (50, 128))]:
+        ax.scatter([r.grade_own], [r.grade_alt], s=44, c=SERIES[1], edgecolors=SURF, lw=1, zorder=3)
+        ax.annotate(lab, (r.grade_own, r.grade_alt), xytext=xy, fontsize=7.5, color=INK,
+                    arrowprops=dict(arrowstyle="-", color=INK2, lw=0.6))
+    ax.text(58, 52, "same grade", fontsize=7.5, color=INK2, rotation=45, rotation_mode="anchor")
+    ax.set_xlim(lo, hi); ax.set_ylim(lo, hi); ax.set_aspect("equal")
+    ax.set_xlabel("grade under its own label", fontsize=8.5); ax.set_ylabel("grade under the neighboring label", fontsize=8.5)
+    ax.tick_params(labelsize=7.5); ax.grid(color=GRID, lw=0.6); ax.set_axisbelow(True)
+    print("label_shift: %d boundary pitches; range own %.0f-%.0f alt %.0f-%.0f; example %s->%s %.0f->%.0f"
+          % (len(b), b.grade_own.min(), b.grade_own.max(), b.grade_alt.min(), b.grade_alt.max(),
+             ex.pitch_type, ex.alt_label, ex.grade_own, ex.grade_alt))
+    save(fig, "label_shift")
 
 
 def pitch_design():
@@ -307,7 +351,7 @@ def pitch_design():
     a1.scatter(me.HB_in, me.IVB_in, marker="*", s=200, c=SERIES[1], edgecolors=SURF, lw=1, zorder=4)
     a1.annotate("", (me.HB_in + shift.HB_in, me.IVB_in + shift.IVB_in), (me.HB_in, me.IVB_in),
                 arrowprops=dict(arrowstyle="->", color=INK, lw=1.2), zorder=5)
-    a1.annotate(first(me["name"]), (me.HB_in, me.IVB_in), xytext=(-6, -14), textcoords="offset points", fontsize=11, color=INK, ha="right")
+    a1.annotate("the example", (me.HB_in, me.IVB_in), xytext=(-6, -14), textcoords="offset points", fontsize=11, color=INK, ha="right")   # anonymized, as in the paper
     a1.set_xlabel("horizontal break (in, + = arm side)"); a1.set_ylabel("induced vertical break (in)")
     cb = fig.colorbar(sc, ax=a1, fraction=0.05, pad=0.02); cb.set_label("model score", fontsize=11); cb.ax.tick_params(labelsize=10)
     a1.grid(color=GRID, lw=0.6); a1.set_axisbelow(True)
@@ -355,7 +399,81 @@ def development_path(pitcher=695611, ptype="SL"):
     plt.rcParams["font.size"] = 10
 
 
-def main():
+def boundary_neighborhood(path):
+    """The paper's worked boundary pitch among its 20 nearest other-pitcher shapes
+    (flight space, relative velocity: the neighbors label_sensitivity.py uses),
+    drawn in the break plane and colored by label. Needs the season's pitch data."""
+    sys.path.insert(0, str(ROOT / "src" / "stuffplus"))
+    from label_sensitivity import FLIGHT, K
+    from sklearn.neighbors import NearestNeighbors
+    from tda_classifier import season_shapes
+    lb = pd.read_csv(ROOT / "data" / "label_sensitivity_2025_relative.csv")
+    lb = lb[lb.boundary_share >= 0.5]
+    cross = lb[(lb.grade_own - 100) * (lb.grade_alt - 100) < 0]
+    ex = cross.loc[(cross["shift"].abs() - lb["shift"].abs().median()).abs().idxmin()]   # same rule as paper_numbers.py
+    mc = load_tda_model(ROOT / "models" / "tda_mapper_model.pkl")
+    cols = list(mc["stuff_columns"])
+    arch, _ = season_shapes(pd.read_parquet(path), cols)
+    X = mc["scaler"].transform(arch[cols].values.astype(float))[:, [cols.index(c) for c in FLIGHT]]
+    sp = arch["release_speed"].astype(float)
+    dv = (sp - sp.groupby(level=0).transform("max")).values
+    X[:, FLIGHT.index("release_speed")] = (dv - dv.mean()) / dv.std()
+    labels = arch.index.get_level_values("pitch_type").astype(str).values
+    pitcher = arch.index.get_level_values(0).values
+    i = arch.index.get_loc((ex.pitcher_id, ex.pitch_type))
+    _, cand = NearestNeighbors(n_neighbors=K + 15).fit(X).kneighbors(X[[i]])
+    nb = [j for j in cand[0] if pitcher[j] != pitcher[i]][:K]
+    hb, ivb = -12 * arch["pfx_x"].values, 12 * arch["pfx_z"].values      # inches; mirrored frame, + = arm side
+    own, alt = ex.pitch_type, ex.alt_label
+    NAME = dict(KC="knuckle curves", CU="curveballs", SL="sliders", FC="cutters", ST="sweepers", SV="slurves",
+                CH="changeups", FS="splitters", FF="four-seamers", SI="sinkers")
+    fig, ax = plt.subplots(figsize=(4.4, 3.6))
+    for lab, c in ((own, SERIES[0]), (alt, SERIES[1])):
+        m = labels == lab
+        ax.scatter(hb[m], ivb[m], s=6, c=c, alpha=0.3, lw=0, zorder=1)
+        k = [j for j in nb if labels[j] == lab]
+        ax.scatter(hb[k], ivb[k], s=26, c=c, edgecolors=SURF, lw=0.8, zorder=3, label="%s: %d of the %d nearest" % (NAME[lab], len(k), K))
+    ax.scatter(hb[i], ivb[i], s=110, marker="*", c=INK, edgecolors=SURF, lw=0.8, zorder=4, label="the example, a %s" % NAME[own][:-1])
+    ax.set_xlabel("horizontal break (in., arm side +)", fontsize=8.5); ax.set_ylabel("induced vertical break (in.)", fontsize=8.5)
+    ax.tick_params(labelsize=7.5); ax.grid(color=GRID, lw=0.6); ax.set_axisbelow(True)
+    ax.legend(frameon=False, fontsize=7.5, loc="upper left")
+    print("boundary_neighborhood: %s->%s, neighbors %s" % (own, alt, pd.Series(labels[nb]).value_counts().to_dict()))
+    vc = pd.Series(labels[nb]).value_counts()
+    (ROOT / "data" / "boundary_neighborhood.json").write_text(json.dumps(dict(
+        own=own, alt=alt, k=int(K), n_own=int(vc.get(own, 0)), n_alt=int(vc.get(alt, 0)))))   # quoted in the paper via paper_numbers.py
+    save(fig, "boundary_neighborhood")
+
+
+def seams(path):
+    """Section 8.2: the four most common boundary pairs (2025) in the break plane. Faint points are all
+    eligible shapes of the two labels (label_sensitivity.py), circles the pair's boundary pitches."""
+    sys.path.insert(0, str(ROOT / "src" / "stuffplus"))
+    from tda_classifier import season_shapes
+    mc = load_tda_model(ROOT / "models" / "tda_mapper_model.pkl")
+    arch, _ = season_shapes(pd.read_parquet(path), list(mc["stuff_columns"]))
+    br = pd.DataFrame({"hb": -12 * arch["pfx_x"].values, "ivb": 12 * arch["pfx_z"].values}, index=arch.index)
+    lb = pd.read_csv(ROOT / "data" / "label_sensitivity_2025_relative.csv")
+    lb = lb.join(br, on=["pitcher_id", "pitch_type"])
+    NAME = dict(SL="slider", FC="cutter", CH="changeup", FS="splitter", CU="curveball", KC="knuckle curve", ST="sweeper")
+    fig, axs = plt.subplots(2, 2, figsize=(6.4, 5.4))
+    for ax, (a, b) in zip(axs.flat, [("SL", "FC"), ("CH", "FS"), ("CU", "KC"), ("SL", "ST")]):
+        s = lb[lb.pitch_type.isin([a, b])]
+        for lab, c in ((a, SERIES[0]), (b, SERIES[1])):
+            q = s[s.pitch_type == lab]
+            ax.scatter(q.hb, q.ivb, s=7, c=c, alpha=0.45, lw=0, zorder=1, label=NAME[lab] + "s")
+        bd = s[(s.boundary_share >= 0.5) & s.alt_label.isin([a, b])]
+        ax.scatter(bd.hb, bd.ivb, s=26, facecolors="none", edgecolors=INK, lw=0.8, zorder=3, label="boundary pitches")
+        ax.set_title("%s / %s" % (NAME[a], NAME[b]), fontsize=9)
+        ax.tick_params(labelsize=7.5); ax.grid(color=GRID, lw=0.6); ax.set_axisbelow(True)
+        ax.legend(frameon=False, fontsize=7, loc="best", handletextpad=0.2, borderaxespad=0.2)
+        print("seams %s/%s: %d shapes, %d boundary" % (a, b, len(s), len(bd)))
+    fig.supxlabel("horizontal break (in., arm side +)", fontsize=8.5)
+    fig.supylabel("induced vertical break (in.)", fontsize=8.5)
+    fig.tight_layout()
+    save(fig, "label_seams")
+
+
+def main(path=None):
     mc = load_tda_model(ROOT / "models" / "tda_mapper_model.pkl")
     orig, cols = mc["original_data"], list(mc["stuff_columns"])
     ptype = orig.index.get_level_values("pitch_type").values.astype(str)
@@ -369,9 +487,13 @@ def main():
     toy_mapper()
     dbscan_toy()
     rips_toy()
+    label_shift()
+    if path:                       # figures that need the season's pitch data
+        boundary_neighborhood(path)
+        seams(path)
     pitch_design()
     development_path()
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1] if len(sys.argv) > 1 else None)   # optional: statcast_2025.parquet

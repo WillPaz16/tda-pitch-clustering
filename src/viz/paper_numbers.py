@@ -43,8 +43,25 @@ def main():
     m['NFeatures'] = fmt(len(mc['stuff_columns']))
     m['NNodes'], m['NEdges'] = fmt(G.number_of_nodes()), fmt(G.number_of_edges())
     m['NComponents'] = fmt(nx.number_connected_components(G))
+    # what the components hold (Section 7.2): the giant one, slow-only ones, other small ones, and DBSCAN noise
+    WORD = dict(enumerate(['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']))
+    spd = mc['original_data']['release_speed'].values
+    comps = [sorted({i for n in c for i in g['nodes'][n]}) for c in sorted(nx.connected_components(G), key=len, reverse=True)]
+    small = comps[1:]
+    slow_only = [c for c in small if (spd[c] < 70).all()]
+    m['GiantShapes'] = fmt(len(comps[0]))
+    m['NSlowComps'], m['NOtherComps'] = WORD[len(slow_only)], WORD[len(small) - len(slow_only)]
+    m['NoiseShapes'] = fmt(len(spd) - len({i for c in comps for i in c}))
     ev = mc['pca'].explained_variance_ratio_
     m['PCone'], m['PCtwo'] = fmt(100 * ev[0], 1), fmt(100 * ev[1], 1)
+    # linear check on dimension (Section 7.3.3): full PCA of the standardized shapes
+    from sklearn.decomposition import PCA
+    cols9 = list(mc['stuff_columns'])
+    full = PCA().fit(mc['scaler'].transform(mc['original_data'][cols9].values.astype(float)))
+    m['PCASixPct'] = fmt(100 * full.explained_variance_ratio_[:6].sum(), 1)
+    top2 = lambda k: set(np.array(cols9)[np.argsort(-np.abs(full.components_[k]))[:2]])
+    assert top2(8) == {'pfx_x', 'spin_sin'} and top2(7) == {'pfx_z', 'spin_cos'} \
+        and top2(6) == {'release_speed', 'release_spin_rate'}, "smallest PCs changed; update the Section 7.3.3 text"
 
     nh = pd.read_csv(D / 'nerve_homology.csv')
     sm = nh[nh.kind == 'saved_model'].iloc[0]
@@ -73,6 +90,7 @@ def main():
         m[f'LS{word}TwoSEPct'] = fmt(100 * s['frac_gt_2se'])
         m[f'LS{word}CrossPct'] = fmt(100 * s['frac_cross_100'])
         m[f'LS{word}PctChange'] = fmt(s['median_pct_change'])
+    assert m['LSTwentyFivePctChange'] == m['LSTwentySixPctChange'], "Section 8.1 says 'in both seasons'; update the paper text"
 
     pdv = pd.read_csv(D / 'pitch_development_results.csv')
     pr = pdv[(pdv.scope == 'primary') & (pdv.outcome == 'swstr')].set_index('direction')
@@ -137,6 +155,20 @@ def main():
     rr, gg, ss = ph[ph.kind == 'real'].iloc[0], ph[ph.kind == 'null_gauss'], ph[ph.kind == 'null_shuffle']
     m['PHRealLoops'] = fmt(rr.h1_long_loops_mean)
     m['PHRealLongBars'] = fmt(rr.h0_long_bars)
+    # what the long-lived H0 bars split off (Section 7.3.2): H0 deaths of a Rips filtration are the
+    # edge lengths of a minimum spanning tree, so cutting each long edge shows the piece it separates
+    from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
+    from scipy.spatial.distance import pdist, squareform
+    Zs = mc['scaler'].transform(mc['original_data'][mc['stuff_columns']].values.astype(float))
+    mst = minimum_spanning_tree(squareform(pdist(Zs))).toarray()
+    unit = np.median(mst[mst > 0])
+    pieces = []
+    for i, j in zip(*np.nonzero(mst > 3 * unit)):
+        cut = mst.copy(); cut[i, j] = 0
+        _, lab = connected_components(cut, directed=False)
+        pieces.append(np.bincount(lab).min())
+    assert len(pieces) == rr.h0_long_bars, "MST long edges disagree with persistence_check.csv"
+    m['PHLongSingles'], m['PHLongMaxGroup'] = fmt(sum(p == 1 for p in pieces)), fmt(max(pieces))
     m['PHGaussLongBarsLo'], m['PHGaussLongBarsHi'] = fmt(gg.h0_long_bars.min()), fmt(gg.h0_long_bars.max())
     m['PHShuffleLongBarsLo'], m['PHShuffleLongBarsHi'] = fmt(ss.h0_long_bars.min()), fmt(ss.h0_long_bars.max())
     m['PHRealHzeroMedian'], m['PHGaussHzeroMedian'] = fmt(rr.h0_median, 2), fmt(gg.h0_median.mean(), 2)
@@ -205,11 +237,57 @@ def main():
     for pr in ('FCSL', 'CHFS', 'CUKC', 'SLST'):
         m[f'LSPair{pr}'] = fmt(pairs[pr])
     assert list(pairs.index[:4]) == ['FCSL', 'CHFS', 'CUKC', 'SLST'], "boundary-pair order changed; update the paper text"
+    # named FC/FF example (Section 8.2): Kenley Jansen's cutter
+    m['LSPairFCFF'] = fmt(pairs['FCFF'])
+    kj = lb[(lb.name == 'Jansen, Kenley') & (lb.pitch_type == 'FC')].iloc[0]
+    assert kj.alt_label == 'FF' and kj.grade_own < 100 < kj.grade_alt, "Jansen example changed; update the paper text"
+    m['JansenNbFF'] = fmt(round(20 * kj.boundary_share))
+    m['JansenOwnGrade'], m['JansenAltGrade'] = fmt(kj.grade_own), fmt(kj.grade_alt)
+    # slider-cutter band (Section 7.3.1): do the SL/FC boundary pitches sit in the band's nodes?
+    # band = top-5 betweenness nodes of the giant component with a SL/FC majority (as in mapper_stability.top_betweenness)
+    from collections import Counter
+    pt_all = mc['original_data'].index.get_level_values('pitch_type').astype(str).values
+    key_of = {k: i for i, k in enumerate(zip(mc['original_data'].index.get_level_values(0), pt_all))}
+    giant = max(nx.connected_components(G), key=len)
+    btw = nx.betweenness_centrality(G.subgraph(giant))
+    band = {i for n in sorted(btw, key=btw.get, reverse=True)[:5]
+            if Counter(pt_all[mc['graph']['nodes'][n]]).most_common(1)[0][0] in ('SL', 'FC') for i in mc['graph']['nodes'][n]}
+
+    def in_band(df):      # (shapes matched to the Mapper model, of which in the band)
+        hits = [h for h in (key_of.get((r.pitcher_id, r.pitch_type)) for r in df.itertuples()) if h is not None]
+        return len(hits), sum(h in band for h in hits)
+    n_sf, k_sf = in_band(lb[lb.apply(lambda r: {r.pitch_type, r.alt_label} == {'SL', 'FC'}, axis=1)])
+    allsf = pd.read_csv(D / 'label_sensitivity_2025_relative.csv')
+    n_all, k_all = in_band(allsf[allsf.pitch_type.isin(['SL', 'FC'])])
+    m['BandBoundaryIn'], m['BandBoundaryN'], m['BandAllPct'] = fmt(k_sf), fmt(n_sf), fmt(100 * k_all / n_all)
+    m['BandBoundaryPct'] = fmt(100 * k_sf / n_sf)
+    # worked example (anonymized): the boundary pitch whose grade crosses 100 with |shift| closest to the median
+    NAMES = dict(FF='four-seam fastball', SI='sinker', FC='cutter', SL='slider', ST='sweeper', SV='slurve',
+                 CU='curveball', KC='knuckle curve', CH='changeup', FS='splitter')
+    cross = lb[(lb.grade_own - 100) * (lb.grade_alt - 100) < 0]
+    ex = cross.loc[(cross['shift'].abs() - lb['shift'].abs().median()).abs().idxmin()]
+    m['ExOwnName'], m['ExAltName'] = NAMES[ex.pitch_type], NAMES[ex.alt_label]
+    m['ExOwnGrade'], m['ExAltGrade'] = fmt(ex.grade_own), fmt(ex.grade_alt)
+    bn = json.loads((D / 'boundary_neighborhood.json').read_text())   # thesis_figures.py boundary_neighborhood
+    assert (bn['own'], bn['alt']) == (ex.pitch_type, ex.alt_label), "neighborhood figure is for a different example; rerun it"
+    m['ExNbOwn'], m['ExNbAlt'] = fmt(bn['n_own']), fmt(bn['n_alt'])
+    # illustrative pitch-design example (src/tda/pitch_design_neighborhood.py), anonymized in the paper
+    pd_ex = pd.read_csv(D / 'pitch_design_example.csv')
+    me, nbr = pd_ex.iloc[0], pd_ex.iloc[1:]
+    top = nbr[nbr.score >= nbr.score.quantile(2 / 3)]
+    m['DesignNeighbors'] = fmt(len(nbr))
+    m['DesignSwStr'], m['DesignNbSwStr'] = fmt(100 * me.swstr, 1), fmt(100 * nbr.swstr.median(), 1)
+    m['DesignIVBGain'] = fmt(top.IVB_in.median() - me.IVB_in, 1)
+    assert (nbr.score > me.score).all() and (nbr.swstr > me.swstr).all(), "design example is no longer last; update the paper text"
     # the paper's running example (src/tda/circle_example.py)
     ce = pd.read_csv(D / 'circle_example.csv')
     cn = ce[ce.kind == 'null_gauss']
     m['CircNullGraphBoneMax'] = fmt(cn.graph_b1.max())
     m['CircNullCompLo'], m['CircNullCompHi'] = fmt(cn.n_components.min()), fmt(cn.n_components.max())
+    # Figure 7, the persistent loop on a 40-point noisy circle (src/viz/thesis_figures.py, rips_toy)
+    rt = json.loads((D / 'rips_toy.json').read_text())
+    m['RipsBirth'], m['RipsDeath'] = fmt(rt['birth'], 3), fmt(rt['death'], 3)
+    m['RipsPers'], m['RipsNext'] = fmt(rt['persistence'], 3), fmt(rt['next_persistence'], 3)
     for word, p in [('PH', ph), ('Fl', fp), ('FlSix', fp6)]:
         g = p[p.kind == 'null_gauss'].h1_max_persistence
         m[f'{word}MaxPers'] = fmt(p[p.kind == 'real'].h1_max_persistence.iloc[0], 2)

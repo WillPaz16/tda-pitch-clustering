@@ -9,8 +9,8 @@ Output: data/circle_example.csv (one row per point cloud).
 Run: python3 src/tda/circle_example.py
 
 Paper (docs/paper/paper_final.tex): the running example in The Mapper Algorithm
-(sec:mapper) and Review of the Running Example (sec:certify), Table tab:review.
-Output: data/circle_example.csv.
+(sec:mapper, Example ex:toy). Its Gaussian-null check is no longer quoted in the
+paper (cut 2026-11-14). Output: data/circle_example.csv.
 """
 import sys
 from itertools import combinations

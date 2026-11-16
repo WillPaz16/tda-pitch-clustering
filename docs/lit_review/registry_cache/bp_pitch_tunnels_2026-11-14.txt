@@ -1,0 +1,12 @@
+Page facts captured 2026-11-14 from http://www.baseballprospectus.com/article.php?articleid=31030
+(canonical: https://www.baseballprospectus.com/news/article/31030/prospectus-feature-introducing-pitch-tunnels/). Free article ("This is a free article.").
+
+Title: Prospectus Feature: Introducing Pitch Tunnels
+Byline: Bret Sayre, Harry Pavlidis, Jonathan Judge, and Jeff Long
+Date shown: January 24, 2017
+(SABR repost https://sabr.org/?p=52978 gives January 25, 2017 and lists Long, Judge, Pavlidis only; the BP page is the primary record.)
+
+Quoted definitions (verbatim, short):
+- "The point we've identified—the one 23.8 feet from home plate where the batter must decide whether or not to swing and where they want to swing—we call that the Tunnel Point."
+- "One hundred seventy-five milliseconds before contact, the batter must have decided whether or not to swing and where it is they want to swing."
+- Footnote: the distance is "Based on a 90 mph pitch."
