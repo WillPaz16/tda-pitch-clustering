@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LIT = ROOT / "docs" / "lit_review"
 PDFS = ROOT / "Lit Review"
 DECK = ROOT / "docs" / "presentation" / "presi.tex"
-PAPER = ROOT / "docs" / "paper" / "paper.tex"
+PAPER = ROOT / "docs" / "paper" / "paper_final.tex"
 LIG = {"\ufb00": "ff", "\ufb01": "fi", "\ufb02": "fl", "\ufb03": "ffi", "\ufb04": "ffl"}
 _pages = {}
 

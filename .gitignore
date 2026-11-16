@@ -42,3 +42,7 @@ docs/paper/*.pdf
 # Editor build artifacts (VS Code LaTeX Workshop SyncTeX)
 *.synctex.gz
 *.synctex(busy)
+
+# Old college Stuff+ models (used only by notebooks/CollegeStuff+.ipynb); kept locally, ~19 MB
+models/xBABIP_Model.cbm
+models/xwOBAcon_Model.cbm

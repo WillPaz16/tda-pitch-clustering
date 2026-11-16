@@ -10,8 +10,9 @@ genuinely solid) written 2026-08-17, before any methodology changes were
 made.
 
 Thesis defense/talk is a few months out (as of 2026-08-17). Presentation
-source lives in `docs/presentation/` (`main.tex` — paper skeleton with
-abstract only; `presi.tex` — Beamer slide deck, the real content).
+source lives in `docs/presentation/presi.tex` (Beamer deck); the paper is
+`docs/paper/paper_final.tex`. The old drafts `main.tex` and `paper.tex` were
+retired to `docs/archive/` on 2026-11-15.
 
 ## Scope FROZEN (2026-11-06, Will's call)
 
