@@ -7,7 +7,6 @@ slide quotes is printed here so the deck can be checked against it.
   lens_scatter     PCA lens of the 3,943 archetypes, three pitch families
   mapper_graph     the saved Mapper graph, nodes colored by mean velocity
   nerve_b1         graph b1 vs full-nerve b1: real grid fits vs null models
-  intrinsic_dim    MLE intrinsic dimension: real vs spin-pair shuffle null
   persistence      H1 persistence diagrams: real archetypes vs Gaussian null
   reeb_torus       textbook example: height function on a torus + Reeb graph
   pitch_design     one four-seamer's design neighborhood: shape vs model score,
@@ -19,7 +18,7 @@ all-pairs, light mode) with direct labels, and a one-hue blue sequential ramp.
 Paper (docs/paper/paper_final.tex): toy_mapper, dbscan_toy, rips_toy, lens_scatter,
 mapper_graph, nerve_b1, persistence, boundary_neighborhood (needs the season's
 pitch data: python3 src/viz/thesis_figures.py statcast_2025.parquet). Deck only:
-reeb_torus (the paper's Reeb section was cut 2026-11-14), intrinsic_dim,
+reeb_torus (the paper's Reeb section was cut 2026-11-14),
 pitch_design, development_path, label_shift_deck (label_shift with the example
 labeled "(backup)" instead of the paper's "(Fig. 11)"). Paper also: label_shift.
 """
@@ -132,24 +131,6 @@ def nerve_b1():
     ax.grid(axis="y", color=GRID, lw=0.6); ax.set_axisbelow(True)
     ax.legend(frameon=False, fontsize=8, loc="upper right")
     save(fig, "nerve_b1")
-
-
-def intrinsic_dim():
-    d = pd.read_csv(ROOT / "data" / "intrinsic_dimension.csv")
-    m = d.groupby(["scope", "kind"]).mle.mean().unstack()
-    rows = ["all"] + [s for s in m.index if s != "all"]
-    fig, ax = plt.subplots(figsize=(5.6, 3.2))
-    for y, s in enumerate(reversed(rows)):
-        a, b = m.loc[s, "real"], m.loc[s, "null_shuffle_spinpair"]
-        ax.plot([a, b], [y, y], color=GRID, lw=2.5, zorder=1)
-        ax.scatter(a, y, s=40, c=SERIES[0], edgecolors=SURF, lw=1, zorder=3, label="real archetypes" if y == 0 else None)
-        ax.scatter(b, y, s=40, c=SERIES[1], edgecolors=SURF, lw=1, zorder=3, label="fair null (shuffle, spin pair kept)" if y == 0 else None)
-        print("intrinsic_dim: %-4s real %.2f | fair null %.2f | gap %.2f" % (s, a, b, b - a))
-    ax.set_yticks(range(len(rows))); ax.set_yticklabels(["all pitches" if s == "all" else s for s in reversed(rows)], fontsize=8)
-    ax.set_xlabel("MLE intrinsic dimension (ambient dimension = 9)"); ax.set_xlim(4, 9)
-    ax.grid(axis="x", color=GRID, lw=0.6); ax.set_axisbelow(True)
-    ax.legend(frameon=False, fontsize=8, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2)
-    save(fig, "intrinsic_dim")
 
 
 def persistence(orig, cols):
@@ -482,7 +463,6 @@ def main(path=None):
     lens_scatter(orig, cols, ptype)
     mapper_graph(mc, speed, ptype)
     nerve_b1()
-    intrinsic_dim()
     persistence(orig, cols)
     reeb_torus()
     toy_mapper()
