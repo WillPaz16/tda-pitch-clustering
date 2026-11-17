@@ -48,6 +48,44 @@ shows is tested against null models before it counts.
   under each label moves its percentile by a median of 17 points in both
   seasons.
 
+## What it means for baseball
+
+**Measured.** A pitch near a label line can be average or not depending on
+which side of the line it falls. Kenley Jansen's cutter carries the ride of a
+four-seamer: 18 of its 20 nearest shapes from other pitchers are four-seamers.
+It grades 86 among cutters but 106 among four-seamers. In 2025, 32% of
+boundary pitches switch between below and above average, and sliders and
+cutters are the most common boundary pair (45 shapes), followed by changeups
+and splitters (37) and curveballs and knuckle curves (23).
+
+**Possible uses.** These are ideas the continuum suggests, not tested results
+(paper, Section 8.3):
+
+- **Pitch design.** Every pitch has realistic nearby shapes that other
+  pitchers already throw. Within a pitcher's physical limits (delivery,
+  velocity), a grade can show which of those shapes to move toward, and the
+  direction depends on the goal: more swings and misses or more ground balls.
+  In one illustration, a veteran's four-seamer ranked last among its 10
+  neighbors in both model grade and actual swinging-strike rate (4.9% against
+  a neighbor median of 7.6%), and the better neighbors had about 1.7 more
+  inches of induced vertical break. That is an illustration, not a
+  recommendation.
+- **Amateur projection.** College pitches show the same three dense regions
+  (Maloof et al. 2026), so an amateur's pitch can be placed among major
+  league shapes to project what it could become in a pro development system.
+- **Evaluation and acquisition.** Two differently labeled pitches in the same
+  region, such as a four-seamer and a sinker, may really be one fastball with
+  a range of movement. A pitch that grades well below the reachable shapes
+  around it can flag upside worth acquiring before the change is made.
+- **Labels and grades.** Report a per-type grade with its label sensitivity
+  (a range for boundary pitches), grade a pitch against its family or its
+  nearest neighbors instead of its label, or grade by role (primary
+  fastball, ground-ball pitch, putaway pitch).
+
+Pitch labels are not going away, since they give players, coaches, and
+broadcasters a shared language. The continuum suggests treating them as
+names for regions of pitch space rather than natural groups.
+
 ## Setup
 
 ```bash
