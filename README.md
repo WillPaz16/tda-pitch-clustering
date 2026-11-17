@@ -9,12 +9,26 @@ connected space, and what that means for grading a pitch within its label.
 - **Talk:** [`docs/presentation/presi.tex`](docs/presentation/presi.tex)
 - **[Live demo: interactive Mapper graph, colored by pitch type](https://willpaz16.github.io/tda-pitch-clustering/results/mapper_pitch_types_colored.html)**
 
+![The 2025 Mapper graph, nodes colored by mean velocity](docs/presentation/figures/mapper_graph.png)
+
 ## Findings
 
 The Mapper graph is fit on 3,943 pitch shapes, one average per pitcher per
 pitch type, from 721,799 pitches in the 2025 season. Every feature the graph
 shows is tested against null models before it counts.
 
+| Mapper step | On our data |
+|---|---|
+| point cloud | 3,943 pitch shapes in R⁹ |
+| coordinates | velocity, horizontal and vertical movement, spin rate, spin axis as (cos, sin), extension, release x and z (standardized) |
+| lens | PCA to 2-D (PC1 38.5%, PC2 21.0% of variance) |
+| cover | 10 × 10 intervals, 30% overlap |
+| clustering | DBSCAN, ε = 1.0, M = 4 |
+
+- **A Mapper graph is a picture to test, not a result.** The graph's
+  curveball-to-fastball ordering holds in every parameter choice and lens,
+  but both null models reproduce it every time. It shows how velocity,
+  movement, and spin vary together, not hidden structure.
 - **One continuum.** Apart from the slowest pitches (eephus pitches and
   position players pitching), pitch shapes form one connected space with no
   more gaps or loops than a Gaussian with the same covariance.
@@ -28,7 +42,11 @@ shows is tested against null models before it counts.
 - **Labels cut a continuum.** About a tenth of the shapes we could test sit on
   a label boundary (168 of 1,525 in 2025, 150 of 1,565 in 2026). Grading them
   under the neighboring label moves a Stuff+-style grade by a median of 11.5
-  points in 2025 and 9.2 in 2026, in seasons the models never saw.
+  points in 2025 and 9.2 in 2026, in seasons the models never saw. In 2025,
+  96% of these shifts exceed twice the grade's own sampling error, and a
+  model-free check agrees: ranking a pitch's actual swinging-strike rate
+  under each label moves its percentile by a median of 17 points in both
+  seasons.
 
 ## Setup
 
