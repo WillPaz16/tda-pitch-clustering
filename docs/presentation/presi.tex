@@ -6,10 +6,12 @@
 \usepackage{booktabs}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage{appendixnumberbeamer}   % backups after \appendix don't count toward the total
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage[style=authoryear-comp,maxcitenames=2,uniquelist=false,backend=bibtex,dashed=false]{biblatex}
 \addbibresource{../lit_review/references.bib}
+\AtEveryBibitem{\clearfield{note}}   % provenance notes stay in references.bib, as in the paper
 \renewcommand*{\bibfont}{\scriptsize}
 
 \lstset{language=Python,basicstyle=\ttfamily\scriptsize,frame=single,breaklines=true,
@@ -45,27 +47,59 @@
 \begin{document}
 
 \frame{\titlepage}
+\note{\textbf{Say:} Thanks for coming. This talk is about the shape of the space of MLB pitches, and about Mapper, a tool from topology that lets us see shape in data, and how we check what it shows us.}
 
 %================================================================
 \section*{Introduction}
 \AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection,hideallsubsections]\end{frame}}
 %================================================================
-\begin{frame}{A pitch shape is a point in a 9-dimensional space}
+\begin{frame}{What shape is pitch space?}
+\note[item]{\textbf{Say:} Every MLB pitch is tracked, and every pitch gets a label: four-seamer, slider, curveball. Average one pitcher's pitches of one type and you get a pitch shape, one point in 9 dimensions. The question: do the labels form separate clumps, one connected space with lines drawn across it, or something stranger, like a loop around a hole? We can't look at 9 dimensions, so we use Mapper, and then we check what it shows.}
 \note[item]{The labels also change over time: in 2023 Statcast added the sweeper and the slurve as new classifications \parencite{mlbglossary_sweeper,mlbglossary_slurve}.}
-\begin{itemize}[<+->]\footnotesize
-  \item Every MLB pitch is tracked: velocity, movement, spin, release point, \ldots \hfill\parencite{savantcsvdocs}
-  \item Each pitch also gets a \alert{label}: four-seam (FF), sinker (SI), cutter (FC), slider (SL), sweeper (ST), curveball (CU), changeup (CH), \ldots \hfill\parencite{mlbglossary_pitchtypes}
-  \item A \alert{pitch shape} is one pitcher's average of one pitch type: a point in $\R^9$.
+\note[item]{Colors are pitch labels: curveball (CU), slider (SL), four-seam fastball (FF). The pictures are cartoons, not data.}
+\centering
+\begin{tikzpicture}[d/.style={circle, inner sep=0pt, minimum size=3.2pt}, lab/.style={font=\scriptsize\bfseries}]
+\colorlet{cCU}{orange!85!black}\colorlet{cSL}{teal!75!black}\colorlet{cFF}{blue!70!black}
+\pgfmathsetseed{11}
+% (1) separate clumps
+\foreach \cx/\cy/\c/\l in {0.7/1.55/cFF/FF, 2.7/1.35/cSL/SL, 1.6/0.25/cCU/CU}{
+  \foreach \i in {1,...,11}{
+    \pgfmathsetmacro{\r}{0.32*sqrt(rnd)}\pgfmathsetmacro{\t}{360*rnd}
+    \fill[\c] ({\cx+\r*cos(\t)},{\cy+\r*sin(\t)}) circle (1.5pt);}
+  \node[lab, text=\c] at (\cx,\cy+0.55) {\l};}
+% (2) one connected space, labels drawn across it
+\foreach \i in {0,...,41}{
+  \pgfmathsetmacro{\t}{\i/41}
+  \pgfmathsetmacro{\x}{4.25+3.1*\t+0.12*rand}
+  \pgfmathsetmacro{\y}{0.35+1.2*\t+0.3*sin(180*\t)+0.2*rand}
+  \pgfmathsetmacro{\k}{\t<0.34 ? 0 : (\t<0.67 ? 1 : 2)}
+  \ifcase\numexpr\k\relax \def\c{cCU}\or \def\c{cSL}\or \def\c{cFF}\fi
+  \fill[\c] (\x,\y) circle (1.5pt);}
+\foreach \t in {0.335,0.665}{
+  \pgfmathsetmacro{\x}{4.25+3.1*\t}\pgfmathsetmacro{\y}{0.35+1.2*\t+0.3*sin(180*\t)}
+  \draw[dashed, thick, gray] (\x-0.32,\y+0.5) -- (\x+0.32,\y-0.5);}
+\node[lab, text=cCU] at (4.3,-0.05) {CU}; \node[lab, text=cSL] at (5.95,0.55) {SL}; \node[lab, text=cFF] at (7.35,1.15) {FF};
+% (3) something stranger: a ring around a hole
+\foreach \i in {0,...,39}{
+  \pgfmathsetmacro{\a}{9*\i+4*rand}\pgfmathsetmacro{\r}{0.78+0.13*rand}
+  \pgfmathsetmacro{\k}{\i<13 ? 0 : (\i<26 ? 1 : 2)}
+  \ifcase\numexpr\k\relax \def\c{cCU}\or \def\c{cSL}\or \def\c{cFF}\fi
+  \fill[\c] ({9.9+\r*cos(\a)},{0.95+\r*sin(\a)}) circle (1.5pt);}
+\node[font=\scriptsize, gray] at (9.9,0.95) {hole};
+% captions
+\foreach \x/\cap in {1.65/{Separate clumps,\\ one per label}, 5.8/{One connected space\\ (a \alert{continuum}),\\ labels drawn across it}, 9.9/{Something stranger:\\ a loop around a hole}}
+  \node[font=\footnotesize, align=center, anchor=north] at (\x,-0.35) {\cap};
+\end{tikzpicture}\par
+\raggedright
+\pause\vspace{8pt}
+\begin{itemize}\small
+  \item \alert{Data}: 3{,}943 \alert{pitch shapes}, each one pitcher's average of one pitch type (its \alert{label}) in 2025, as points in $\R^9$: velocity, movement, spin, extension, release point. \hfill\parencite{savantcsvdocs}
+  \item \alert{Tool}: the Mapper algorithm from topological data analysis, then checks that what it shows is real.
 \end{itemize}
-\pause\vspace{2pt}
-\begin{block}{Question}
-\small Do pitch shapes fall into separate clumps, so each label names its own group? Or do they form one connected space that the labels divide, perhaps with a few dense regions?
-\end{block}
-\pause\vspace{2pt}
-{\small We answer with the \alert{Mapper algorithm}, a tool from topological data analysis, and then we check whether what it shows us is real.}
 \end{frame}
 
 \begin{frame}{Roadmap}
+\note[item]{\textbf{Say:} Three parts. First, the language of shape: complexes, nerves, homology. Second, Mapper, which turns data into a graph. Third, what Mapper shows for pitches and what it means for grading. One idea runs through all three: the nerve. It is a theorem in part 1, Mapper's last step in part 2, and the reason 85 of the graph's 86 loops disappear in part 3.}
 \begin{enumerate}
   \item \textbf{Topological Foundations}: how do we describe shape?
   \item \textbf{Mapper}: how do we see the shape of data?
@@ -80,6 +114,7 @@
 %================================================================
 
 \begin{frame}{Simplices}
+\note[item]{\textbf{Say:} A simplex is the simplest shape in each dimension: a point, a segment, a triangle, a tetrahedron. Affinely independent just means the points don't collapse into a lower dimension, so three points not on a line. The simplex is every weighted average of its vertices, and a face is the simplex on any subset of them.}
 \begin{block}{Definition ($n$-simplex)}
 Points $v_0,\dots,v_n \in \R^m$ are \alert{affinely independent} if $v_1 - v_0, \dots, v_n - v_0$ are linearly independent. If they are, their convex hull
 \[
@@ -102,22 +137,21 @@ is an \alert{$n$-simplex} with \emph{vertices} $v_i$. The simplex spanned by any
 \end{frame}
 
 \begin{frame}{Simplicial complexes}
+\note[item]{\textbf{Say:} A simplicial complex glues simplices together nicely: every face is included, and two simplices only meet along a shared face. The abstract version forgets the geometry and only remembers which sets of vertices form simplices. Example: three edges make a hollow triangle; add the set $\{a,b,c\}$ and it is filled. Drawing an abstract complex gives back a geometric one, its realization.}
 \begin{block}{Definition (simplicial complex)}
-A \alert{simplicial complex} $K$ is a finite collection of simplices such that
-\begin{enumerate}
-  \item every face of a simplex of $K$ is in $K$;
-  \item any two simplices of $K$ are disjoint or intersect in a common face.
-\end{enumerate}
-Its \alert{vertex set} is the set of its 0-simplices.
+A \alert{simplicial complex} $K$ is a finite collection of simplices such that (1) every face of a simplex of $K$ is in $K$, and (2) any two simplices of $K$ are disjoint or intersect in a common face. Its \alert{vertex set} is the set of its 0-simplices.
 \src{edelsbrunnerletscherzomorodian2002}
 \end{block}
-\begin{block}{Abstract version}
-An \alert{abstract simplicial complex} on a vertex set $V$ is a collection $S$ of finite nonempty subsets of $V$ with $\{v\} \in S$ for all $v$, and $\tau \subseteq \sigma \in S \Rightarrow \tau \in S$. A $k$-simplex is a set of $k+1$ vertices. Placing the vertices in general position and filling in each simplex gives a geometric complex; the union of its simplices, as a space, is the \alert{geometric realization} $|S|$.
+\begin{block}{Definition (abstract simplicial complex)}
+An \alert{abstract simplicial complex} $K$ on a finite vertex set $V$ is a collection of nonempty subsets of $V$, its simplices, such that
+(1) $\{v\} \in K$ for every $v \in V$, and (2) every nonempty subset of a simplex in $K$ is in $K$. A simplex with $k+1$ vertices is a $k$-simplex.
 \src{zomorodiancarlsson2005}
 \end{block}
+{\small Example: $\{\{a\},\{b\},\{c\},\{a,b\},\{b,c\},\{a,c\}\}$ is a hollow triangle; adding $\{a,b,c\}$ fills it. Drawing $K$ gives its \alert{geometric realization} $|K|$.}
 \end{frame}
 
 \begin{frame}{Graphs are simplicial complexes}
+\note[item]{\textbf{Say:} A simple graph is just an abstract complex with nothing above dimension 1: vertices and edges. The $k$-skeleton keeps the simplices of dimension at most $k$. The key point for later: $G$ has a loop $abca$, and in $K$ the triangle fills it. So a graph, a 1-skeleton, can show a loop the full complex does not have. That is part 3 in miniature.}
 \note[item]{Simple: no edge from a vertex to itself and no repeated edges. An abstract complex cannot hold either, so a multigraph must be subdivided first.}
 \begin{block}{Definition ($k$-skeleton)}
 The \alert{$k$-skeleton} $K^{(k)}$ of a simplicial complex $K$ is the subcomplex of all simplices of dimension $\le k$; the 0-skeleton is the vertex set.
@@ -143,6 +177,7 @@ By the abstract definition, a finite \alert{simple} graph $G = (V, E)$ \emph{is}
 \end{frame}
 
 \begin{frame}{The nerve of a cover}
+\note[item]{\textbf{Say:} Given a cover, the nerve has one vertex per set, and a simplex whenever those sets share a common point. Left: three arcs cover a circle; each pair overlaps but no point is in all three, so the nerve is a hollow triangle, which has the shape of a circle. Right: three disks with a common point give a filled triangle, which shrinks to a point, like the disk.}
 \begin{block}{Definition (nerve)}
 Let $\mathcal U = \{U_\alpha\}_{\alpha \in A}$ be a finite cover of a space $X$ by nonempty sets. The \alert{nerve} $N(\mathcal U)$ is the abstract simplicial complex with vertex set $A$, where a set $\{\alpha_0,\dots,\alpha_k\} \subseteq A$ spans a $k$-simplex if and only if
 \[ U_{\alpha_0} \cap \cdots \cap U_{\alpha_k} \ne \emptyset. \]
@@ -172,30 +207,31 @@ Let $\mathcal U = \{U_\alpha\}_{\alpha \in A}$ be a finite cover of a space $X$ 
 \end{frame}
 
 \begin{frame}{The Nerve Theorem}
-\begin{block}{Definitions}
-\small Spaces $X \simeq Y$ are \alert{homotopy equivalent} if there are maps $X \to Y$ and $Y \to X$ whose composites are homotopic to the identities (backup); \emph{contractible} means $\simeq$ a point (a disk is, a circle is not).
-$|N(\mathcal C)|$ is the \alert{geometric realization} of the nerve: the abstract complex drawn as a space, like the triangles on the previous slide.
+\note[item]{\textbf{Say:} Homotopy equivalent means one space can be deformed into the other: maps both ways whose composites can be continuously deformed back to the identity. Contractible means it can be shrunk to a point. The theorem: if every intersection in the cover is contractible, the nerve has the same shape as the space. The warning: covers built from data are rarely this nice, so later the nerve need not match the space.}
+\begin{block}{Definition (homotopy equivalence)}
+Spaces $X$ and $Y$ are \alert{homotopy equivalent}, $X \simeq Y$, if there are continuous maps $f : X \to Y$ and $g : Y \to X$ such that $g \circ f$ and $f \circ g$ are homotopic to the identity maps. A space is \alert{contractible} if it is homotopy equivalent to a point.
 \src{hatcher2001}
 \end{block}
 \begin{block}{Theorem (Nerve Theorem)}
-If $X \subseteq \R^d$ and $\mathcal U$ is an open cover of $X$ in which every nonempty finite intersection of sets is contractible, then $X \simeq |N(\mathcal U)|$.
-\par\vspace{2pt}\hfill{\scriptsize\textcolor{gray}{\parencite[Cor.~4G.3]{hatcher2001}, stated for paracompact spaces, which include every subset of $\R^d$ \parencite[Thm.~41.4]{munkres2000topology}}}
+If $X \subseteq \R^n$ and $\mathcal U$ is an open cover of $X$ in which every nonempty finite intersection of sets is contractible, then $X \simeq |N(\mathcal U)|$, the geometric realization of the nerve.
+\par\vspace{2pt}\hfill{\scriptsize\textcolor{gray}{\parencite[Cor.~4G.3]{hatcher2001}, stated for paracompact spaces, which include every subset of $\R^n$ \parencite[Thm.~41.4]{munkres2000topology}}}
 \end{block}
 \begin{itemize}\footnotesize
-  \item The circle's arcs are open, so this covers the previous slide.
-  \item Closed convex sets also work (convex intersections). \hfill\parencite[Thm.~3.9]{bauerkerberrollrolle2023}
   \item \alert{Warning for later:} covers in data are rarely this nice, so a nerve need not match the space.
 \end{itemize}
+\note[item]{The circle's arcs on the nerve slide are open, so the theorem covers that example. Closed convex covers also work, since convex intersections are contractible \parencite[Thm.~3.9]{bauerkerberrollrolle2023}.}
 \end{frame}
 
 \begin{frame}{Homology and Betti numbers}
+\note[item]{\textbf{Say:} Homology counts holes with linear algebra. $C_k$ is formal sums of $k$-simplices over $\Z_2$, so each simplex is simply in or out. The boundary of a simplex is the sum of its faces: the boundary of triangle $abc$ is $bc + ac + ab$. The boundary of a boundary is zero. $H_k$ is cycles modulo boundaries: loops that are not filled in. $b_0$ counts components and $b_1$ counts independent loops; for a graph, $b_1 = E - V + C$. In the picture, $G$ has one loop, and $K$ fills it with the triangle, so $b_1 = 0$.}
 \begin{block}{Definition ($\Z_2$ homology of a complex $K$)}
-$C_k$ is the $\Z_2$-vector space with basis the $k$-simplices of $K$. The \alert{boundary map} $\partial_k : C_k \to C_{k-1}$ sends each simplex to the sum of its faces, e.g.\ $\partial_2\{a,b,c\} = \{b,c\} + \{a,c\} + \{a,b\}$. Then $\partial_k \partial_{k+1} = 0$, $H_k = \ker \partial_k / \operatorname{im} \partial_{k+1}$, and the \alert{Betti number} is $b_k = \dim H_k$.
+$C_k$ is the $\Z_2$-vector space with basis the $k$-simplices of $K$. The \alert{boundary map} $\partial_k : C_k \to C_{k-1}$ sends each simplex to the sum of its faces, e.g.\ $\partial_2\{a,b,c\} = \{b,c\} + \{a,c\} + \{a,b\}$. Since $\partial_k \partial_{k+1} = 0$, define the \alert{$k$-th homology group}
+\[ H_k = \ker \partial_k / \operatorname{im} \partial_{k+1}, \qquad \text{and the \alert{$k$-th Betti number} } b_k = \dim H_k. \]
 \src{edelsbrunnerletscherzomorodian2002,hatcher2001}
 \end{block}
 \begin{itemize}\small
-  \item $b_0$ = number of components; $b_1$ counts independent \alert{loops}. For a graph, $b_1$ is the \alert{cycle rank}; a loop here is never a self-edge.
-  \item Rank--nullity gives $b_1 = E - V + C - \rank \partial_2$. A graph has no triangles, so $b_1(G) = E - V + C$.
+  \item $b_0$ counts components and $b_1$ independent \alert{loops} (for a graph, its \alert{cycle rank}; never self-edges).
+  \item Rank--nullity: $b_1 = E - V + C - \rank \partial_2$; a graph has no triangles, so $b_1(G) = E - V + C$.
 \end{itemize}
 {\centering
 \begin{tikzpicture}[scale=0.6, v/.style={circle, fill=black, inner sep=1.4pt}, lab/.style={font=\small}]
@@ -209,27 +245,58 @@ $C_k$ is the $\Z_2$-vector space with basis the $k$-simplices of $K$. The \alert
   \node[align=center, font=\small] at (1.2,-0.9) {$K$: $b_1 = 1 - 1 = 0$};
   \end{scope}
 \end{tikzpicture}\par}
-{\small $z = \{a,b\} + \{b,c\} + \{a,c\}$ has $\partial_1 z = 0$: a loop in $G$. In $K$, $z = \partial_2\{a,b,c\}$: the triangle \emph{fills} it.}
+\note[item]{Point at the pictures: $z = \{a,b\} + \{b,c\} + \{a,c\}$ has $\partial_1 z = 0$, a loop in $G$. In $K$, $z = \partial_2\{a,b,c\}$, so the triangle fills it.}
 \note[item]{Rank--nullity: with $\partial_0 = 0$, $C = b_0 = V - \rank \partial_1$, and $b_1 = (E - \rank \partial_1) - \rank \partial_2$. For a graph this agrees with the Euler characteristic.}
 \end{frame}
 
 
 \begin{frame}{Mapper: from spaces to data}
+\note[item]{\textbf{Say:} Mapper: take a map $f$ from $X$ to a simpler space, cover that space, pull each set back to $X$, and split it into path components. Those pieces cover $X$, and Mapper is their nerve. In the picture, $f$ is height on a circle with three intervals; the middle one pulls back to two arcs, so the nerve is a loop, like the circle. On data, clusters stand in for path components, and software keeps only the graph, the 1-skeleton. Remember that dropping triangles is where extra loops come from.}
+\begin{columns}[c]
+\begin{column}{0.56\textwidth}
 \begin{block}{Definition (Mapper)}
-\footnotesize Let $f : X \to Z$ be continuous and $\mathcal U = \{U_\alpha\}$ a finite open cover of $Z$. Split each preimage $f^{-1}(U_\alpha)$ into its \alert{path components}. These form the \alert{pullback cover} $f^*\mathcal U$ of $X$, and the \alert{Mapper} is its nerve, $M(\mathcal U, f) = N(f^*\mathcal U)$.
+\small Let $f : X \to Z$ be continuous and $\mathcal U = \{U_\alpha\}$ a finite open cover of $Z$. Split each preimage $f^{-1}(U_\alpha)$ into its \alert{path components}. These form the \alert{pullback cover} $f^*\mathcal U$ of $X$, and the \alert{Mapper} is its nerve, $M(\mathcal U, f) = N(f^*\mathcal U)$.
 \src{singh2007mapper,deymemoliwang2017}
 \end{block}
 \begin{block}{On data (statistical Mapper)}
-\footnotesize On a \alert{point cloud}, a finite set $P \subseteq \R^n$ with Euclidean distance, \alert{clusters} play the role of path components, and the \alert{Mapper graph} is the 1-skeleton of the resulting nerve.
+\small On a \alert{point cloud}, a finite set $P \subseteq \R^n$ with Euclidean distance, \alert{clusters} play the role of path components, and the \alert{Mapper graph} is the 1-skeleton of the nerve.
 \src{singh2007mapper}
 \end{block}
+\end{column}
+\begin{column}{0.42\textwidth}\centering
+\begin{tikzpicture}[scale=0.95, v/.style={circle, inner sep=1.8pt}]
+  \draw[gray!40] (0,0) circle (1);
+  % preimages: top, two sides, bottom (path components)
+  \draw[line width=2.2pt, MiamiRed] (17.5:1.07) arc (17.5:162.5:1.07);
+  \draw[line width=2.2pt, blue!70] (-30:0.93) arc (-30:30:0.93);
+  \draw[line width=2.2pt, teal] (150:0.93) arc (150:210:0.93);
+  \draw[line width=2.2pt, orange] (197.5:1.07) arc (197.5:342.5:1.07);
+  \node at (0,-1.45) {\scriptsize $X$, $f$ = height};
+  % cover of Z
+  \draw[line width=2pt, MiamiRed] (1.5,0.3) -- (1.5,1.1);
+  \draw[line width=2pt, gray] (1.65,-0.5) -- (1.65,0.5);
+  \draw[line width=2pt, orange] (1.5,-1.1) -- (1.5,-0.3);
+  \node at (1.6,-1.45) {\scriptsize $\mathcal U$ on $Z$};
+  % nerve
+  \node[v, fill=MiamiRed] (t) at (3.1,0.8) {};
+  \node[v, fill=teal] (l) at (2.6,0) {};
+  \node[v, fill=blue!70] (r) at (3.6,0) {};
+  \node[v, fill=orange] (b) at (3.1,-0.8) {};
+  \draw[thick] (t)--(l)--(b)--(r)--(t);
+  \node at (3.1,-1.45) {\scriptsize nerve: $b_1 = 1$};
+\end{tikzpicture}
+\par\vspace{2pt}{\footnotesize The middle interval pulls back to two arcs, so the nerve is a loop, like $X$.}
+\end{column}
+\end{columns}
+\vspace{4pt}
 {\small The 1-skeleton keeps vertices and edges but \alert{drops the triangles}. We will come back to this when we count the graph's loops.}
 \end{frame}
 
 %================================================================
 \section{Mapper}
 %================================================================
-\begin{frame}{Overview}
+\begin{frame}{Statistical Mapper: overview}
+\note[item]{\textbf{Say:} Four steps: lens, cover, cluster, graph. The lens maps the data to a low-dimensional space; ours is PCA. We cover the lens image with overlapping boxes, cluster each preimage using all the coordinates, not just the lens, and connect clusters that share points. The lens only decides which points get clustered together.}
 \centering
 \begin{tikzpicture}[node distance=0.55cm, box/.style={draw, rounded corners, fill=gray!10, align=center, minimum height=1.05cm, text width=2.3cm, font=\small}]
   \node[box] (a) {point cloud\\$P \subseteq \R^n$};
@@ -248,18 +315,20 @@ $C_k$ is the $\Z_2$-vector space with basis the $k$-simplices of $K$. The \alert
 \end{frame}
 
 \begin{frame}{Example: Mapper on a circle}
+\note[item]{\textbf{Say:} A toy run: 240 noisy points on a circle, the lens is height, five intervals. DBSCAN splits each slice into arcs: one, two, two, two, one. Overlapping arcs share points, so they are joined. Eight vertices, eight edges, one component: $b_1 = 1$, the circle's loop. A Gaussian with the same covariance gives no loop. So Mapper finds a real loop here and does not invent one.}
 \centering
 \includegraphics[width=0.56\textwidth]{figures/toy_mapper.pdf}
 \begin{itemize}[<+->]\small
-  \item 240 noisy points on a circle; lens $f(x,y) = y$; 5 intervals with 30\% overlap; DBSCAN with $\varepsilon = 0.25$, $M = 3$.
+  \item 240 noisy points on a circle; lens $f(x,y) = y$; 5 intervals with 30\% overlap; DBSCAN (Step 3) with $\varepsilon = 0.25$, $M = 3$.
   \item DBSCAN splits each preimage into arcs: $1, 2, 2, 2, 1$ clusters. Arcs in overlapping intervals share points, giving edges.
-  \item The graph has 8 vertices, 8 edges, 1 component: $b_1 = E - V + C = 8 - 8 + 1 = 1$, the circle's own shape. This circle returns as our positive control.
+  \item The graph has 8 vertices, 8 edges, 1 component: $b_1 = E - V + C = 8 - 8 + 1 = 1$, the circle's own shape. We reuse it as a positive control for the loop tests.
   \item A Gaussian with the circle's covariance, run the same way, gives $b_1 = 0$ in all 5 samples.
 \end{itemize}
 \end{frame}
 
 \subsection{Step 1: the lens}
 \begin{frame}{Step 1: PCA, the lens}
+\note[item]{\textbf{Say:} We need a lens to $\R^2$ so the cover is made of squares. PCA finds the direction of most variance, $v_1$, then the direction of most remaining variance orthogonal to it, $v_2$. Centering subtracts the mean; it does not change the directions, it just makes the covariance formula clean.}
 Goal: send each pitch shape to $\R^2$, so the cover can be drawn as squares.
 \begin{columns}[c]
 \begin{column}{0.4\textwidth}\centering
@@ -284,6 +353,7 @@ Goal: send each pitch shape to $\R^2$, so the cover can be drawn as squares.
 \end{frame}
 
 \begin{frame}{Computing PCA: the SVD}
+\note[item]{\textbf{Say:} To compute PCA we use the SVD. The columns of $V$ are exactly the principal directions, and the squared singular values give the share of variance each one explains. Our lens projects each centered pitch shape onto $v_1$ and $v_2$. Why two: three would give a thousand boxes, mostly empty, and we can draw two. PCA is linear, but clustering uses all nine coordinates, and three other lenses, including nonlinear Isomap, check it.}
 \begin{block}{Theorem (SVD, matrix version)}
 Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sigma \mathbf V^{\mathsf T}$, where $\mathbf U \in \R^{m \times r}$ and $\mathbf V \in \R^{n \times r}$ have orthonormal columns and $\boldsymbol\Sigma = \mathrm{diag}(\sigma_1 \ge \cdots \ge \sigma_r > 0)$.
 \src{axler2024ladr}
@@ -298,6 +368,7 @@ Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sig
 
 \subsection{Step 2: the cover}
 \begin{frame}{Step 2: building a cover}
+\note[item]{\textbf{Say:} Cover the lens image with overlapping squares. The number of intervals and the percent overlap set the resolution, and the graph depends on them, so we check many settings later. In one dimension with under 50\% overlap, no three intervals meet, so there are no triangles. In our 10 by 10 grid up to four squares can overlap, so triangles do appear. That matters in part 3.}
 \begin{itemize}
   \item Cover the image $f(P) \subseteq \R^k$ by overlapping hypercubes: equal intervals per axis, neighbors sharing a fixed \% of their length. \hfill\parencite{singh2007mapper,madukpe2026review}
   \item Two parameters control the resolution: the \alert{number of intervals} and the \alert{percentage overlap}. \hfill\parencite{singh2007mapper}
@@ -309,12 +380,13 @@ Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sig
 \begin{tikzpicture}[scale=0.8]
   \foreach \i in {0,...,3} { \foreach \j in {0,...,2} {
      \draw[MiamiRed, opacity=0.7, fill=MiamiRed, fill opacity=0.06] (1.3*\i-0.15,1.1*\j-0.15) rectangle ++(1.6,1.4); } }
-  \node[right] at (5.6,1.6) {\small ours: $10 \times 10$ cubes, 30\% overlap};
+  \node[right] at (5.6,1.6) {\small ours: $10 \times 10$ squares, 30\% overlap};
 \end{tikzpicture}
 \end{frame}
 
 \subsection{Step 3: clustering with DBSCAN}
 \begin{frame}{Step 3: clustering each preimage}
+\note[item]{\textbf{Say:} In each square, cluster the points that land there, in the full 9-dimensional space. Clusters play the role of path components. We use DBSCAN: no preset number of clusters, any shape, and it labels isolated points as noise. It has two parameters, a radius $\varepsilon$ and a count $M$.}
 \begin{itemize}
   \item For each cube $U_i$, cluster the points of $f^{-1}(U_i)$ in the full space $\R^n$. Clusters stand in for path components. \hfill\parencite{singh2007mapper}
   \item We use \alert{DBSCAN}, the second most common choice in reviewed Mapper applications (after hierarchical clustering). \hfill\parencite{madukpe2026review}
@@ -325,6 +397,7 @@ Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sig
 \end{frame}
 
 \begin{frame}{Density reachability}
+\note[item]{\textbf{Say:} DBSCAN in plain words. A core point has at least $M$ points within $\varepsilon$ of it, counting itself. From a core point you can step to anything within $\varepsilon$. Density-reachable means there is a chain of such steps. Only core points can be stepped from, which is why the chain needs at least two points and why lone points end up as noise.}
 \begin{block}{Definition 1 ($\varepsilon$-neighborhood)}
 For $p \in P$, $N_\varepsilon(p) = \{\, q \in P : d(p,q) \le \varepsilon \,\}$. \quad $p$ is a \alert{core point} if $|N_\varepsilon(p)| \ge M$ (counting $p$).
 \src{ester1996dbscan}
@@ -341,6 +414,7 @@ $p$ is density-reachable from $q$ if there is a chain $q = p_1, p_2, \dots, p_\e
 \end{frame}
 
 \begin{frame}{Clusters and noise}
+\note[item]{\textbf{Say:} Two points are density-connected if both can be reached from some common point. A cluster is a maximal, connected set that contains a core point. Noise is everything left over, and what counts as noise depends on $\varepsilon$ and $M$. Picture it as dense blobs plus a few stragglers.}
 \begin{block}{Definition 4 (density-connected)}
 $p, q \in P$ are density-connected if both are density-reachable from the same point of $P$.
 \src{ester1996dbscan}
@@ -360,6 +434,7 @@ A \alert{cluster} is a nonempty $C \subseteq P$ such that
 
 \subsection{Step 4: the graph}
 \begin{frame}{Step 4: building the graph}
+\note[item]{\textbf{Say:} Each cluster becomes a vertex, and two clusters that share a point get an edge. Because neighboring squares overlap, clusters can share points. This is the 1-skeleton of the nerve of the clusters. Software outputs only the graph: three clusters sharing a point would give a filled triangle in the nerve, but the graph keeps a hollow one.}
 \begin{block}{Construction}
 Each cluster is a vertex. Two clusters are joined by an edge whenever they share at least one point, which can happen because neighboring cubes overlap.
 \src{singh2007mapper}
@@ -374,6 +449,7 @@ Each cluster is a vertex. Two clusters are joined by an edge whenever they share
 %================================================================
 \subsection{Checking a Mapper picture}
 \begin{frame}{The nerve's loops are bounded, the graph's are not}
+\note[item]{\textbf{Say:} Dey, M\'emoli, and Wang: for a nice cover of a nice space, the nerve's first homology is a quotient of the space's. So the nerve cannot have more loops than the space: $b_1$ of Mapper is at most $b_1$ of $X$. But that is the nerve. The graph drops the triangles, so it can gain loops. Three disks: the disk has no loop and neither does the nerve, but the graph does. We test this on our data at the end.}
 \begin{block}{Theorem (Dey--M\'emoli--Wang)}
 If $\mathcal U$ is a finite open cover of a compact, path-connected space $X$ by path-connected sets, the nerve map $\varphi : X \to |N(\mathcal U)|$ induces a surjection $H_1(X) \to H_1(|N(\mathcal U)|)$ ($\Z_2$ coefficients).
 For a well-behaved $f$ (finitely many open path components per preimage), Mapper's pullback cover is such a cover, so
@@ -388,27 +464,66 @@ For a well-behaved $f$ (finitely many open path components per preimage), Mapper
 \note[item]{The nerve map: $\varphi(x) = \sum_\alpha \rho_\alpha(x)\, u_\alpha$, with $\{\rho_\alpha\}$ a partition of unity subordinate to $\mathcal U$: each point goes to a weighted average of the vertices of the sets that contain it. $H_1$ of a space is singular homology, which agrees with simplicial homology on $|K|$ (Hatcher Thm.\ 2.27).}
 \end{frame}
 
-\begin{frame}{Checking a Mapper picture: persistent loops}
+\begin{frame}{Checking a Mapper picture: the Rips filtration}
+\note[item]{\textbf{Say:} A way to check a Mapper picture without Mapper: persistent homology. The Rips complex at scale $t$ fills in any set of points that are all within distance $t$ of each other. As $t$ grows, loops appear and then get filled in. Each inclusion gives a map on homology, so we can follow each loop's life.}
 \centering
-\includegraphics[width=0.68\textwidth]{figures/rips_toy.pdf}
+\includegraphics[width=0.66\textwidth, trim={0 32 140 0}, clip]{figures/rips_toy.pdf}
 \raggedright
+\begin{block}{Definition (Vietoris--Rips filtration)}
+For a finite metric space $(P, \delta)$ and $t \ge 0$,
+\[ \mathrm{Rips}_t(P) = \{\, \emptyset \ne S \subseteq P : \diam S \le t \,\}. \]
+For $s \le t$, $\mathrm{Rips}_s(P) \subseteq \mathrm{Rips}_t(P)$, so inclusion induces linear maps $H_k(\mathrm{Rips}_s) \to H_k(\mathrm{Rips}_t)$.
+\src{bauer2021ripser,zomorodiancarlsson2005}
+\end{block}
+{\small As $t$ grows, loops appear and are then filled in. Persistence records when.}
+\note[item]{The loop in the figure dies at $d = 1.62$. The third panel is drawn at $t = 1.94$ because a Rips complex can fill a loop before its flat picture covers the center.}
+\end{frame}
+
+\begin{frame}{Checking a Mapper picture: persistence diagrams}
+\note[item]{\textbf{Say:} Each loop is born at one scale and dies at a later one. Plot each loop as a point (birth, death): that is the persistence diagram. Points far from the diagonal live a long time and are real features; points near the diagonal are noise. In $H_0$ the classes are components, so a long-lived component is a gap between groups.}
+\begin{columns}[c]
+\begin{column}{0.36\textwidth}\centering
+\includegraphics[width=\textwidth, trim={378 0 0 0}, clip]{figures/rips_toy.pdf}
+\end{column}
+\begin{column}{0.62\textwidth}
 \begin{block}{Definitions}
 \small
 \begin{itemize}
-  \item \alert{Vietoris--Rips complex} of a finite metric space $(P, \delta)$: $\mathrm{Rips}_t(P) = \{\, \emptyset \ne S \subseteq P : \diam S \le t \,\}$, nested as $t$ grows.
-  \item A class is \alert{born} at scale $b$ and \alert{dies} at scale $d$ (filled in, or merged into an older class). \alert{Persistence} $= d - b$. In $H_0$, the classes are components.
-  \item \alert{Persistent loop}: an $H_1$ point far from the diagonal of the \alert{persistence diagram}; points near it are usually noise.
+  \item A class is \alert{born} at $b$ if it first appears in $H_k(\mathrm{Rips}_b)$, and \alert{dies} at $d$ when it maps to zero or merges with an older class.
+  \item Its \alert{persistence} is $d - b$. The \alert{persistence diagram} is the multiset of pairs $(b, d)$.
+  \item A \alert{persistent loop} is an $H_1$ point far from the diagonal; points near it are usually noise.
+  \item In $H_0$ the classes are components, so a long $H_0$ bar is a gap.
 \end{itemize}
-\vspace{-2pt}\hfill{\scriptsize\textcolor{gray}{\parencite{bauer2021ripser,edelsbrunnerletscherzomorodian2002,zomorodiancarlsson2005,fasy2014confidence}}}
+\src{edelsbrunnerletscherzomorodian2002,fasy2014confidence}
 \end{block}
-\note[item]{The loop in the figure dies at $d = 1.62$. The third panel is drawn at $t = 1.94$ because a Rips complex can fill a loop before its flat picture covers the center.}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Checking a Mapper picture: null models}
+\note[item]{\textbf{Say:} A null model is fake data that keeps some features of the real data and destroys the rest. We run the same pipeline on it and compare. The same-covariance Gaussian is the blandest data with the same spread. The within-type shuffle shuffles each measurement among pitches of the same type, which breaks how the measurements go together. The rule: a feature counts only if the real data show more of it than every null. Not beating a null does not mean the feature is absent, only that covariance can explain it.}
+\begin{block}{Idea}
+A \alert{null model} is fake data that keeps some features of the real data and destroys the rest. We run the identical pipeline on it and compare.
+\src{blumberg2014,robinsonturner2017,topaz2026null}
+\end{block}
+\begin{itemize}\small
+  \item \alert{Same-covariance Gaussian}: keeps the mean and covariance, nothing else. Among distributions with these moments it has the least extra structure.
+  \item \alert{Within-type shuffle}: permutes each coordinate among shapes of the same pitch type. Keeps each type's ranges, destroys how the measurements go together.
+\end{itemize}
+\begin{block}{Rule}
+A feature counts as structure only if the real data show \alert{more} of it than every replicate of every null. Not beating a null does not prove the feature is absent, only that covariance can explain it.
+\end{block}
+\note[item]{Flight space (backup) uses a third null, the spin-pair shuffle: the same, but $(\cos\theta, \sin\theta)$ move together.}
 \end{frame}
 
 %================================================================
 \section{The Shape of Pitch Space}
 %================================================================
-\begin{frame}{A short baseball primer}
+\begin{frame}{What a pitch shape measures}
+\note[item]{\textbf{Say:} Back to the question from the start. Quick vocabulary: velocity; movement, meaning horizontal break and induced vertical break, with gravity removed; arm-side is toward the throwing arm; spin rate and spin axis; release point and extension. The labels group into fastballs, breaking balls, and offspeed.}
 \note[item]{If asked: Statcast documents IVB as gravity-removed vertical movement; that $pfx_z$ is the same quantity is our inference from the data.}
+\note[item]{Data pulled with \texttt{pybaseball} 2.2.7 \parencite{ledoux_pybaseball}. Groupings into families are ours. Movement is often quoted in inches.}
+\question{Separate clumps, one per label? Or one connected space that the labels divide?}
 \begin{columns}[T]
 \begin{column}{0.58\textwidth}
 \textbf{What Statcast measures} \parencite{savantcsvdocs}
@@ -424,17 +539,17 @@ For a well-behaved $f$ (finitely many open path components per preimage), Mapper
 \textbf{Pitch types} \parencite{mlbglossary_pitchtypes}
 \begin{itemize}\small
   \item fastballs: four-seam (FF), sinker (SI), cutter (FC)
-  \item breaking balls: slider (SL), sweeper (ST), curveball (CU), \ldots
+  \item breaking balls: slider (SL), sweeper (ST), curveball (CU), knuckle curve (KC), \ldots
   \item offspeed: changeup (CH), splitter (FS), forkball (FO)
+  \item other: eephus (EP), knuckleball (KN)
 \end{itemize}
 \end{column}
 \end{columns}
-\vspace{4pt}
-{\small Data pulled with \texttt{pybaseball} 2.2.7 \parencite{ledoux_pybaseball}. Groupings into families are ours. Movement is often quoted in inches.}
 \end{frame}
 
 
 \begin{frame}{The pipeline on our data}
+\note[item]{\textbf{Say:} This is how the theory maps onto the data. The point cloud is 3{,}943 pitch shapes in $\R^9$. The lens is PCA, the cover is 10 by 10 squares with 30\% overlap, DBSCAN uses $\varepsilon = 1$ and $M = 4$, and the graph is the 1-skeleton of the nerve. Homology and nulls check it. Flight space keeps only the ball's flight, and we use it for label boundaries.}
 \note[item]{Each shape averages one pitcher's pitches of one type, from 721{,}799 pitches in 2025. Each coordinate is standardized, and left-handers are mirrored. The spin axis is an angle, so it is encoded as a point on the circle. Flight space drops release point, extension, and absolute velocity.}
 {\renewcommand{\arraystretch}{1.25}
 \begin{tabular}{@{}p{0.3\textwidth}p{0.64\textwidth}@{}}
@@ -451,28 +566,30 @@ homology, nulls & are the graph's features real? \\
 \bottomrule
 \end{tabular}}
 \par\vspace{8pt}
-Later: \alert{flight space}, the ball's flight only (relative velocity, movement, spin).
+\alert{Flight space}: the ball's flight only (relative velocity, movement, spin). We use it to find label boundaries.
 \end{frame}
 
-\begin{frame}{The lens and the Mapper graph on real data}
+\begin{frame}{Pitch shapes run from curveballs to fastballs in one piece}
+\note[item]{\textbf{Say:} Left is the PCA lens: PC1 runs from fastballs to breaking balls, and offspeed sits with the fastballs because both move arm-side. Right is the Mapper graph, colored by velocity. One big component: a ladder from curveballs through sliders and cutters to fastballs and offspeed. Only eephus pitches and position players pitching sit apart.}
 \begin{columns}[T]
-\begin{column}{0.5\textwidth}\centering
-\includegraphics[width=\textwidth]{figures/lens_scatter.pdf}
-\par\footnotesize PC1: fastballs to breaking balls. Offspeed overlaps fastballs (both move arm-side). PC2: mostly delivery and velocity; the slowest pitches sit at the bottom.
+\begin{column}{0.44\textwidth}\centering
+\includegraphics[height=0.52\textheight]{figures/lens_scatter.pdf}
+\par\footnotesize PC1 runs from fastballs to breaking balls. Offspeed overlaps fastballs: both move arm-side.
 \end{column}
-\begin{column}{0.5\textwidth}\centering
-\includegraphics[width=\textwidth]{figures/mapper_graph.pdf}
-\par\footnotesize 66 clusters, 143 edges, 9 components ($b_0 = 9$). Largest component: curveballs, sliders and cutters, then fastballs and offspeed, ordered by velocity. Eephus pitches and position players pitching sit apart.
+\begin{column}{0.54\textwidth}\centering
+\includegraphics[width=\textwidth, trim={30 0 0 0}, clip]{figures/mapper_graph.pdf}
+\par\footnotesize One large component: a \alert{velocity ladder} from curveballs to sliders and cutters to fastballs and offspeed. Eephus pitches and position players pitching sit apart.
 \end{column}
 \end{columns}
-\note[item]{Axes are the scores $\mathbf A v_1$, $\mathbf A v_2$. PC2 is mostly extension and release height, with velocity. The 9 components: the largest, 5 holding only very slow pitches, and 3 single nodes of ordinary sliders and cutters. 630 of the 3{,}943 shapes are DBSCAN noise. Offspeed pitches overlap fastballs in the lens, but clustering uses all 9 coordinates.}
+\note[item]{Axes are the scores $\mathbf A v_1$, $\mathbf A v_2$; PC2 is mostly extension and release height, with velocity. The graph: 66 clusters, 143 edges, 9 components ($b_0 = 9$): the largest, 5 holding only very slow pitches, and 3 single nodes of ordinary sliders and cutters. 630 of the 3{,}943 shapes are DBSCAN noise. Offspeed overlaps fastballs in the lens, but clustering uses all 9 coordinates.}
 \end{frame}
 
-\begin{frame}{Is it real? Stability across choices}
-\note[item]{The band also changes with the lens.}
+\begin{frame}{The velocity ladder is stable, but covariance explains it}
+\note[item]{\textbf{Say:} Is this stable? The ordering shows up in every parameter choice, every lens, and every refit. But both nulls reproduce it too. So the ladder is real but not surprising: it is just how velocity, movement, and spin move together. Slow pitches sitting apart beats the nulls only weakly. The slider-cutter band is reproduced by the nulls, so we do not claim it.}
+\note[item]{Grid: cover with 8/10/12 intervals and 20/30/40\% overlap, DBSCAN with $\varepsilon$ = 0.8/1.0/1.2; 30 refits on 80\% of pitchers; lenses PCA, velocity $\times$ vertical movement, Isomap, and density. The band also changes with the lens.}
 \note[item]{Definitions: ordering means Spearman $\rho \ge 0.7$ between node velocity and position on the CU$\to$FF path. Slow isolated means at least half of the $<70$ mph shapes that land in some node lie only off the largest component (counted in fits where such shapes are in some node).}
 \note[item]{Null testing: Blumberg et al.\ 2014, Robinson and Turner 2017. An alternative to grid tuning: Carri\`ere, Michel and Oudot 2018.}
-\question{Do the graph's features survive other parameters, other lenses, and null models?}
+\question{Are the graph's features stable across parameters and lenses, and do they beat the nulls?}
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
 \small
@@ -481,170 +598,191 @@ Later: \alert{flight space}, the ball's flight only (relative velocity, movement
 share of fits & PCA lens & all 4 lenses \\
 \midrule
 CU$\to$FF ordering & 100\% & 100\% \\
-slow pitches isolated & 97--100\% & 94--100\% \\
+slow pitches apart & 97--100\% & 94--100\% \\
 \bottomrule
 \end{tabular}
+\par\vspace{2pt}{\scriptsize 27 parameter choices, 30 refits on 80\% of pitchers, 4 lenses incl.\ Isomap \parencite{tenenbaum2000isomap}.}
 \end{column}
 \begin{column}{0.46\textwidth}
 \pause
 \begin{block}{But: null models}
-\small A same-covariance Gaussian and a within-type shuffle (10 fits each per lens) \alert{reproduce the ordering} every time, and slow-pitch isolation in 50--78\%.
+\small Both nulls (10 replicates each per lens) \alert{reproduce the ordering} every time, and slow pitches apart in 50--78\%.
 \end{block}
 \end{column}
 \end{columns}
-\vspace{8pt}
+\vspace{6pt}
 \begin{itemize}[<+->]\small
-  \item Grid: cover with 8/10/12 intervals and 20/30/40\% overlap, DBSCAN with $\varepsilon$ = 0.8/1.0/1.2; 30 refits on 80\% of pitchers; lenses PCA, velocity $\times$ vertical movement, Isomap \parencite{tenenbaum2000isomap}, and density.
-  \item The ordering only tells us \emph{where pitch types sit}. Slow-pitch isolation beats the nulls, but only weakly.
-  \item A slider--cutter \alert{band} sits between breaking balls and fastballs. The nulls reproduce it, so it shows where sliders and cutters sit, not extra structure.
+  \item The curveball-to-fastball ladder is how velocity, movement, and spin move together. It tells us \emph{where} pitch types sit, not hidden structure.
+  \item Slow pitches sitting apart beats the nulls, but only weakly, and it comes from absolute speed and delivery.
+  \item Sliders and cutters form a \alert{band} between breaking balls and fastballs. The nulls reproduce it too.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{The graph has 86 loops}
-\question{Are they real? A real loop would circle a hole: a mix of velocity, movement, and spin that no pitcher throws.}
-{\small\textbf{Test 1, the triangles:}}
+\begin{frame}{86 loops in the graph, 1 in the nerve}
+\note[item]{\textbf{Say:} Are the graph's loops real? A real loop would circle a hole: a combination of velocity, movement, and spin nobody throws. The graph has 86 loops. Put back the nerve's 113 triangles: $\partial_2$ has rank 85, so one loop is left. Across 27 settings, graphs have 33 to 147 loops and nerves 0 to 4. By Dey, M\'emoli, and Wang, the nerve can only lose loops, so if the space has no loop its nerves should have none, and ours are close to that.}
+\question{Are the graph's loops real? A real loop would circle a hole: a mix of velocity, movement, and spin that no pitcher throws.}
 \begin{columns}[c]
-\begin{column}{0.36\textwidth}\centering
-\includegraphics[width=0.78\textwidth]{figures/nerve_b1.pdf}
+\begin{column}{0.42\textwidth}\centering
+\includegraphics[height=0.36\textheight]{figures/nerve_b1.pdf}
 \end{column}
-\begin{column}{0.62\textwidth}\small
-Graph: $b_1 = E - V + C = 143 - 66 + 9 = 86$. The full nerve adds 113 triangles; $\partial_2$ is a $143 \times 113$ matrix over $\Z_2$ of rank 85, so $b_1 = 86 - 85 = 1$.
-\par\vspace{2pt}
-Across 27 parameter choices, graph $b_1$ ranges 33--147; nerve $b_1$ stays 0--4. The null models' nerves (5 replicates each) give 2--9 (Gaussian) and 0--2 (shuffle).
+\begin{column}{0.56\textwidth}\small
+\textbf{Test 1, the triangles.} Graph: $b_1 = E - V + C = 143 - 66 + 9 = 86$. The nerve adds 113 triangles; $\partial_2$ has rank 85 over $\Z_2$, so $b_1 = 86 - 85 = 1$.
+\par\vspace{3pt}
+Over 27 parameter choices: graph 33--147, nerve 0--4. Null nerves: 2--9 (Gaussian), 0--2 (shuffle).
 \end{column}
 \end{columns}
-\vspace{2pt}
 \pause
 \begin{block}{Why the nerve: it can only lose loops}
 \begin{itemize}\footnotesize
   \item Path-connected covers: $b_1(\text{nerve}) \le b_1(X)$ (Dey--M\'emoli--Wang).
-  \item \alert{Warning for later}: clusters are finite sets, so Mapper only stands in for a cover of the space the pitches come from.
-  \item If that space has no loops (Tests 2--3), its nerves have $b_1 = 0$. Ours: 0--4.
+  \item \alert{The warning from part 1}: clusters are finite sets, so Mapper only stands in for a cover of the space the pitches come from.
+  \item If that space has no loops (Test 2, next), its nerves have $b_1 = 0$. Ours: 0--4.
 \end{itemize}
 \end{block}
-\note[item]{Folded in from the old ``Why'' slide: the pitch shapes show no persistent loop, like a Gaussian null, which is consistent with $b_1(X) = 0$; then by Dey--M\'emoli--Wang every Mapper nerve of $X$ would have $b_1 = 0$. The nerve theorem cannot apply to a sample literally, so we use it as support for the evidence, not as a proof about the data.}
+\note[item]{$\partial_2$ is a $143 \times 113$ matrix. Null models: 5 replicates each. The pitch shapes show no persistent loop, like a Gaussian null, which is consistent with $b_1(X) = 0$; then by Dey--M\'emoli--Wang every Mapper nerve of $X$ would have $b_1 = 0$. The nerve theorem cannot apply to a sample literally, so we use it as support for the evidence, not as a proof about the data.}
 \end{frame}
 
-\begin{frame}{Tests 2 and 3: pitch shapes have no persistent loop}
-\question{Does the point cloud itself have a persistent loop, or gaps?}
+\begin{frame}{No hidden loops, no gaps}
+\note[item]{\textbf{Say:} Does the cloud itself have a loop? Persistence says no: the largest loop lives 0.87 typical spacings, inside the Gaussian's range and far below the cutoff of 2. Gaps: 17 long $H_0$ bars, also inside the Gaussian's range. The long bars are single odd pitches, knuckleballs, eephus pitches, slow curves, not an empty zone between pitch types.}
+\question{Does the cloud of pitch shapes itself have a persistent loop, or gaps?}
 \begin{columns}[c]
-\begin{column}{0.54\textwidth}\centering
-\includegraphics[width=0.94\textwidth]{figures/persistence.pdf}
+\begin{column}{0.56\textwidth}\centering
+\includegraphics[width=\textwidth]{figures/persistence.pdf}
 \end{column}
-\begin{column}{0.44\textwidth}\small
-Largest loop persistence, in units of $u$:
+\begin{column}{0.42\textwidth}\small
+\textbf{Test 2, loops.} Largest loop persistence, in units of $u$ (typical neighbor spacing):
 \par\vspace{3pt}\centering
 \begin{tabular}{@{}lr@{}}
 \toprule
-Noisy circle (own units) & 36.6 \\
-\quad its Gaussian null & 4.1--6.6 \\
-\midrule
 Pitch shapes & 0.87 \\
 Same-cov.\ Gaussian & 0.75--0.88 \\
 Within-type shuffle & 1.09--1.45 \\
-\alert{Cutoff (pitch data only)} & \alert{2} \\
+\midrule
+Persistent loop cutoff & $2$ \\
 \bottomrule
 \end{tabular}
 \end{column}
 \end{columns}
 \vspace{4pt}
 \begin{itemize}[<+->]\small
-  \item The cutoff is our convention, not a formal test.
-  \item Gaps (long $H_0$ bars): 17 bars live past $3u$, against 17--23 in the Gaussian.
-  \item Flight space: a loop hint at the cutoff in both seasons that we cannot tell from chance (backup).
+  \item \textbf{Test 3, gaps.} 17 long $H_0$ bars (longer than $3u$), against 17--23 for the Gaussian: nothing like an empty zone between, say, sliders and cutters.
+  \item The long bars split off single shapes and small groups: knuckleballs, eephus pitches, slow curves.
 \end{itemize}
-\vspace{-2pt}
-{\scriptsize\textcolor{gray}{Five subsamples of 1{,}000 shapes each; 5 replicates of each null; Ripser \parencite{bauer2021ripser,tralie2018ripserpy}.}}
-\note[item]{$u$ is the median $H_0$ death: the scale where neighboring shapes typically merge.}
-\note[item]{Circle: the 240-point circle from the Mapper example, in its own units; one loop at 36.6, the next at 0.98; its Gaussian nulls' largest loops are 4.1--6.6, and each null has 5--13 loops above 2 units, so the cutoff is a convention for the pitch data. Flight space: mean largest loop 2.02 (2025) and 2.04 (2026); at some parameter choices the nerve keeps more loops than either null, at others none. Real data is more concentrated than the Gaussian.}
+\note[item]{$u$ is the median $H_0$ death, where neighboring shapes typically merge; the $2u$ cutoff is a convention, not a formal test. Five subsamples of 1{,}000 shapes, 5 replicates of each null, Ripser. Positive control: the 240-point circle from the Mapper example has one loop at 36.6 in its own units (next 0.98), against 4.1--6.6 for its Gaussian nulls. Flight space: a loop hint at the cutoff in both seasons (2.02, 2.04) that we cannot tell from chance (backup).}
 \end{frame}
 
-\begin{frame}{Three dense regions}
+\begin{frame}{Single pitches pile up in three families}
+\note[item]{\textbf{Say:} Is the continuum featureless? Now switch to single pitches, in relative speed and break. Look at their density and track its peaks with $H_0$ of the superlevel sets. There are three robust peaks: fastballs, breaking balls, and offspeed. Each beats all 50 Gaussian nulls, $p = 0.02$, the smallest 50 replicates allow. They survive every smoothing level and every random half, and they match what Maloof and coauthors found for college pitches.}
 \note[item]{Relative speed is the pitch's speed relative to the pitcher's 95th-percentile speed in that game; break in inches, left-handers mirrored. Same persistence idea as before, now on a smoothed density.}
 \note[item]{If asked: two smaller bumps, curveball-like (0.013) and sweeper-like (0.012), are not robust, and we claim neither.}
 \question{Is the continuum featureless, or does it have dense regions?}
 Following \textcite{maloof2026classify}: $H_0$ of the superlevel sets $\{\text{density} \ge t\}$ for \emph{single pitches}, in relative speed, horizontal break, and induced vertical break.
 \begin{itemize}[<+->]
-  \item \alert{Three robust peaks}: fastballs, breaking balls, and offspeed pitches (relative persistence 0.17 and 0.08 for the smaller two). Each beats all 50 same-covariance Gaussian replicates ($p = 0.02$, the smallest 50 allow).
-  \item They survive every smoothing level (1, 1.5, 2 cells) and every random half of the data, close to where \textcite{maloof2026classify} found them for college pitches.
+  \item \alert{Three robust peaks}: fastballs, breaking balls, and offspeed pitches (the smaller two persist for 0.17 and 0.08 of the tallest peak's height). Each beats all 50 same-covariance Gaussian replicates ($p = 0.02$, the smallest 50 allow).
+  \item They survive every smoothing level and every random half of the data, close to where \textcite{maloof2026classify} found them for college pitches.
 \end{itemize}
-\pause\vspace{4pt}
-So the space is connected but not featureless: \alert{one continuum with a few dense regions}.
 \end{frame}
 
+\begin{frame}{The answer: one continuum, three families}
+\note[item]{\textbf{Say:} So the answer is the middle picture from the start: one continuum, with three families. You can walk from a curveball to a four-seamer in small steps, through pitches people actually throw. Only the slowest pitches sit apart. There are no loops or gaps beyond a Gaussian. And single pitches crowd into three families. The finer labels are lines drawn across this space. So where do they fall?}
+\begin{columns}[c]
+\begin{column}{0.4\textwidth}\centering
+\includegraphics[height=0.66\textheight, trim={30 0 244 0}, clip]{figures/mapper_graph.pdf}
+\end{column}
+\begin{column}{0.58\textwidth}
+\begin{itemize}[<+->]
+  \item You can walk from a curveball to a four-seam fastball one small step at a time, through shapes other pitchers actually throw.
+  \item Only the slowest pitches sit apart: eephus pitches and position players pitching.
+  \item No loops or gaps beyond a Gaussian with the same covariance.
+  \item Single pitches crowd into three families, fastballs, breaking balls, and offspeed, as \textcite{maloof2026classify} find in college ball.
+\end{itemize}
+\end{column}
+\end{columns}
+\pause\vspace{6pt}
+{\centering The finer labels are lines drawn across this continuum. Where do they fall?\par}
+\end{frame}
 
-
-
-
-
+\begin{frame}{Where the label lines fall}
+\note[item]{\textbf{Say:} A boundary pitch is one where at least half of its 20 nearest neighbors carry one other label. The most common pair is slider and cutter, and those sit in the band between breaking balls and fastballs. Slider and sweeper split along horizontal break. Curveball and knuckle curve, and changeup and splitter, overlap in flight; pitchers tell them apart by grip.}
+\begin{columns}[c]
+\begin{column}{0.5\textwidth}\centering
+\includegraphics[width=\textwidth]{figures/label_seams.pdf}
+\end{column}
+\begin{column}{0.48\textwidth}
+\small
+A \alert{boundary pitch}: at least half of its 20 nearest neighbors in flight space carry one other label. The four most common boundary pairs in 2025, in the break plane (boundary pitches circled):
+\begin{itemize}[<+->]\small
+  \item \textbf{SL/FC} (45): the most common. 68\% sit in the slider--cutter band, against 51\% of all sliders and cutters.
+  \item \textbf{SL/ST} (15): cut along one direction. A sweeper is a slider with more horizontal break; Statcast added the label in 2023 \parencite{mlbglossary_sweeper}.
+  \item \textbf{CU/KC} (23) and \textbf{CH/FS} (37): overlap in flight. Pitchers tell them apart by grip as much as by flight.
+\end{itemize}
+\end{column}
+\end{columns}
+\note[item]{A boundary pitch has at least half of its 20 nearest other-pitcher shapes carrying one other label (flight space, at least 150 pitches). Cutters and four-seamers meet the same way, less often: Jansen's cutter, next slide.}
+\end{frame}
 
 \begin{frame}{Labels cut a continuum, so grading within a label is fragile}
-\note[item]{Our models are CatBoost, trained on 2022--24, so 2025 and 2026 are out of sample. A boundary pitch is defined by its neighbors in shape space, so this is where the continuum shows up in grading.}
+\note[item]{\textbf{Say:} Why it matters: pitch grades like Stuff+ compare a pitch to others with the same label. A boundary pitch gets a different grade under its neighbor's label. About a tenth of the pitches we test are boundary pitches, in both seasons, and the median shift is about 10 points. Kenley Jansen's cutter rides like a four-seamer: 86 as a cutter, 106 as a four-seamer. The pitch is the same; only the label changed the grade.}
+\note[item]{Our models are CatBoost, trained on 2022--24, so 2025 and 2026 are out of sample. A boundary pitch is defined by its neighbors in shape space, so this is where the continuum shows up in grading. The claim is about grading within a label. One boundary pitch (a knuckle curve) is in backup.}
 \question{What happens to a pitch's grade near a label boundary?}
 \begin{columns}[T]
 \begin{column}{0.44\textwidth}\centering
-\includegraphics[width=0.9\textwidth]{figures/label_shift.pdf}
+\includegraphics[width=0.9\textwidth]{figures/label_shift_deck.pdf}
 \end{column}
 \begin{column}{0.56\textwidth}
 \footnotesize
-\scriptsize \alert{Stuff+-style grade}: physical characteristics only, against its own pitch type (100 = average, SD 15).\\
-\alert{Boundary pitch} ($\ge 150$ pitches): at least half of its 20 nearest other-pitcher shapes carry one other label. Graded under both labels.
-\par\vspace{2pt}
+\alert{Stuff+-style grade}: physical characteristics only, against its own pitch type (100 = average, SD 15). A boundary pitch is graded under both labels.
+\par\vspace{3pt}
 \begin{tabular}{@{}lcc@{}}
 \toprule
  & 2025 & 2026 \\
 \midrule
 boundary pitches (of tested) & 11\% & 10\% \\
 median grade shift & 11.5 & 9.2 \\
-swinging-strike pctile shift & 17 & 17 \\
+swinging-strike percentile shift & 17 & 17 \\
 \bottomrule
 \end{tabular}
-\begin{itemize}[<+->]\scriptsize
-  \item Jansen's cutter: \alert{86} among cutters, \alert{106} among four-seamers (18 of 20 neighbors are four-seamers).
-  \item 2025: 32\% cross average; 96\% of shifts exceed twice the sampling error.
-  \item SL/FC is the most common boundary pair (45); 68\% sit in the band (51\% of all SL/FC).
+\begin{itemize}[<+->]\footnotesize
+  \item Kenley Jansen's cutter carries a four-seamer's ride: \alert{86} among cutters, \alert{106} among four-seamers (18 of its 20 neighbors are four-seamers).
+  \item 2025: 32\% switch sides of 100 (average); 96\% of shifts exceed twice the sampling error.
 \end{itemize}
 \end{column}
 \end{columns}
-\note[item]{The claim is about grading within a label. One boundary pitch, the pairs, and the break-plane picture are in backup.}
 \end{frame}
-
 
 \begin{frame}{Conclusions}
-\begin{block}{For the mathematician}
-\begin{itemize}\footnotesize
-  \item Mapper gives a picture we can read. Null models and homology \alert{test} it.
-  \item Count loops in the full nerve: the graph is only its 1-skeleton (86 graph loops, 1 in the nerve), and for covers by path-connected sets Dey--M\'emoli--Wang bound the nerve's loops by those of the space.
-\end{itemize}
+\note[item]{\textbf{Say:} Three takeaways. Shape: one connected piece apart from the slowest pitches, no loops or gaps beyond a Gaussian, and three dense families. Method: a Mapper graph is a picture to test, so count loops in the nerve and check against persistence and nulls. Consequence: labels cut a continuum, so grading within a label is fragile near the boundaries. Future work is on the slide.}
+\begin{enumerate}[<+->]
+  \item \textbf{Shape.} At the scales we test, pitch shapes form one connected piece, apart from the slowest pitches, with no gaps or loops beyond a same-covariance Gaussian. Single pitches crowd into three families: fastballs, breaking balls, and offspeed.
+  \item \textbf{Method.} A Mapper graph is a picture to test, not a result. Its loops belong in the full nerve (86 in the graph, 1 in the nerve), and its features must beat persistence and null-model checks.
+  \item \textbf{Consequence.} Pitch labels cut a continuum, so grading a pitch within its label is fragile near the boundaries, for about a tenth of the pitches we test, in 2025 and 2026.
+\end{enumerate}
+\pause\vspace{6pt}
+\begin{block}{Future work}
+\small Movement relative to arm slot; Mapper on single pitches; more seasons and other levels; confidence sets for persistence diagrams \parencite{fasy2014confidence}; grading a pitch by its neighbors as well as its label.
 \end{block}
-\pause
-\begin{block}{For the baseball reader}
-\begin{itemize}\footnotesize
-  \item One \alert{connected continuum}, apart from the very slowest pitches.
-  \item No more gaps or loops than a Gaussian null.
-  \item Three dense regions at the pitch level: fastballs, breaking balls, offspeed.
-  \item The finer labels divide it, so grading within a label is fragile near the boundaries.
-\end{itemize}
-\end{block}
-{\footnotesize\textbf{Next:} movement relative to arm slot; other seasons and levels; pitch development (backup).}
-\pause\par\vspace{2pt}
-\begin{center}
-\small\textbf{Mapper gives the picture; homology and nulls decide what is real;\\ the answer is a continuum that the labels divide.}
-\end{center}
 \end{frame}
 
-\begin{frame}{Thank you}
-\begin{center}
-{\Large Thank you}\par\vspace{12pt}
-\begin{tabular}{rl}
-Advisor & Dr.\ Caleb Eckhardt \\
-Committee & Dr.\ Dan Farley and Dr.\ Louis DeBiasio \\
- & Department of Mathematics, Miami University \\
- & Family and friends \\
-\end{tabular}
-\par\vspace{18pt}
-{\large Questions?}
-\end{center}
+\begin{frame}
+\begin{columns}[c]
+\column{0.52\textwidth}
+\note[item]{\textbf{Say:} Thank my advisor, my committee, the department, and family and friends. Then open it up for questions; the graph stays on screen to point at.}
+\centering
+\includegraphics[height=0.84\textheight, trim={30 0 244 0}, clip]{figures/mapper_graph.pdf}
+\column{0.46\textwidth}
+\begin{beamercolorbox}[rounded=true,shadow=true,center,sep=8pt]{title}
+{\LARGE\bfseries Thank you!}
+\end{beamercolorbox}
+\par\vspace{12pt}\small
+\textcolor{MiamiRed}{\textbf{Advisor}}\\
+Dr.\ Caleb Eckhardt\par\vspace{8pt}
+\textcolor{MiamiRed}{\textbf{Committee}}\\
+Dr.\ Dan Farley\\
+Dr.\ Louis DeBiasio\par\vspace{8pt}
+The Department of Mathematics, Miami University, and my family and friends.
+\par\vspace{20pt}
+{\centering\Large\bfseries\textcolor{MiamiRed}{Questions?}\par}
+\end{columns}
 \end{frame}
 
 \begin{frame}[allowframebreaks]{References}
@@ -655,6 +793,7 @@ Committee & Dr.\ Dan Farley and Dr.\ Louis DeBiasio \\
 \appendix
 
 \begin{frame}{Backup: one boundary pitch}
+\note[item]{\textbf{Say:} If asked for a concrete boundary pitch: this knuckle curve grades 97 among knuckle curves and 109 among curveballs, and 16 of its 20 nearest shapes are curveballs.}
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}\centering
 \includegraphics[width=\textwidth]{figures/boundary_neighborhood.pdf}
@@ -673,6 +812,7 @@ Committee & Dr.\ Dan Farley and Dr.\ Louis DeBiasio \\
 \section*{Backup}
 %================================================================
 \begin{frame}{Backup: flight space, both seasons}
+\note[item]{\textbf{Say:} If asked whether results depend on release point or absolute speed: in flight space the slow pitches join the continuum, so their isolation came from speed and delivery. Nerve loops stay low, and the loop hint at about 2 cannot be told from chance.}
 \centering\footnotesize
 \begin{tabular}{@{}lccc@{}}
 \toprule
@@ -691,13 +831,8 @@ Largest loop persistence & 0.87 (0.75--0.88) & 2.02 (1.55--1.85) & 2.04 (1.60--1
 PCA lens. Parentheses: nulls (Gaussian and within-type shuffle for nerve $b_1$; Gaussian for $H_0$ bars and loop persistence; flight space shuffles keep the spin pair together). Persistence in multiples of $u$; a loop is persistent above $2u$. Flight space: velocity relative to the pitcher's fastest shape, movement, and spin.
 \end{frame}
 
-\begin{frame}{Backup: where the label lines fall}
-\centering
-\includegraphics[width=0.62\textwidth]{figures/label_seams.pdf}
-\par\footnotesize The four most common boundary pairs in 2025 (SL/FC 45, CH/FS 37, CU/KC 23, SL/ST 15), boundary pitches circled. SL/ST is cut along one continuous direction (horizontal break); CU/KC and CH/FS overlap, as pitchers tell them apart by grip as much as by flight.
-\end{frame}
-
 \begin{frame}{Backup: development, two tests designed in advance}
+\note[item]{\textbf{Say:} If asked about development: moving toward better-scoring neighbors did not help, and more typical shapes got fewer swinging strikes than their physics predicts. Both are associations, not causes, and this is future work.}
 \begin{block}{Test 1: does drifting toward better neighbors help?}
 \small For pitches thrown 150+ times in consecutive seasons, we regressed the next-season change in swinging-strike rate on progress toward the better-scoring third of the 20 nearest other-pitcher shapes (pooled score), with controls.
 \begin{itemize}\small
@@ -712,6 +847,7 @@ PCA lens. Parentheses: nulls (Gaussian and within-type shuffle for nerve $b_1$; 
 \end{frame}
 
 \begin{frame}{Backup: a development plan (illustration)}
+\note[item]{\textbf{Say:} An illustration only: a path of small changes through pitches other people already throw, holding velocity and spin fixed. The plan itself is not validated.}
 \centering
 \includegraphics[width=0.76\textwidth]{figures/development_path.pdf}
 \begin{itemize}\small
@@ -724,12 +860,14 @@ PCA lens. Parentheses: nulls (Gaussian and within-type shuffle for nerve $b_1$; 
 \end{frame}
 
 \begin{frame}{Backup: one pitcher's slider and sweeper}
+\note[item]{\textbf{Say:} If asked whether sweeper is a real category: this pitcher's sweeper breaks 9 inches, between the average slider at about 6 and the average sweeper at about 15, closer to a slider.}
 \begin{block}{Illustration (one pitcher, 2025)}
 Brady Singer's slider (809 pitches) breaks 4.9 in horizontally; his ``sweeper'' (316 pitches) breaks 9.0 in. The average slider breaks about 6 in and the average sweeper about 15 in \parencite{mlbglossary_sweeper}: his sweeper sits between the two, closer to a slider.
 \end{block}
 \end{frame}
 
 \begin{frame}{Backup: a pitch-design illustration (2025)}
+\note[item]{\textbf{Say:} If asked about pitch design: nearby four-seamers that score better have about 1.7 more inches of ride at nearly the same velocity. Illustrative, not causal, not advice.}
 \centering
 \includegraphics[width=0.72\textwidth]{figures/pitch_design.pdf}
 \begin{itemize}\footnotesize
@@ -741,6 +879,7 @@ Brady Singer's slider (809 pitches) breaks 4.9 in horizontally; his ``sweeper'' 
 \end{frame}
 
 \begin{frame}{Backup: checks on the pitch-design example}
+\note[item]{\textbf{Say:} The physical limits pick the neighbors, not Mapper; the continuum result is what makes comparing to them sensible. A model-free check says the extra ride is worth only about 0.3 points of swinging strikes, so most of the gap is something else.}
 \begin{itemize}\small
   \item \alert{The physical limits, not Mapper, pick the 10 neighbors.} As a check, on average 99\% of them also lie in the same or adjacent Mapper nodes. The topology's role is the continuum result. Because nearby shapes exist, comparing to them stays inside the data.
   \item \alert{Tolerances.} Over 27 settings (velocity 1 / 1.5 / 2 mph $\times$ spin 150 / 200 / 300 rpm $\times$ movement 3 / 4 / 5 in), the pitch has a neighborhood in 24 and is the lowest-scoring in it at the median setting; better neighbors sit $+1.5$ to $+3.2$ in higher in induced vertical break.
@@ -751,6 +890,7 @@ Brady Singer's slider (809 pitches) breaks 4.9 in horizontally; his ``sweeper'' 
 \end{frame}
 
 \begin{frame}{Backup: Reeb graphs}
+\note[item]{\textbf{Say:} If asked what Mapper approximates: the Reeb graph collapses each connected piece of each level set to a point. On a standing torus with height it is a circle with two whiskers.}
 \note[item]{A multigraph is not a simplicial complex as defined in part 1; subdividing its edges makes it a simple graph, hence a complex.}
 \begin{block}{Definition (Reeb graph)}
 Let $f : X \to \R$ be continuous. Write $x \sim y$ if $f(x) = f(y)$ and $x, y$ lie in the same connected component of the level set $f^{-1}(f(x))$. The \alert{Reeb graph} is the quotient space $R_f(X) = X/\!\sim$.
@@ -768,6 +908,7 @@ Standing torus, $f$ = height: Morse, with a minimum, two saddles and a maximum. 
 \end{frame}
 
 \begin{frame}{Backup: functions of Morse type}
+\note[item]{\textbf{Say:} The condition that makes the Reeb graph a finite graph: finitely many critical values, and the space looks like a product between them.}
 \begin{block}{Definition}
 A continuous $f : X \to \R$ on a compact space $X$ is of \alert{Morse type} if
 \begin{enumerate}
@@ -781,6 +922,7 @@ Morse functions are of Morse type, but not conversely: a Morse-type function nee
 \end{frame}
 
 \begin{frame}[fragile]{Backup: KeplerMapper}
+\note[item]{\textbf{Say:} If asked about software: these few lines are our whole Mapper call, with our parameters.}
 \begin{itemize}
   \item Python implementation of Mapper; works with scikit-learn-compatible clustering and scaling algorithms. \hfill\parencite{vanveen2019keplermapper,pedregosa2011sklearn}
   \item Developed under the scikit-tda project. \hfill\parencite{keplermapper_repo}
@@ -799,6 +941,7 @@ graph = mapper.map(lens, X,
 \end{frame}
 
 \begin{frame}{Backup: DBSCAN example, core, border, noise}
+\note[item]{\textbf{Say:} Walk through it: the solid circle is a core point, the dashed one a border point that joins because a core point is in its ball, and the crosses are noise.}
 \centering
 \includegraphics[width=0.72\textwidth]{figures/dbscan_toy.pdf}
 \begin{itemize}\small
@@ -809,6 +952,7 @@ graph = mapper.map(lens, X,
 \end{frame}
 
 \begin{frame}{Backup: the DBSCAN algorithm}
+\note[item]{\textbf{Say:} Start at any unvisited point; if it is a core point, grow a cluster from it, otherwise mark it noise for now. Border points marked noise can be picked up later.}
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
 \begin{algorithmic}[1]
@@ -838,6 +982,7 @@ graph = mapper.map(lens, X,
 \end{frame}
 
 \begin{frame}{Backup: why DBSCAN is correct}
+\note[item]{\textbf{Say:} A cluster is determined by any one of its core points, so the algorithm finds every cluster no matter where it starts. The only order dependence is a border point shared by two clusters.}
 \begin{block}{Lemma}
 If $C$ is a cluster and $p \in C$ is a core point, then $C = \{\, o \in P : o \text{ is density-reachable from } p \,\}$.
 \src{ester1996dbscan}
@@ -852,6 +997,7 @@ If $C$ is a cluster and $p \in C$ is a core point, then $C = \{\, o \in P : o \t
 \end{frame}
 
 \begin{frame}{Backup: topological spaces}
+\note[item]{\textbf{Say:} If asked for the formal setup: a topology is the collection of open sets. For us everything lives in $\R^n$ with the usual distance.}
 \begin{block}{Definition (topology)}
 A \alert{topology} on a set $X$ is a collection $\tau$ of subsets of $X$ (the \emph{open sets}) such that
 \begin{enumerate}
@@ -868,6 +1014,7 @@ For $Y \subseteq X$, the \alert{subspace topology} is $\tau_Y = \{\, Y \cap U : 
 For us, $X$ is always a subset of $\R^n$ with the topology coming from Euclidean distance.
 \end{frame}
 \begin{frame}{Backup: homotopy}
+\note[item]{\textbf{Say:} A homotopy is a continuous deformation from one map to another. A disk is contractible, an annulus is equivalent to a circle, and a circle is not contractible.}
 \begin{block}{Definition (homotopy)}
 Continuous maps $f, g : X \to Y$ are \alert{homotopic}, $f \simeq g$, if there is a continuous $F : X \times [0,1] \to Y$ with $F(x,0) = f(x)$ and $F(x,1) = g(x)$ for all $x \in X$.
 \src{hatcher2001}
@@ -880,6 +1027,7 @@ A space homotopy equivalent to a point is \alert{contractible}.
 Examples: a disk is contractible; an annulus $\simeq$ a circle; a circle is \emph{not} contractible.
 \end{frame}
 \begin{frame}{Backup: how reliable is a cluster label?}
+\note[item]{\textbf{Say:} If asked how much to trust a cluster: bigger, more crowded clusters are less self-consistent, and graph degree adds little beyond size.}
 \begin{itemize}
   \item Run each pitch shape back through the classifier: does it land in its own cluster?
   \item Bigger, more crowded clusters are less self-consistent: Spearman $\rho = -0.78$ between cluster size and this round-trip accuracy (66 clusters).
@@ -888,6 +1036,7 @@ Examples: a disk is contractible; an annulus $\simeq$ a circle; a circle is \emp
 \end{frame}
 
 \begin{frame}{Backup: thin pitch shapes}
+\note[item]{\textbf{Say:} If asked about shapes built from few pitches: the ordering does not change at any minimum, and slow pitches stay off the continuum.}
 \small
 \begin{tabular}{@{}rrrrcc@{}}
 \toprule

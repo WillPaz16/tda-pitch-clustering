@@ -20,7 +20,8 @@ Paper (docs/paper/paper_final.tex): toy_mapper, dbscan_toy, rips_toy, lens_scatt
 mapper_graph, nerve_b1, persistence, boundary_neighborhood (needs the season's
 pitch data: python3 src/viz/thesis_figures.py statcast_2025.parquet). Deck only:
 reeb_torus (the paper's Reeb section was cut 2026-11-14), intrinsic_dim,
-pitch_design, development_path. Not used: label_shift (replaced in the paper).
+pitch_design, development_path, label_shift_deck (label_shift with the example
+labeled "(backup)" instead of the paper's "(Fig. 11)"). Paper also: label_shift.
 """
 import json
 import sys
@@ -309,7 +310,7 @@ def rips_toy():
     save(fig, "rips_toy")
 
 
-def label_shift():
+def label_shift(example_label="knuckle curve (Fig. 11)", name="label_shift"):
     """Boundary pitches (2025): grade under their own label vs. under the neighboring label.
     The highlighted point is the paper's worked example (same rule as paper_numbers.py)."""
     d = pd.read_csv(ROOT / "data" / "label_sensitivity_2025_relative.csv")
@@ -322,7 +323,7 @@ def label_shift():
     ax.axhline(100, color=INK2, lw=0.6, ls="--", zorder=1); ax.axvline(100, color=INK2, lw=0.6, ls="--", zorder=1)
     ax.scatter(b.grade_own, b.grade_alt, s=14, c=SERIES[0], edgecolors=SURF, lw=0.5, zorder=2)
     kj = b[(b.name == "Jansen, Kenley") & (b.pitch_type == "FC")].iloc[0]   # named in Section 8.2
-    for r, lab, xy in [(ex, "knuckle curve (Fig. 11)", (112, 150)), (kj, "Jansen's cutter", (50, 128))]:
+    for r, lab, xy in [(ex, example_label, (112, 150)), (kj, "Jansen's cutter", (50, 128))]:
         ax.scatter([r.grade_own], [r.grade_alt], s=44, c=SERIES[1], edgecolors=SURF, lw=1, zorder=3)
         ax.annotate(lab, (r.grade_own, r.grade_alt), xytext=xy, fontsize=7.5, color=INK,
                     arrowprops=dict(arrowstyle="-", color=INK2, lw=0.6))
@@ -333,7 +334,7 @@ def label_shift():
     print("label_shift: %d boundary pitches; range own %.0f-%.0f alt %.0f-%.0f; example %s->%s %.0f->%.0f"
           % (len(b), b.grade_own.min(), b.grade_own.max(), b.grade_alt.min(), b.grade_alt.max(),
              ex.pitch_type, ex.alt_label, ex.grade_own, ex.grade_alt))
-    save(fig, "label_shift")
+    save(fig, name)
 
 
 def pitch_design():
@@ -488,6 +489,7 @@ def main(path=None):
     dbscan_toy()
     rips_toy()
     label_shift()
+    label_shift("knuckle curve (backup)", "label_shift_deck")
     if path:                       # figures that need the season's pitch data
         boundary_neighborhood(path)
         seams(path)
