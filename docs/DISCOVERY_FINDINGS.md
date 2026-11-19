@@ -865,21 +865,22 @@ choice alone. That is far larger than its sampling noise.
 
 **2026 replication (fully out-of-sample; models trained on 2022–24).**
 The same script and settings as above (relative velocity, K = 20, 50%
-share). Shapes are rebuilt from the 2026 pull: 746,715 pitches,
-2026-03-20 to 10-26, postseason included.
+share). Shapes are rebuilt from the 2026 pull, regular season and
+postseason only: 727,721 pitches through 10-26. (Rerun 2026-11-10; the
+first pull also included spring training, which no script filtered.)
 
 | | 2025 | 2026 |
 |---|---|---|
-| Boundary pitches | 168 (11%) | 157 (10%) |
-| Median grade shift on relabeling | 11.5 | 9.6 |
-| Shift ≥ 1 SD (15 points) | 38% | 34% |
-| Shift > 2 × bootstrap SE | 96% | 91% |
+| Boundary pitches | 168 (11%) | 150 (10%) |
+| Median grade shift on relabeling | 11.5 | 9.2 |
+| Shift ≥ 1 SD (15 points) | 38% | 33% |
+| Shift > 2 × bootstrap SE | 96% | 93% |
 | Crosses 100 | 32% | 25% |
 
-- **Same driving pairs:** SL↔FC (±26), FS→CH (+8), KC→CU (+8), FC→FF
-  (+21). SL↔ST is again ≈ 0.
-- **Absolute-velocity variant for 2026:** 13% boundary, median shift
-  12.8.
+- **Same driving pairs:** SL→FC (+25), FC→SL (−27), FS→CH (+8), KC→CU
+  (+8), FC→FF (+21). SL↔ST is again ≈ 0.
+- **Absolute-velocity variant for 2026:** 12% boundary, median shift
+  12.3.
 - The 2025 numbers above are from shapes rebuilt from the current pull
   (`season_shapes`). The original model-archetype run gave 166 boundary
   pitches with the same median.

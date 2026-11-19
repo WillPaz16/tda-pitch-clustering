@@ -9,7 +9,8 @@ review of the pipeline logic (mismatches, statistical holes, and what's
 genuinely solid) written 2026-08-17, before any methodology changes were
 made.
 
-Thesis defense/talk is a few months out (as of 2026-08-17). Presentation
+**Defense given 2026-11-17; no committee changes requested.** Next is the
+paper submission (format and deadline still to come from Will). Presentation
 source lives in `docs/presentation/presi.tex` (Beamer deck); the paper is
 `docs/paper/paper_final.tex`. The old drafts `main.tex` and `paper.tex` were
 retired to `docs/archive/` on 2026-11-15.
@@ -21,7 +22,8 @@ work is writing and verification only (Will's read-through, ledger page
 checks, Acknowledgments). The thesis has three parts:
 1. **Shape result:** pitch-shape space is one connected continuum apart from
    the very slowest pitches; no loops or gaps beyond a same-covariance
-   Gaussian; low intrinsic dimension; three dense regions at the pitch level.
+   Gaussian; intrinsic dimension about six of nine (MLE 6.26), below a
+   shuffled null; three dense regions at the pitch level.
 2. **Method result:** Mapper gives the picture; nerve homology, persistence
    and null models check it (86 graph loops -> nerve b1 = 1).
 3. **One consequence:** grading within a label is fragile near boundaries
@@ -98,6 +100,10 @@ reliability appendix, circle persistence/dimension rows.
   2005 (MLE dimension), KeplerMapper and ripser software citations.
 
 ## Presentation status
+
+> **Historical (2026-08-17).** The deck is finished and was presented
+> 2026-11-17. This section and the advisor feedback below describe the
+> August draft and are kept only as a record.
 
 Both `.tex` files are drafts, not close to finished. `main.tex` has only a
 title and abstract written. `presi.tex` has 3 sections:
@@ -191,6 +197,10 @@ Rough target for an hour-long talk (fine to run over/under):
   is the section that currently doesn't exist in the deck yet.
 
 ## Next steps (not started)
+
+> **Historical (2026-08-17).** The unchecked deck items below were all
+> done before the 2026-11-17 defense; the checked items are a record of
+> the methodology fixes.
 
 - [ ] Write the Introduction section (currently 2 blank frames)
 - [ ] Fix the precision/definition gaps listed above, slide by slide
