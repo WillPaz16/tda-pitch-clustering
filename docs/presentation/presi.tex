@@ -328,7 +328,7 @@ $C_k$ is the $\Z_2$-vector space with basis the $k$-simplices of $K$. The \alert
 
 \subsection{Step 1: the lens}
 \begin{frame}{Step 1: PCA, the lens}
-\note[item]{\textbf{Say:} We need a lens to $\R^2$ so the cover is made of squares. PCA finds the direction of most variance, $v_1$, then the direction of most remaining variance orthogonal to it, $v_2$. Centering subtracts the mean; it does not change the directions, it just makes the covariance formula clean.}
+\note[item]{\textbf{Say:} We need a lens to $\R^2$ so the cover is made of squares. PCA finds the direction of most variance, $v_1$, then the direction of most remaining variance orthogonal to it, $v_2$. Centering does not change the directions, but the SVD maximizes $\|\mathbf A v\|^2$, and only after centering is that the variance; uncentered, $v_1$ would point at the average pitch.}
 Goal: send each pitch shape to $\R^2$, so the cover can be drawn as squares.
 \begin{columns}[c]
 \begin{column}{0.4\textwidth}\centering
@@ -347,21 +347,22 @@ Goal: send each pitch shape to $\R^2$, so the cover can be drawn as squares.
 \small Center the data: $\mathbf A$ is the $m \times n$ data matrix minus its column means. The first \alert{principal direction} $v_1$ is the unit vector that maximizes $\mathrm{Var}(\mathbf A v)$; each next $v_k$ does the same among unit vectors orthogonal to the earlier ones.
 \src{jolliffecadima2016,pearson1901}
 \end{block}
-\small Centering does not move the $v_k$ (variance ignores shifts). It gives the covariance matrix $S = \mathbf A^{\mathsf T}\mathbf A/(m-1)$, with $\mathrm{Var}(\mathbf A v) = v^{\mathsf T} S v$.
+\small Centering does not move the $v_k$, but it makes $\|\mathbf A v\|^2 = (m-1)\,\mathrm{Var}(\mathbf A v) = (m-1)\,v^{\mathsf T} S v$, with $S = \mathbf A^{\mathsf T}\mathbf A/(m-1)$ the covariance matrix. \alert{So we want the unit $v$ that maximizes $\|\mathbf A v\|^2$.}
 \end{column}
 \end{columns}
 \end{frame}
 
 \begin{frame}{Computing PCA: the SVD}
-\note[item]{\textbf{Say:} To compute PCA we use the SVD. The columns of $V$ are exactly the principal directions, and the squared singular values give the share of variance each one explains. Our lens projects each centered pitch shape onto $v_1$ and $v_2$. Why two: three would give a thousand boxes, mostly empty, and we can draw two. PCA is linear, but clustering uses all nine coordinates, and three other lenses, including nonlinear Isomap, check it.}
+\note[item]{\textbf{Say:} To compute PCA we use the SVD. Squaring it gives $S$ in an orthonormal basis, so $v^{\mathsf T} S v$ is a weighted average of the $\lambda_i$, largest at $v_1$; orthogonal to $v_1$, largest at $v_2$. So the columns of $V$ are the principal directions, and the squared singular values give each one's share of variance. Our lens projects each centered pitch shape onto $v_1$ and $v_2$. Why two: three would give a thousand boxes, mostly empty, and we can draw two. PCA is linear, but clustering uses all nine coordinates, and three other lenses, including nonlinear Isomap, check it.}
 \begin{block}{Theorem (SVD, matrix version)}
 Let $\mathbf A$ have rank $r \ge 1$. Then $\mathbf A = \mathbf U \boldsymbol\Sigma \mathbf V^{\mathsf T}$, where $\mathbf U \in \R^{m \times r}$ and $\mathbf V \in \R^{n \times r}$ have orthonormal columns and $\boldsymbol\Sigma = \mathrm{diag}(\sigma_1 \ge \cdots \ge \sigma_r > 0)$.
 \src{axler2024ladr}
 \end{block}
 \begin{itemize}[<+->]
-  \item The columns $v_i$ of $\mathbf V$ are the principal directions, with variance $\lambda_i = \sigma_i^2/(m-1)$. Direction $j$ explains the share $\sigma_j^2 / \sum_l \sigma_l^2$ of the total. \hfill\parencite{jolliffecadima2016}
+  \item $\mathbf A^{\mathsf T}\mathbf A = \mathbf V\boldsymbol\Sigma^2\mathbf V^{\mathsf T}$, so $v^{\mathsf T} S v = \sum_i \lambda_i \langle v, v_i\rangle^2$ with $\lambda_i = \sigma_i^2/(m-1)$. This is at most $\lambda_1$, with equality at $v_1$: \alert{the columns of $\mathbf V$ are the principal directions.}
+  \item $v_j$ explains $\sigma_j^2 / \sum_l \sigma_l^2$ of the variance (ours: 38.5\%, 21.0\%). \hfill\parencite{jolliffecadima2016}
   \item Our lens: $f(x) = [\,v_1\ v_2\,]^{\mathsf T}(x - \bar x)$.
-  \item Why 2: with 10 intervals per axis, 2 gives 100 squares and 3 would give 1{,}000, most empty. And we can draw it.
+  \item Why 2: 100 squares; 3 would give 1{,}000, most empty. And we can draw it.
   \item PCA is \alert{linear}, but clustering uses all 9 coordinates, and 3 other lenses (incl.\ nonlinear Isomap) check it.
 \end{itemize}
 \end{frame}
